@@ -3,6 +3,11 @@ from ..data_access_layer.model_db_access_layer import user_model_dao
 
 user_model_endpoints = Blueprint('user_model_endpoints', __name__)
 
+@user_model_endpoints.route('/test/<int:value>')
+def test(value):
+
+    return user_model_dao.testDB(value)
+
 @user_model_endpoints.route('/about')
 def about():
     return 'User model endpoints.'

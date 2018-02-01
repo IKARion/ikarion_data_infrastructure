@@ -1,5 +1,9 @@
 from .. import modelDBConnection as con
 
+def testDB(value):
+    con.db.test2.insert_one({'x':(value / 5), 'y':value})
+    doc = con.db.test2.find_one({'y':value})
+    return doc['x']
 
 # Retrieve
 def getAllCourses():
