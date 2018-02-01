@@ -1,9 +1,11 @@
 from .. import modelDBConnection as con
 
-def testDB(value):
-    con.db.test2.insert_one({'x':(value / 5), 'y':value})
-    doc = con.db.test2.find_one({'y':value})
-    return doc['x']
+# Fields
+RES_USED_LIST = 'ressources_list'
+RES_USED_FIELD = 'resource_accesses'
+DISTINCT_RES_USED = 'distinct_resource_accesses'
+DISTINCT_RES_USED = 'distinct_resource_accesses'
+# ...
 
 # Retrieve
 def getAllCourses():
@@ -32,7 +34,7 @@ def getAllCoursesForUser(user):
 def getUserModel(user, course):
     doc = con.db.usermodels.find_one({'user':user, 'course':course}, {'_id':0})
     if doc is None:
-        raise NoSuchCourseException(user, course)
+        raise NoSuchUserException(user, course)
 
 
 def getUserModelsForCourse(course):
