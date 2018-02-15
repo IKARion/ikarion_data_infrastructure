@@ -9,18 +9,18 @@ DISTINCT_RES_USED = 'distinct_resource_accesses'
 
 # Retrieve
 def getAllCourses():
-    con.db.usermodels.distinct('course')
+    return con.db.usermodels.distinct('course')
 
 
 def getAllUsers():
-    con.db.usermodels.distinct('user')
+    return con.db.usermodels.distinct('user')
 
 
 def getAllUsersForCourse(course):
     docs = con.db.usermodels.find({'course':course}, {'user': 1})
     if docs.count == 0:
         raise NoSuchCourseException(course)
-    list(docs)
+    return list(docs)
 
 
 def getAllCoursesForUser(user):
@@ -28,7 +28,7 @@ def getAllCoursesForUser(user):
     if docs.count() == 0:
         raise NoSuchUserException(user, "all courses")
 
-    list(docs)
+    return list(docs)
 
 
 def getUserModel(user, course):
@@ -41,7 +41,7 @@ def getUserModelsForCourse(course):
     docs = con.db.usermodels.find({'course': course}, {'_id': 0})
     if docs.count == 0:
         raise NoSuchCourseException(course)
-    list(docs)
+    return list(docs)
 
 
 # Update

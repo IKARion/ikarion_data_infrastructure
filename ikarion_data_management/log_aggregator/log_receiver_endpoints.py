@@ -1,7 +1,7 @@
 from flask import Blueprint
 from ..data_access_layer.model_db_access_layer import user_model_dao
 #from ..data_access_layer.model_db_access_layer import group_model_dao
-
+from flask import request
 log_receiver_endpoints = Blueprint('log_receiver_endpoints', __name__)
 
 
@@ -13,7 +13,7 @@ def about():
 # Log forwarding has to be specified in learning locker first.
 # (See https://ht2ltd.zendesk.com/hc/en-us/articles/115002026451--NEW-LL-Statement-Forwarding)
 @log_receiver_endpoints.route('/resource_access')
-def processResourceAccessLog(log):
+def processResourceAccessLog():
 
     None
     # TODO: Process log
