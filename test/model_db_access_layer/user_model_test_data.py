@@ -4,7 +4,10 @@
 ARTEFACT_TEMPLATE = "https://moodle.test-data.de/mod/{}/view.php?id={}"
 
 
-def fill_user_model(uid, course, active_days, n_artifacts, updated_at = 1416649608):
+def fill_user_model(uid, course, active_days, n_artifacts, *,
+                    updated_at=1416649608,
+                    base_time=1517443200.0,
+                    num_actions=1):
     skeleton = create_user_skeleton()
     skeleton["uid"] = str(uid)
     skeleton["course"] = str(course)
@@ -21,8 +24,9 @@ def fill_user_model(uid, course, active_days, n_artifacts, updated_at = 14166496
         for action_type in action_types:
             for n in range(n_artifacts):
                 action_id = ARTEFACT_TEMPLATE.format(artifact_type, n)
-                action_data = create_action(action_id)
-                add_action(skeleton, artifact_type, action_type, action_data)
+                for n_actions in range(num_actions):
+                    action_data = create_action(action_id, base_time + (n_actions*3600))
+                    add_action(skeleton, artifact_type, action_type, action_data)
 
     return skeleton
 
@@ -60,9 +64,10 @@ def add_action(user_model, artifact_type, action, action_data):
     user_model["artifacts"][artifact_type][action] = action_data
 
 
-def create_action(action_id, **kwargs):
+def create_action(action_id, time, **kwargs):
     action_data = {
-        "id": action_id
+        "id": action_id,
+        "time": time,
     }
     return {**action_data, **kwargs}
 
