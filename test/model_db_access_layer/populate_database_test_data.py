@@ -7,7 +7,7 @@ with pymongo.MongoClient(database_url) as client:
 
     for course in range(2):
         for user in range(10):
-            base_time = 1517443200 + course*user*60
+            base_time = 1517443200.0 + course*user*60
             user_model = umd.fill_user_model(user, course, 5, 5, num_actions=5, base_time=base_time)
             client.db.usermodels.insert_one(user_model)
 
