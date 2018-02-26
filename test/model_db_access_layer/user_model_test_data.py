@@ -1,4 +1,4 @@
-
+import random
 
 # https://moodle.ikarion-projekt.de/mod/forum/view.php?id={}
 ARTEFACT_TEMPLATE = "https://moodle.test-data.de/mod/{}/view.php?id={}"
@@ -7,7 +7,8 @@ ARTEFACT_TEMPLATE = "https://moodle.test-data.de/mod/{}/view.php?id={}"
 def fill_user_model(uid, course, active_days, n_artifacts, *,
                     updated_at=1416649608,
                     base_time=1517443200.0,
-                    num_actions=1):
+                    num_actions=1,
+                    randomized=False):
     skeleton = create_user_skeleton()
     skeleton["uid"] = str(uid)
     skeleton["course"] = str(course)
@@ -25,7 +26,12 @@ def fill_user_model(uid, course, active_days, n_artifacts, *,
             for n in range(n_artifacts):
                 action_id = ARTEFACT_TEMPLATE.format(artifact_type, n)
                 for n_actions in range(num_actions):
-                    action_data = create_action(action_id, base_time + (n_actions*3600))
+                    if randomized:
+                        added_time = random.random()*(n_actions * 3600)
+                    else:
+                        added_time = (n_actions * 3600)
+                    time_stamp = base_time + added_time
+                    action_data = create_action(action_id, time_stamp)
                     add_action(skeleton, artifact_type, action_type, action_data)
 
     return skeleton
