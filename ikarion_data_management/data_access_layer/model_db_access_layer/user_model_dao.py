@@ -2,6 +2,13 @@ from .. import modelDBConnection as con
 
 import datetime
 
+
+# onstraints parameter for the functions is used to keep query context flexible
+# and add constraints at a later time without rewriting all the functions every time
+# constraints are dictionaries/maps as used in mongodb query. They all get merged to create a query
+
+context_extension_id = "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log"
+
 coll = con.db.xapi_statements
 
 # Fields
@@ -10,12 +17,13 @@ RES_USED_FIELD = 'resource_accesses'
 DISTINCT_RES_USED = 'distinct_resource_accesses'
 
 
-# ...
+# TODO Write Tests because this won't work from the start :)
 
-course_schema = "context.course.name"
+course_schema = "context.extensions." + context_extension_id + ".courseid"
+group_schema = ""
 artefact_schema = "object.id"
 # TODO lookup artefact type schema
-artefact_type_schema = ""
+artefact_type_schema = "object.type"
 user_schema = "actor.name"
 time_stamp_schema = "timestamp"
 action_schema = "verb.id"
@@ -30,6 +38,13 @@ def convert_timestamp():
 def course_query(course):
     query = {
         course_schema: course
+    }
+    return query
+
+
+def group_query(group):
+    query = {
+        group_schema: group
     }
     return query
 
@@ -62,13 +77,15 @@ def artefact_type_query(artefact_type):
     return query
 
 
-def get_all_user_statements(user):
-    result = coll.find(user_query(user))
+def get_all_user_statements(user, *constraints):
+    query = merge_query(user_query(user), *constraints)
+    result = coll.find(query)
     return list(result)
 
 
-def get_all_user_times(user):
-    result = list(coll.find(user_query(user), {time_stamp_schema: 1}))
+def get_all_user_times(user, course, *constraints):
+    query = merge_query(user_query(user), course_query(course), *constraints)
+    result = set(coll.find(query, {time_stamp_schema: 1}))
     result = [item[time_stamp_schema] for item in result]
     result.sort()
     return result
@@ -82,9 +99,9 @@ def get_all_users():
     return list(coll.distinct(user_schema))
 
 
-def get_all_users_for_course(course):
+def get_all_users_for_course(course, *constraints):
 
-    result = list(coll.distinct(user_schema, course_query(course)))
+    result = list(coll.distinct(user_schema, course_query(course), *constraints))
     return result
 
 
@@ -93,8 +110,8 @@ def get_all_courses_for_user(user):
     return result
 
 
-def get_user_active_days(user):
-    epoch_times = get_all_user_times(user)
+def get_user_active_days(user, course, *constraints):
+    epoch_times = get_all_user_times(user, course, *constraints)
     datetimes = [datetime.datetime.utcfromtimestamp(item) for item in epoch_times]
     dates = [item.date for item in datetimes]
     distinct_dates = set(dates)
@@ -102,33 +119,83 @@ def get_user_active_days(user):
     return sorted_date_list
 
 
-def get_user_artefact_actions(user, artefact):
-    query = merge_query(user_query(user), artefact_query(artefact))
+def get_user_artefact_actions(user, artefact, *constraints):
+    query = merge_query(user_query(user), artefact_query(artefact), *constraints)
     result = list(coll.find(query))
     return result
+
+
+def get_user_verbs(user, course, *constraints):
+    query = merge_query(user_query(user), course_query(course), *constraints)
+    return list(coll.distinct(verb_schema, query))
+
+
+def get_user_artefact_types(user, course, *constraints):
+    query = merge_query(user_query(user), course_query(course), *constraints)
+    return list(coll.distinct(artefact_type_schema, query))
+
+
+def get_user_verbs_for_artefact_type(user, artefact_type, course, *constraints):
+    query = merge_query(user_query(user),
+                        artefact_type_query(artefact_type),
+                        course_query(course),
+                        *constraints)
+    return list(coll.distinct(verb_schema, query))
 
 
 def get_user_artefact_action_stats(user, artefact, verb):
 
     query = merge_query(user_query(user), artefact_query(artefact), verb_query(verb))
     result = list(coll.find(query))
-    return len(result)
+    return {"count": len(result)}
 
 
-def get_user_artefact_type_action_stats(user, artefact_type, verb):
+def get_user_artefact_type_action_stats(user, artefact_type, verb, course, *constraints):
     query = merge_query(user_query(user),
                         artefact_type_query(artefact_type),
-                        verb_query(verb))
-    result = coll.find(query)
-    return len(result)
+                        verb_query(verb),
+                        course_query(course),
+                        *constraints)
+    artefact_list = list(coll.distinct(artefact_schema, query))
+    result = []
+    for artefact in artefact_list:
+        stats = get_user_artefact_action_stats(user, artefact, verb)
+        data = {
+            "id": artefact,
+            **stats,
+        }
+        result.append(data)
+    return result
+
+def get_user_model_for_course(user, course, group):
+    # TODO Update Usermodel on Site
+    course_constraint = course_query(course)
+    group_constraint = group_query(group)
+    artefact_types = get_user_artefact_types(user, course, group_constraint)
+    artefacts = []
+    for artefact_type in artefact_types:
+        artefact_type_stats = []
+        verbs = get_user_verbs_for_artefact_type(user, artefact_type, course, group_constraint)
+        for verb in verbs:
+            verb_stats = get_user_artefact_type_action_stats(user, artefact_type, verb, group_constraint)
+            artefact_type_stats.append({verb: verb_stats})
+
+        artefacts.append({artefact_type: artefact_type_stats})
+
+    user_model = {
+        "uid": user,
+        "group_id": group,
+        "course_id": course,
+        "updated_at": get_user_last_updated_at(user, course, group_constraint),
+        "active_days": get_user_active_days(user, course, group_constraint),
+        "artifacts": artefacts,
+    }
+
+    return user_model
 
 
-def aggregate_actions(user, artefact_type, action):
-    pass
-
-
-def last_updated_at(user):
-    return get_all_user_times(user)[-1]
+def get_user_last_updated_at(user, course, *constraints):
+    return get_all_user_times(user, course, *constraints)[-1]
 
 
 def merge_query(*args):
@@ -139,50 +206,6 @@ def merge_query(*args):
         merged_query.update(arg)
 
     return merged_query
-
-
-# def getUserModel(user, course):
-#     doc = con.db.usermodels.find_one({'uid': user, 'course': course}, {'_id': 0})
-#     if doc is None:
-#         raise NoSuchUserException(user, course)
-#     return doc
-#
-#
-# def getUserModelsForCourse(course):
-#     docs = con.db.usermodels.find({'course': course}, {'_id': 0})
-#     if docs.count == 0:
-#         raise NoSuchCourseException(course)
-#     return list(docs)
-
-
-# # Update
-# def updateOrInsertUserModel(user, course, newModel):
-#     con.db.usermodels.updateOne(
-#         {'uid': user, 'course': course},
-#         {'$set': newModel},
-#         upsert=True
-#     )
-#
-#
-# def updateUserModelSetField(user, course, field, incValue):
-#     res = con.db.usermodels.updateOne(
-#         {'uid': user, 'course': course},
-#         {'$set': {field: incValue}}
-#     )
-#
-#     if (res.matched_count == 0):
-#         raise NoSuchUserException(user, course)
-#
-#
-# def updateUserModelIncrementField(user, course, field, incValue):
-#     res = con.db.usermodels.updateOne(
-#         {'uid': user, 'course': course},
-#         {'$inc': {field: incValue}}
-#     )
-#
-#     if (res.matched_count == 0):
-#         raise NoSuchUserException(user, course)
-
 
 # Exception classes
 class NoSuchUserException(Exception):
