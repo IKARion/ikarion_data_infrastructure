@@ -5,9 +5,8 @@ import datetime
 coll = con.db.xapi_statements
 
 # Fields
-RES_USED_LIST = 'ressources_list'
+RES_USED_LIST = 'resources_list'
 RES_USED_FIELD = 'resource_accesses'
-DISTINCT_RES_USED = 'distinct_resource_accesses'
 DISTINCT_RES_USED = 'distinct_resource_accesses'
 
 
@@ -34,11 +33,13 @@ def course_query(course):
     }
     return query
 
+
 def user_query(user):
     query = {
         user_schema: user
     }
     return query
+
 
 def verb_query(verb):
     query = {
@@ -46,11 +47,13 @@ def verb_query(verb):
     }
     return query
 
+
 def artefact_query(artefact):
     query = {
         artefact_schema: artefact
     }
     return query
+
 
 def artefact_type_query(artefact_type):
     query = {
@@ -58,30 +61,34 @@ def artefact_type_query(artefact_type):
     }
     return query
 
+
 def get_all_user_statements(user):
     result = coll.find(user_query(user))
     return list(result)
 
+
 def get_all_user_times(user):
     result = list(coll.find(user_query(user), {time_stamp_schema: 1}))
-    result = [item[time_stamp_schema] for item in result].sort()
+    result = [item[time_stamp_schema] for item in result]
+    result.sort()
     return result
 
-def getAllCourses():
+
+def get_all_courses():
     return list(coll.distinct(course_schema))
 
 
-def getAllUsers():
+def get_all_users():
     return list(coll.distinct(user_schema))
 
 
-def getAllUsersForCourse(course):
+def get_all_users_for_course(course):
 
     result = list(coll.distinct(user_schema, course_query(course)))
     return result
 
 
-def getAllCoursesForUser(user):
+def get_all_courses_for_user(user):
     result = list(coll.distinct(course_schema, user_query(user)))
     return result
 
@@ -93,6 +100,7 @@ def get_user_active_days(user):
     distinct_dates = set(dates)
     sorted_date_list = list(distinct_dates).sort()
     return sorted_date_list
+
 
 def get_user_artefact_actions(user, artefact):
     query = merge_query(user_query(user), artefact_query(artefact))
@@ -106,6 +114,7 @@ def get_user_artefact_action_stats(user, artefact, verb):
     result = list(coll.find(query))
     return len(result)
 
+
 def get_user_artefact_type_action_stats(user, artefact_type, verb):
     query = merge_query(user_query(user),
                         artefact_type_query(artefact_type),
@@ -113,15 +122,21 @@ def get_user_artefact_type_action_stats(user, artefact_type, verb):
     result = coll.find(query)
     return len(result)
 
+
 def aggregate_actions(user, artefact_type, action):
     pass
+
+
+def last_updated_at(user):
+    return get_all_user_times(user)[-1]
+
 
 def merge_query(*args):
     merged_query = {
 
     }
     for arg in args:
-        merged_query = {**merged_query, **arg}
+        merged_query.update(arg)
 
     return merged_query
 

@@ -20,24 +20,24 @@ class UserModelDAOTestCase(unittest.TestCase):
         pass
 
     def test_getAllCourses(self):
-        courses = um.getAllCourses()
+        courses = um.get_all_courses()
         expected_result = [str(i) for i in range(ITEM_NUMBER)]
         self.assertEqual(set(courses), set(expected_result))
 
     def test_getAllUsers(self):
-        users = um.getAllUsers()
+        users = um.get_all_users()
         expected_result = [str(i) for i in range(ITEM_NUMBER)]
         self.assertEqual(set(users), set(expected_result))
 
     def test_getAllUsersForCourse(self):
-        users = um.getAllUsersForCourse("1")
+        users = um.get_all_users_for_course("1")
         user = users[0]
         expected = {"uid": "1"}
         # To compare dict subset relation you can use items() and <=
         self.assertLessEqual(expected.items(), user.items())
 
     def test_getAllCoursesForUser(self):
-        users = um.getAllCoursesForUser("1")
+        users = um.get_all_courses_for_user("1")
         user = users[0]
         expected = {"course": "1"}
         # To compare dict subset relation you can use items() and <=

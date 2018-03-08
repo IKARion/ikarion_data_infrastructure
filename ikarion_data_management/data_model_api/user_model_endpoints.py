@@ -26,22 +26,22 @@ def getAllUserModels(course):
 @user_model_endpoints.route("/")
 def getAllUsers():
 
-    return jsonify(result=user_model_dao.getAllUsers())
+    return jsonify(result=user_model_dao.get_all_users())
 
 
 @user_model_endpoints.route("/<course>")
 def getAllUsersForCourse(course):
-    return jsonify(users=user_model_dao.getAllUsersForCourse(course))
+    return jsonify(users=user_model_dao.get_all_users_for_course(course))
 
 
 # List of courses
 @user_model_endpoints.route("/courses")
 def getAllCourses():
 
-    return jsonify(result=user_model_dao.getAllCourses())
+    return jsonify(result=user_model_dao.get_all_courses())
 
 
 @user_model_endpoints.route("/courses/<user>")
 def getAllCoursesForUser(user):
 
-    return jsonify(courses=user_model_dao.getAllCoursesForUser(user))
+    return jsonify(courses=user_model_dao.get_all_courses_for_user(user))
