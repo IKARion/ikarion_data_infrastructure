@@ -21,3 +21,4 @@ def populate_user_model():
 def clear_user_model():
     with pymongo.MongoClient(database_url) as client:
         client.db.usermodels.delete_many({})
+

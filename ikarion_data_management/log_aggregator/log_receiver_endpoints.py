@@ -2,6 +2,8 @@ from flask import Blueprint
 from ..data_access_layer.model_db_access_layer import user_model_dao
 #from ..data_access_layer.model_db_access_layer import group_model_dao
 from flask import request
+from flask import Response
+from ikarion_data_management.data_access_layer import modelDBConnection as con
 log_receiver_endpoints = Blueprint('log_receiver_endpoints', __name__)
 
 
@@ -14,21 +16,20 @@ def about():
 # (See https://ht2ltd.zendesk.com/hc/en-us/articles/115002026451--NEW-LL-Statement-Forwarding)
 @log_receiver_endpoints.route('/resource_access')
 def processResourceAccessLog():
+    statement = request.get_json()
+    relevant = statement_relevant(statement)
+    if relevant:
+        statement = convert_timestamp(statement)
+        con.db.xapi_statements.insert_one(statement)
 
-    None
-    # TODO: Process log
-    # get user
-    # get user group if present
-    # get resource type
-    # ...
-    #try:
-        #user_model_dao.getUserModel(user, course)
-    #except user_model_dao.NoSuchCourseException:
-        # create new user model
-        #user_model_dao.updateOrInsertUserModel(model)
+    return Response(status=200)
 
-    # increment number of resources used
-    #user_model_dao.updateUserModelIncrementField(user, course, field=user_model_dao.RES_USED_FIELD, 1)
 
-    # increment number of different resources used
-    #user_model_dao.updateUserModelIncrementField(user, course, field=user_model_dao.DISTINCT_RES_USED_FIELD, ???)
+
+def statement_relevant(statement):
+    # TODO find out what statements are not relevant and fillter them.
+    return True
+
+def convert_timestamp(statement):
+    # TODO COnvert Timestamp of xapi statements to epoch time
+    pass
