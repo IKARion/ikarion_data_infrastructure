@@ -18,6 +18,14 @@ database_url = "mongodb://ikarion:ikariondb@cluster0-shard-00-00-n3pml.mongodb.n
 #                 client.db.usermodels.insert_one(user_model)
 
 
+def populate_xapi_model(client):
+    for course in range(2):
+        for user in range(5):
+            base_time = 1517443200.0 + course*user*60
+            for i in range(10):
+                time = base_time + i*3600*24
+                statement = umd.generate_xapi_statement(user, course, time, "testverb")
+                client.db.xapi_statements.insert(statement)
 
 
 def clear_user_model():

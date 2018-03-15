@@ -79,6 +79,9 @@ ARTEFACT_TEMPLATE = "https://moodle.test-data.de/mod/{}/view.php?id={}"
 #     return {**action_data, **kwargs}
 
 
+def fill_xapi_model():
+
+
 
 def generate_xapi_statement(*, user, course, time, verb, object, group=None):
     statement = {
