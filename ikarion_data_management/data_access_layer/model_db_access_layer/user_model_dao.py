@@ -19,7 +19,7 @@ DISTINCT_RES_USED = 'distinct_resource_accesses'
 
 # TODO Write Tests because this won't work from the start :)
 
-course_schema = "context.extensions." + context_extension_id + ".courseid"
+course_schema = "context.extensions.courseid"
 group_schema = ""
 artefact_schema = "object.id"
 # TODO lookup artefact type schema
