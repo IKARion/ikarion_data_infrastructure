@@ -31,22 +31,24 @@ verb_schema = "verb.id"
 # Retrieve
 
 
-def convert_timestamp():
-    pass
-
-
 def course_query(course):
-    query = {
-        course_schema: course
-    }
-    return query
+    if course is None:
+        return {}
+    else:
+        query = {
+            course_schema: course
+        }
+        return query
 
 
 def group_query(group):
-    query = {
-        group_schema: group
-    }
-    return query
+    if group is None:
+        return {}
+    else:
+        query = {
+            group_schema: group
+        }
+        return query
 
 
 def user_query(user):
@@ -167,7 +169,7 @@ def get_user_artefact_type_action_stats(user, artefact_type, verb, course, *cons
         result.append(data)
     return result
 
-def get_user_model_for_course(user, course, group):
+def get_user_model_for_course(user, course, group = None):
     # TODO Update Usermodel on Site
     course_constraint = course_query(course)
     group_constraint = group_query(group)
