@@ -19,8 +19,8 @@ DISTINCT_RES_USED = 'distinct_resource_accesses'
 
 course_schema = "context.extensions.courseid"
 group_schema = ""
-artefact_schema = "object.id"
-artefact_type_schema = "object.type"
+artefact_schema = "artefact.id"
+artefact_type_schema = "artefact.definition.type"
 user_schema = "actor.name"
 time_stamp_schema = "timestamp"
 action_schema = "verb.id"
@@ -180,27 +180,25 @@ def get_user_average_latency(user, course, *constraints):
     return avg_latency
 
 
-def get_user_model_for_course(user, course, group=None):
+def get_user_model_for_course(user, course, *constraints):
     # TODO Update Usermodel on Site
     course_constraint = course_query(course)
-    group_constraint = group_query(group)
-    artefact_types = get_user_artefact_types(user, course, group_constraint)
+    artefact_types = get_user_artefact_types(user, course, *constraints)
     artefacts = []
     for artefact_type in artefact_types:
         artefact_type_stats = []
-        verbs = get_user_verbs_for_artefact_type(user, artefact_type, course, group_constraint)
+        verbs = get_user_verbs_for_artefact_type(user, artefact_type, course, *constraints)
         for verb in verbs:
-            verb_stats = get_user_artefact_type_action_stats(user, artefact_type, verb, group_constraint)
+            verb_stats = get_user_artefact_type_action_stats(user, artefact_type, verb, course, *constraints)
             artefact_type_stats.append({verb: verb_stats})
 
         artefacts.append({artefact_type: artefact_type_stats})
 
     user_model = {
         "uid": user,
-        "group_id": group,
         "course_id": course,
-        "updated_at": get_user_last_updated_at(user, course, group_constraint),
-        "active_days": get_user_active_days(user, course, group_constraint),
+        "updated_at": get_user_last_updated_at(user, course, *constraints),
+        "active_days": get_user_active_days(user, course, *constraints),
         "artifacts": artefacts,
     }
     return user_model

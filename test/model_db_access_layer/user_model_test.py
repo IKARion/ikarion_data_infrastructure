@@ -75,6 +75,11 @@ class UserModelDAOTestCase(unittest.TestCase):
     def setUp(self):
         pass
 
+    def test_get_user_artefact_types(self):
+        print("artefact types")
+        artefact_types = um.get_user_artefact_types("1", "1")
+        print(artefact_types)
+
     def test_get_user_model_for_course(self):
         print("user")
         user = um.get_user_model_for_course("1", "1")
