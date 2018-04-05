@@ -1,5 +1,5 @@
 import random
-import ikarion_data_infrastructure.ikarion_data_management.log_aggregator.log_receiver_endpoints as lre
+import ikarion_data_management.log_aggregator.statement_processing as sp
 
 # https://moodle.ikarion-projekt.de/mod/forum/view.php?id={}
 ARTEFACT_TEMPLATE = "https://moodle.test-data.de/mod/{}/view.php?id={}"
@@ -194,6 +194,7 @@ def generate_xapi_statement(*, user, course, time, verb, artefact, group=None):
         "version": "1.0.0",
         "id": "f6ece7a5-97c1-4e9a-8694-1c52422539fa",
         "verb": {
+
             "display": {
                 "en": "viewed"
             },
@@ -250,6 +251,6 @@ def generate_xapi_statement(*, user, course, time, verb, artefact, group=None):
             "objectType": "Activity"
         }
     }
-    lre.restructure_extensions(statement)
+    sp.process_statement(statement)
 
     return statement

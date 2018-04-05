@@ -24,8 +24,14 @@ def populate_xapi_model(client):
             base_time = 1517443200.0 + course*user*60
             for i in range(10):
                 time = base_time + i*3600*24
-                statement = umd.generate_xapi_statement(user, course, time, "testverb")
-                client.db.xapi_statements.insert(statement)
+                course_str = str(course)
+                user_str = str(user)
+                statement = umd.generate_xapi_statement(user=user_str,
+                                                        course=course_str,
+                                                        time=time,
+                                                        verb="testverb"+str(i % 2),
+                                                        artefact="testartefact"+str(i % 2))
+                client.db.xapi_statements.insert_one(statement)
 
 
 def clear_user_model():

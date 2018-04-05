@@ -9,8 +9,6 @@ import datetime
 
 context_extension_id = "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log"
 
-coll = con.db.xapi_statements
-
 # Fields
 RES_USED_LIST = 'resources_list'
 RES_USED_FIELD = 'resource_accesses'
@@ -22,7 +20,6 @@ DISTINCT_RES_USED = 'distinct_resource_accesses'
 course_schema = "context.extensions.courseid"
 group_schema = ""
 artefact_schema = "object.id"
-# TODO lookup artefact type schema
 artefact_type_schema = "object.type"
 user_schema = "actor.name"
 time_stamp_schema = "timestamp"
@@ -81,60 +78,61 @@ def artefact_type_query(artefact_type):
 
 def get_all_user_statements(user, *constraints):
     query = merge_query(user_query(user), *constraints)
-    result = coll.find(query)
+    result = con.db.xapi_statements.find(query)
     return list(result)
 
 
 def get_all_user_times(user, course, *constraints):
     query = merge_query(user_query(user), course_query(course), *constraints)
-    result = set(coll.find(query, {time_stamp_schema: 1}))
-    result = [item[time_stamp_schema] for item in result]
+    result = con.db.xapi_statements.find(query, {time_stamp_schema: 1})
+    result = list(set([item[time_stamp_schema] for item in result]))
     result.sort()
     return result
 
 
 def get_all_courses():
-    return list(coll.distinct(course_schema))
+    return list(con.db.xapi_statements.distinct(course_schema))
 
 
 def get_all_users():
-    return list(coll.distinct(user_schema))
+    return list(con.db.xapi_statements.distinct(user_schema))
 
 
 def get_all_users_for_course(course, *constraints):
 
-    result = list(coll.distinct(user_schema, course_query(course), *constraints))
+    result = list(con.db.xapi_statements.distinct(user_schema, course_query(course), *constraints))
     return result
 
 
 def get_all_courses_for_user(user):
-    result = list(coll.distinct(course_schema, user_query(user)))
+    result = list(con.db.xapi_statements.distinct(course_schema, user_query(user)))
     return result
 
 
 def get_user_active_days(user, course, *constraints):
     epoch_times = get_all_user_times(user, course, *constraints)
     datetimes = [datetime.datetime.utcfromtimestamp(item) for item in epoch_times]
-    dates = [item.date for item in datetimes]
+    dates = [item.date() for item in datetimes]
     distinct_dates = set(dates)
-    sorted_date_list = list(distinct_dates).sort()
+    sorted_date_list = sorted(list(distinct_dates))
+    sorted_date_list = [date.isoformat() for date in sorted_date_list]
     return sorted_date_list
 
 
 def get_user_artefact_actions(user, artefact, *constraints):
     query = merge_query(user_query(user), artefact_query(artefact), *constraints)
-    result = list(coll.find(query))
+    result = list(con.db.xapi_statements.find(query))
     return result
 
 
 def get_user_verbs(user, course, *constraints):
     query = merge_query(user_query(user), course_query(course), *constraints)
-    return list(coll.distinct(verb_schema, query))
+    return list(con.db.xapi_statements.distinct(verb_schema, query))
 
 
 def get_user_artefact_types(user, course, *constraints):
     query = merge_query(user_query(user), course_query(course), *constraints)
-    return list(coll.distinct(artefact_type_schema, query))
+    return list(con.db.xapi_statements.distinct(artefact_type_schema, query))
 
 
 def get_user_verbs_for_artefact_type(user, artefact_type, course, *constraints):
@@ -142,13 +140,13 @@ def get_user_verbs_for_artefact_type(user, artefact_type, course, *constraints):
                         artefact_type_query(artefact_type),
                         course_query(course),
                         *constraints)
-    return list(coll.distinct(verb_schema, query))
+    return list(con.db.xapi_statements.distinct(verb_schema, query))
 
 
 def get_user_artefact_action_stats(user, artefact, verb):
 
     query = merge_query(user_query(user), artefact_query(artefact), verb_query(verb))
-    result = list(coll.find(query))
+    result = list(con.db.xapi_statements.find(query))
     return {"count": len(result)}
 
 
@@ -158,7 +156,7 @@ def get_user_artefact_type_action_stats(user, artefact_type, verb, course, *cons
                         verb_query(verb),
                         course_query(course),
                         *constraints)
-    artefact_list = list(coll.distinct(artefact_schema, query))
+    artefact_list = list(con.db.xapi_statements.distinct(artefact_schema, query))
     result = []
     for artefact in artefact_list:
         stats = get_user_artefact_action_stats(user, artefact, verb)
@@ -169,7 +167,20 @@ def get_user_artefact_type_action_stats(user, artefact_type, verb, course, *cons
         result.append(data)
     return result
 
-def get_user_model_for_course(user, course, group = None):
+
+def get_user_average_latency(user, course, *constraints):
+
+    times = get_all_user_times(user, course, *constraints)
+
+    latencies = []
+    for first, second in zip(times[:-1], times[1:]):
+        latencies.append(second-first)
+
+    avg_latency = sum(latencies)/len(latencies)
+    return avg_latency
+
+
+def get_user_model_for_course(user, course, group=None):
     # TODO Update Usermodel on Site
     course_constraint = course_query(course)
     group_constraint = group_query(group)
@@ -192,7 +203,6 @@ def get_user_model_for_course(user, course, group = None):
         "active_days": get_user_active_days(user, course, group_constraint),
         "artifacts": artefacts,
     }
-
     return user_model
 
 
