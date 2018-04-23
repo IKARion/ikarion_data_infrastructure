@@ -80,7 +80,9 @@ ARTEFACT_TEMPLATE = "https://moodle.test-data.de/mod/{}/view.php?id={}"
 
 
 def generate_xapi_statement(*, user, course, time, verb, artefact, group=None):
+    # TODO look up group.
     statement = {
+        "group": group,
         "stored": "2018-03-15T12:19:47.424Z",
         "context": {
             "extensions": {

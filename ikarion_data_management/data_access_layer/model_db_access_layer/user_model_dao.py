@@ -1,4 +1,8 @@
 from .. import modelDBConnection as con
+from pymongo import MongoClient
+mongo_uri = "mongodb://ikarion:ikariondb@cluster0-shard-00-00-n3pml.mongodb.net:27017,cluster0-shard-00-01-n3pml.mongodb.net:27017,cluster0-shard-00-02-n3pml.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
+
+con = MongoClient(mongo_uri)
 
 import datetime
 
@@ -18,7 +22,7 @@ DISTINCT_RES_USED = 'distinct_resource_accesses'
 # TODO Write Tests because this won't work from the start :)
 
 course_schema = "context.extensions.courseid"
-group_schema = ""
+group_schema = "group"
 artefact_schema = "artefact.id"
 artefact_type_schema = "artefact.definition.type"
 user_schema = "actor.name"
@@ -99,10 +103,20 @@ def get_all_users():
 
 
 def get_all_users_for_course(course, *constraints):
-
-    result = list(con.db.xapi_statements.distinct(user_schema, course_query(course), *constraints))
+    query = merge_query(course_query(course), *constraints)
+    result = list(con.db.xapi_statements.distinct(user_schema, query))
     return result
 
+
+def get_all_users_for_group(course, group, *constraints):
+    query = merge_query(course_query(course), group_query(group), *constraints)
+    result = list(con.db.xapi_statements.distinct(user_schema, query))
+    return result
+
+def get_all_groups_for_course(course):
+    query = merge_query(course_query(course))
+    result = list(con.db.xapi_statements.distinct(group_schema, query))
+    return result
 
 def get_all_courses_for_user(user):
     result = list(con.db.xapi_statements.distinct(course_schema, user_query(user)))
@@ -166,6 +180,69 @@ def get_user_artefact_type_action_stats(user, artefact_type, verb, course, *cons
         }
         result.append(data)
     return result
+
+def get_group_activities(course, group, start_time, *constraints):
+    """
+    Returns json array of objects with fields [group_id, user_id, verb_id, object_id, timestamp]
+    :param group:
+    :type group:
+    :return:
+    :rtype:
+    """
+    users = get_all_users_for_group(course, group, *constraints)
+    projection = {
+        "artefact_id": "$" + artefact_schema,
+        "verb_id": "$" + verb_schema,
+        "timestamp": True,
+    }
+    group_activities = []
+    all_statements = list(con.db.xapi_statements.find({}))
+    for user in users:
+
+        query = merge_query(user_query(user), group_query(group))
+        aggregation = [
+            {"$match": query},
+            {"$project": projection},
+        ]
+        user_statements = list(con.db.xapi_statements.aggregate(aggregation))
+
+        for statement in user_statements:
+            activity = {
+                "group_id": group,
+                "user_id": user,
+                "verb_id": statement["verb_id"],
+                "object_id": statement["artefact_id"],
+                "timestamp": statement["timestamp"],
+            }
+            group_activities.append(activity)
+    group_activities = [item for item in group_activities if item["timestamp"] > start_time]
+    group_activities.sort(key=lambda x: x["timestamp"], reverse=True)
+    return group_activities
+
+
+
+
+def get_group_average_latency(startpoint, group, course, *constraints):
+    users = get_all_users_for_group(course, group)
+    group_times = []
+    for user in users:
+        user_times = get_all_user_times(user, course, *constraints)
+        time_tuples = [(time, user) for time in user_times]
+        group_times.extend(time_tuples)
+
+    group_times.sort()
+    response_times = []
+    current_time = startpoint
+    current_user = None
+    for time, user in group_times:
+        if user != current_user:
+            diff_time = time - current_time
+            current_time = time
+            response_times.append(diff_time)
+
+    avg_latency = sum(response_times)/len(response_times)
+
+    return avg_latency
 
 
 def get_user_average_latency(user, course, *constraints):

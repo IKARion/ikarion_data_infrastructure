@@ -96,7 +96,13 @@ class UserModelDAOTestCase(unittest.TestCase):
         print(times)
         self.assertEqual(len(times), 10)
 
+    def test_get_groups_for_course(self):
+        groups = um.get_all_groups_for_course("0")
+        print(groups)
+        self.assertEqual(len(groups), 4)
+
     def test_get_avg_latency(self):
+        um.groups
         avg_lat = um.get_user_average_latency("0", "0")
         print(avg_lat)
 
@@ -104,8 +110,17 @@ class UserModelDAOTestCase(unittest.TestCase):
         constraints = [{
             "verb.id": "testverb1"
         }]
-        avg_lat = um.get_user_average_latency("0", "0", *constraints)
-        print(avg_lat)
+        avg_lat_group_0 = um.get_user_average_latency("0", "0", *constraints)
+        avg_lat_group_1 = um.get_user_average_latency("0", "1", *constraints)
+        print(avg_lat_group_0)
+        print(avg_lat_group_1)
+
+    def test_get_group_activities(self):
+        groups = um.get_all_groups_for_course("0")
+        for group in groups:
+            group_activities = um.get_group_activities("0", group, 0)
+            print(group_activities)
+
 
     def tearDown(self):
         pass
@@ -147,10 +162,27 @@ class UserModelEndpointsTestCase(unittest.TestCase):
         response = self.app.get("users/times/0/0")
         print(response.data)
 
-    def test_avg_latency(self):
+    def test_get_groups_for_course(self):
+        response = self.app.get("users/groups_for_course/0")
+        print(response.data)
+        r_json = json.loads(response.data)
+        self.assertEqual(len(r_json["groups"]), 4)
+
+    def test_avg_latency_user(self):
         print("avg_latency")
         response = self.app.get("/users/avg_latency/0/0")
         print(response.data)
+
+    def test_avg_latency_group(self):
+        print("avg_latency")
+        response = self.app.get("/users/avg_group_latency/0/0/1517443200")
+        print(response.data)
+
+    def test_group_activity(self):
+        response = self.app.get("users/group_activities/0/0")
+        r_json = json.loads(response.data)
+        print(r_json)
+
 
     def tearDown(self):
         pass

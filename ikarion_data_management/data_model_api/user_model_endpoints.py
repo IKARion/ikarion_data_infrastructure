@@ -56,8 +56,43 @@ def get_avg_latency(user, course):
     latency = umd.get_user_average_latency(user, course, *constraints)
     return jsonify({"avg_latency": latency})
 
+@user_model_endpoints.route("/group_activities/<course>/<group>")
+def get_group_activities(course, group):
+    """
+    Returns json array of objects with fields [group_id, user_id, verb_id, object_id, timestamp]
+    :param course:
+    :type course:
+    :param group:
+    :type group:
+    :return:
+    :rtype:
+    """
+    print("in Endpoint")
+    try:
+        start_time = 0
+        if request.is_json:
+            r_json = request.get_json()
+            if "start_time" in r_json:
+                start_time = float(r_json["start_time"])
+        group_activities = umd.get_group_activities(course, group, start_time)
+    except Exception as e:
+        print(e)
+    return jsonify(group_activities=group_activities)
+
+
+@user_model_endpoints.route("/avg_group_latency/<course>/<group>/<startpoint>")
+def get_average_latency_for_group(course, group, startpoint):
+
+    return jsonify(courses=umd.get_group_average_latency(int(startpoint), group, course))
+
+@user_model_endpoints.route("/groups_for_course/<course>")
+def get_all_groups_for_course(course):
+    print("groups_for_course")
+    return jsonify(groups=umd.get_all_groups_for_course(course))
+
 @user_model_endpoints.route("/courses/<user>")
 def get_all_courses_for_user(user):
 
     return jsonify(courses=umd.get_all_courses_for_user(user))
+
 
