@@ -83,7 +83,7 @@ def get_group_activities(course, group):
 @user_model_endpoints.route("/avg_group_latency/<course>/<group>/<startpoint>")
 def get_average_latency_for_group(course, group, startpoint):
 
-    return jsonify(courses=umd.get_group_average_latency(int(startpoint), group, course))
+    return jsonify(avg_group_latency=umd.get_group_average_latency(int(startpoint), group, course))
 
 @user_model_endpoints.route("/groups_for_course/<course>")
 def get_all_groups_for_course(course):

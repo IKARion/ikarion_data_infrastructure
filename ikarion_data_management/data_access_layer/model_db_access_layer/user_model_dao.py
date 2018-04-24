@@ -226,6 +226,7 @@ def get_group_average_latency(startpoint, group, course, *constraints):
     users = get_all_users_for_group(course, group)
     group_times = []
     for user in users:
+        constraints = list(constraints) + [group_query(group)]
         user_times = get_all_user_times(user, course, *constraints)
         time_tuples = [(time, user) for time in user_times]
         group_times.extend(time_tuples)

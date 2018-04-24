@@ -29,8 +29,8 @@ def populate_xapi_model(client):
             for user in range(3):
                 course_offset = course*3600*24*7
                 user_offest = user*3600*3
-                group_latency_factor = 1 + 0.15*group
-                base_time = 1517443200.0 + course*36
+                group_latency_factor = 1 + 0.1*group
+                base_time = 1517443200.0 + course_offset*course
                 for i in range(10):
                     time = base_time + (i*3600*2*group_latency_factor) + course_offset + user_offest
                     course_str = str(course)
@@ -50,5 +50,5 @@ def clear_xap_statements():
         client.db.xapi_statements.delete_many({})
 
 
-# clear_xap_statements()
-# populate_database()
+clear_xap_statements()
+populate_database()
