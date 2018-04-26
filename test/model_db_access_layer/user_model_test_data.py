@@ -79,7 +79,7 @@ ARTEFACT_TEMPLATE = "https://moodle.test-data.de/mod/{}/view.php?id={}"
 #     return {**action_data, **kwargs}
 
 
-def generate_xapi_statement(*, user, course, time, verb, artefact, group=None):
+def generate_xapi_statement(*, user, course, time, verb, artefact, group=None, process=True):
     # TODO look up group.
     statement = {
         "group": group,
@@ -202,7 +202,7 @@ def generate_xapi_statement(*, user, course, time, verb, artefact, group=None):
             },
             "id": verb
         },
-        "artefact": {
+        "object": {
             "definition": {
                 "extensions": {
                     "http://lrs.learninglocker.net/define/extensions/moodle_course": {
@@ -253,6 +253,7 @@ def generate_xapi_statement(*, user, course, time, verb, artefact, group=None):
             "objectType": "Activity"
         }
     }
-    sp.process_statement(statement)
+    if process:
+        sp.process_statement(statement)
 
     return statement

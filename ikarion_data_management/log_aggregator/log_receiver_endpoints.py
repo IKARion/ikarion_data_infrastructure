@@ -4,25 +4,27 @@ from ..data_access_layer.model_db_access_layer import user_model_dao
 from flask import request
 from flask import Response
 from ikarion_data_management.data_access_layer import modelDBConnection as con
-from ikarion_data_management.log_aggregator.statement_processing import *
+from ikarion_data_management.log_aggregator import statement_processing as sp
 
-log_receiver_endpoints = Blueprint('log_receiver_endpoints', __name__)
+log_receiver_blueprint = Blueprint('log_receiver_blueprint', __name__)
 
 
-@log_receiver_endpoints.route('/about')
+@log_receiver_blueprint.route('/about')
 def about():
     return 'Log receiver endpoints.'
+
 
 # The LRS fowards resource access logs to this endpoint.
 # Log forwarding has to be specified in learning locker first.
 # (See https://ht2ltd.zendesk.com/hc/en-us/articles/115002026451--NEW-LL-Statement-Forwarding)
-@log_receiver_endpoints.route('/resource_access')
-def processResourceAccessLog():
-    statement = request.get_json()
-    relevant = statement_relevant(statement)
+@log_receiver_blueprint.route('/log_forwarding')
+def processLog():
+    print("processing log")
+    statement = request.get_json(force=True)
+    relevant = sp.statement_relevant(statement)
     if relevant:
-        statement["timestamp"] = convert_timestamp(statement)
-        restructure_extensions(statement)
+        print("relevant")
+        sp.process_statement(statement)
         con.db.xapi_statements.insert_one(statement)
     return Response(status=200)
 

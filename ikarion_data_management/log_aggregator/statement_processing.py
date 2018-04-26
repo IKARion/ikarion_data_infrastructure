@@ -15,12 +15,19 @@ def convert_timestamp(statement):
     timestamp = statement["timestamp"]
     if isinstance(timestamp, float):
         return timestamp
-    year, month, *rest = timestamp.split("-")
-    day, *rest = rest.split("T")
+    year, month, rest = timestamp.split("-")
+    day, rest = rest.split("T")
     rest = rest.replace("+", ":")
-    hours, minutes, seconds, *rest = rest.split(":")
+    hours, minutes, rest = rest.split(":")
+    seconds, _ = rest.split(".")
 
-    date_time = datetime.datetime(year, month, day, minutes, hours, seconds, tzinfo=pytz.utc)
+    date_time = datetime.datetime(int(year),
+                                  int(month),
+                                  int(day),
+                                  int(minutes),
+                                  int(hours),
+                                  int(seconds),
+                                  tzinfo=pytz.utc)
     epoch_timestamp = date_time.timestamp()
     statement["timestamp"] = epoch_timestamp
     return epoch_timestamp

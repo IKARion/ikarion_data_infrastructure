@@ -23,8 +23,8 @@ DISTINCT_RES_USED = 'distinct_resource_accesses'
 
 course_schema = "context.extensions.courseid"
 group_schema = "group"
-artefact_schema = "artefact.id"
-artefact_type_schema = "artefact.definition.type"
+artefact_schema = "object.id"
+artefact_type_schema = "object.definition.type"
 user_schema = "actor.name"
 time_stamp_schema = "timestamp"
 action_schema = "verb.id"

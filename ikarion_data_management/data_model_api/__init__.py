@@ -1,3 +1,3 @@
-from .user_model_endpoints import user_model_endpoints
-from .group_model_endpoints import group_model_endpoints
-from .advanced_model_endpoints import advanced_model_endpoints
+from .user_model_endpoints import user_model_blueprint
+from .group_model_endpoints import group_model_blueprint
+from .advanced_model_endpoints import advanced_model_blueprint

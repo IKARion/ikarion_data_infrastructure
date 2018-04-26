@@ -24,6 +24,14 @@ def populate_database():
 
 
 def populate_xapi_model(client):
+    statement_list = generate_xapi_model()
+    for statement in statement_list:
+        client.db.xapi_statements.insert_one(statement)
+
+def generate_xapi_model(process=True):
+    verb = "http://id.tincanapi.com/verb/replied"
+    artefact = "http://localhost:5555/moodle32/moodle/mod/forum/discuss.php?d=1#12"
+    statement_list = []
     for course in range(2):
         for group in range(4):
             for user in range(3):
@@ -34,15 +42,17 @@ def populate_xapi_model(client):
                 for i in range(10):
                     time = base_time + (i*3600*2*group_latency_factor) + course_offset + user_offest
                     course_str = str(course)
-                    user_str = str(user)
                     group_str = str(group)
+                    user_str = str(user)
                     statement = umd.generate_xapi_statement(user=user_str,
                                                             course=course_str,
                                                             group=group_str,
                                                             time=time,
-                                                            verb="testverb"+str(i % 2),
-                                                            artefact="testartefact"+str(i % 2))
-                    client.db.xapi_statements.insert_one(statement)
+                                                            verb=verb,
+                                                            artefact=artefact,
+                                                            process=process)
+                    statement_list.append(statement)
+    return statement_list
 
 
 def clear_xap_statements():
@@ -50,5 +60,5 @@ def clear_xap_statements():
         client.db.xapi_statements.delete_many({})
 
 
-clear_xap_statements()
-populate_database()
+# clear_xap_statements()
+# populate_database()

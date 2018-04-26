@@ -1,1 +1,1 @@
-from .log_receiver_endpoints import log_receiver_endpoints
+from .log_receiver_endpoints import log_receiver_blueprint
