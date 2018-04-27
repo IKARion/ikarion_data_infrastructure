@@ -17,9 +17,9 @@ def convert_timestamp(statement):
         return timestamp
     year, month, rest = timestamp.split("-")
     day, rest = rest.split("T")
-    rest = rest.replace("+", ":")
-    hours, minutes, rest = rest.split(":")
-    seconds, _ = rest.split(".")
+    hours = rest[0:2]
+    minutes = rest[3:5]
+    seconds = rest[6:8]
 
     date_time = datetime.datetime(int(year),
                                   int(month),
