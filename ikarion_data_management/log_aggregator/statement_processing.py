@@ -1,6 +1,7 @@
 import datetime
 from collections import abc
 import pytz
+import dateutil.parser as dp
 import ikarion_data_management.data_access_layer.model_db_access_layer.user_model_dao as umd
 
 
@@ -15,20 +16,21 @@ def convert_timestamp(statement):
     timestamp = statement["timestamp"]
     if isinstance(timestamp, float):
         return timestamp
-    year, month, rest = timestamp.split("-")
-    day, rest = rest.split("T")
-    hours = rest[0:2]
-    minutes = rest[3:5]
-    seconds = rest[6:8]
-
-    date_time = datetime.datetime(int(year),
-                                  int(month),
-                                  int(day),
-                                  int(minutes),
-                                  int(hours),
-                                  int(seconds),
-                                  tzinfo=pytz.utc)
-    epoch_timestamp = date_time.timestamp()
+    # year, month, rest = timestamp.split("-")
+    # day, rest = rest.split("T")
+    # hours = rest[0:2]
+    # minutes = rest[3:5]
+    # seconds = rest[6:8]
+    #
+    # date_time = datetime.datetime(int(year),
+    #                               int(month),
+    #                               int(day),
+    #                               int(minutes),
+    #                               int(hours),
+    #                               int(seconds),
+    #                               tzinfo=pytz.utc)
+    # epoch_timestamp = date_time.timestamp()
+    epoch_timestamp = dp.parse(timestamp)
     statement["timestamp"] = epoch_timestamp
     return epoch_timestamp
 
