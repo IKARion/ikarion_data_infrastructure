@@ -160,8 +160,15 @@ class UserModelEndpointsTestCase(unittest.TestCase):
 
     def test_get_users(self):
         print("users")
-        response = self.app.get(UM_PRE+"users/")
+        response = self.app.get(UM_PRE+"/users")
         print(response.data)
+
+    def test_get_users_for_course(self):
+        print("users for course")
+        response = self.app.get(UM_PRE+"/0")
+        r_json = json.loads(response.data)
+        print(response.data)
+        print(r_json)
 
     def test_get_user_times(self):
         print("times:")
@@ -188,6 +195,9 @@ class UserModelEndpointsTestCase(unittest.TestCase):
         response = self.app.get(UM_PRE+"/group_activities/0/0")
         r_json = json.loads(response.data)
         print(r_json)
+
+
+
 
 
     def tearDown(self):

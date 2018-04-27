@@ -67,20 +67,18 @@ def get_group_activities(course, group):
     :return:
     :rtype:
     """
-    try:
-        start_time = 0
-        constraints = []
-        if request.is_json:
-            r_json = request.get_json()
-            if "start_time" in r_json:
-                start_time = float(r_json["start_time"])
-            if "artefact_id" in r_json:
-                artefact_id = r_json["artefact_id"]
-                artefact_constraint = umd.artefact_query(artefact_id)
-                constraints.append(artefact_constraint)
-        group_activities = umd.get_group_activities(course, group, start_time, *constraints)
-    except Exception as e:
-        print(e)
+    start_time = 0
+    constraints = []
+    if request.is_json:
+        r_json = request.get_json()
+        if "start_time" in r_json:
+            start_time = float(r_json["start_time"])
+        if "artefact_id" in r_json:
+            artefact_id = r_json["artefact_id"]
+            artefact_constraint = umd.artefact_query(artefact_id)
+            constraints.append(artefact_constraint)
+    group_activities = umd.get_group_activities(course, group, start_time, *constraints)
+
     return jsonify(group_activities=group_activities)
 
 

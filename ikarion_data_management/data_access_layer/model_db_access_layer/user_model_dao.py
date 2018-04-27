@@ -1,8 +1,8 @@
 from .. import modelDBConnection as con
 from pymongo import MongoClient
-mongo_uri = "mongodb://ikarion:ikariondb@cluster0-shard-00-00-n3pml.mongodb.net:27017,cluster0-shard-00-01-n3pml.mongodb.net:27017,cluster0-shard-00-02-n3pml.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
+mongo_uri = "mongodb://ikarion:ikariondb@cluster0-shard-00-00-n3pml.mongodb.net:27017,cluster0-shard-00-01-n3pml.mongodb.net:27017,cluster0-shard-00-02-n3pml.mongodb.net:27017/db?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
 
-con = MongoClient(mongo_uri)
+# con = MongoClient(mongo_uri)
 
 import datetime
 
@@ -22,7 +22,7 @@ DISTINCT_RES_USED = 'distinct_resource_accesses'
 # TODO Write Tests because this won't work from the start :)
 
 course_schema = "context.extensions.courseid"
-group_schema = "group"
+group_schema = "context.extensions.groupid"
 artefact_schema = "object.id"
 artefact_type_schema = "object.definition.type"
 user_schema = "actor.name"
@@ -189,6 +189,7 @@ def get_group_activities(course, group, start_time, *constraints):
     :return:
     :rtype:
     """
+    print(con.db.name)
     users = get_all_users_for_group(course, group, *constraints)
     projection = {
         "artefact_id": "$" + artefact_schema,
@@ -196,7 +197,6 @@ def get_group_activities(course, group, start_time, *constraints):
         "timestamp": True,
     }
     group_activities = []
-    all_statements = list(con.db.xapi_statements.find({}))
     for user in users:
 
         query = merge_query(user_query(user), group_query(group))
@@ -207,6 +207,7 @@ def get_group_activities(course, group, start_time, *constraints):
         user_statements = list(con.db.xapi_statements.aggregate(aggregation))
 
         for statement in user_statements:
+
             activity = {
                 "group_id": group,
                 "user_id": user,
