@@ -30,7 +30,7 @@ def convert_timestamp(statement):
     #                               int(seconds),
     #                               tzinfo=pytz.utc)
     # epoch_timestamp = date_time.timestamp()
-    epoch_timestamp = dp.parse(timestamp)
+    epoch_timestamp = dp.parse(timestamp).timestamp()
     statement["timestamp"] = epoch_timestamp
     return epoch_timestamp
 
