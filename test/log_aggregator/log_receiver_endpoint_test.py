@@ -24,23 +24,22 @@ class LogReceiverTestCase(unittest.TestCase):
 
     def test_process_log(self):
         lre.con = self.con
-        # statement_list = pdtd.generate_xapi_model(process=False)
-        statement = umd.generate_xapi_statement(user="test",
-                                                course="test",
-                                                time="2018-04-26T12:12:13.000Z",
-                                                verb="test",
-                                                artefact="test",
-                                                group="3",
-                                                process=False)
-        # for statement in statement_list:
-        #     self.app.get(LOG_PRE+"/log_forwarding",
-        #                  data=json.dumps(statement),
-        #                  content_type='application/json')
-        self.app.get(LOG_PRE+"/log_forwarding",
-                     data=json.dumps(statement),
-                     content_type='application/json')
+        statement_list = pdtd.generate_xapi_model(process=False)
+        # statement = umd.generate_xapi_statement(user="test",
+        #                                         course="test",
+        #                                         time="2018-04-26T12:12:13.000Z",
+        #                                         verb="test",
+        #                                         artefact="test",
+        #                                         group="3",
+        #                                         process=False)
+        for statement in statement_list:
+            self.app.get(LOG_PRE+"/log_forwarding",
+                         data=json.dumps(statement),
+                         content_type='application/json')
+        # self.app.get(LOG_PRE+"/log_forwarding",
+        #              data=json.dumps(statement),
+        #              content_type='application/json')
 
-        self.assertEqual(lre.con, self.con)
         db_statement_list = list(lre.con.db.xapi_statements.find({}))
         print(len(db_statement_list))
         print(db_statement_list[0])
