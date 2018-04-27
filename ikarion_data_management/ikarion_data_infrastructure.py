@@ -50,5 +50,6 @@ def hello_world():
 if __name__ == '__main__':
     app.run(host="0.0.0.0")
 
+
 # URL for latency calculation test:
 # http://127.0.0.1:5000/groups/models/008/007/005
