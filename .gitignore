@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+/dist
+/build
+/ikarion_data_infrastructure.egg-info
