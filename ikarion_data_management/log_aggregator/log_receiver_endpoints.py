@@ -17,13 +17,23 @@ def about():
 # The LRS fowards resource access logs to this endpoint.
 # Log forwarding has to be specified in learning locker first.
 # (See https://ht2ltd.zendesk.com/hc/en-us/articles/115002026451--NEW-LL-Statement-Forwarding)
-@log_receiver_blueprint.route('/log_forwarding')
+@log_receiver_blueprint.route('/log_forwarding', methods=["GET", "POST"])
 def processLog():
-    print("processing log")
-    statement = request.get_json(force=True)
+    if request.method == "GET":
+        print("processing log")
+        statement = request.get_json(force=True)
+
+
+    if request.method =="POST":
+        print("processing log Post")
+        print(request)
+        print(request.content_type)
+        statement = request.get_json(force=True)
+
     relevant = sp.statement_relevant(statement)
     if relevant:
         print("relevant")
+        print(statement)
         sp.process_statement(statement)
         con.db.xapi_statements.insert_one(statement)
     return Response(status=200)
