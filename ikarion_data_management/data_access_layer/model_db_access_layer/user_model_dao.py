@@ -85,12 +85,17 @@ def get_all_user_statements(user, *constraints):
     result = con.db.xapi_statements.find(query)
     return list(result)
 
+def get_all_course_statements(course, *constraints):
+    query = merge_query(course_query(course), *constraints)
+    result = con.db.xapi_statements.find(query)
+    return list(result)
 
 def get_all_user_times(user, course, *constraints):
     query = merge_query(user_query(user), course_query(course), *constraints)
     result = con.db.xapi_statements.find(query, {time_stamp_schema: 1})
     result = list(set([item[time_stamp_schema] for item in result]))
-    result.sort()
+    # sorted(map(float, result))
+    #sorted(map(float, result))
     return result
 
 
