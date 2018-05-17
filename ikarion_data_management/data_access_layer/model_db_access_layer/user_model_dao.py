@@ -94,6 +94,32 @@ def get_all_user_times(user, course, *constraints):
     return result
 
 
+
+# def get_all_courses():
+#     query = {
+#         # course_schema: {"$exists": True}
+#     }
+#
+#     projection = {
+#         "course_id": "$"+course_schema,
+#         # "course_name": "$"+course_name_schema,
+#     }
+#     aggregation = [
+#         {"$match": query},
+#         {"$project": projection},
+#     ]
+#     course_list = []
+#     for statement in con.db.xapi_statements.aggregate(aggregation):
+#         print(statement)
+#         course = {
+#             "course_id": statement["course_id"],
+#             # course_name returns an array because the schema applies to the whole project
+#             # and the specific course
+#             "course_name": statement["course_name"][1]
+#
+#         }
+#         course_list.append(course)
+
 def get_all_courses():
     return list(con.db.xapi_statements.distinct(course_schema))
 

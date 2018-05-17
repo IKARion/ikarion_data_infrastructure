@@ -119,7 +119,7 @@ def generate_xapi_statement(*, user, course, time, verb, artefact, group=None, p
                         "definition": {
                             "extensions": {
                                 "http://lrs.learninglocker.net/define/extensions/moodle_course": {
-                                    "cacherev": "1518181284",
+                                    "cacherev": "1524752009",
                                     "showreports": "0",
                                     "groupmode": "0",
                                     "idnumber": "",
@@ -139,7 +139,7 @@ def generate_xapi_statement(*, user, course, time, verb, artefact, group=None, p
                                     "startdate": "0",
                                     "visible": "1",
                                     "visibleold": "1",
-                                    "timemodified": "1500014049",
+                                    "timemodified": "1524571833",
                                     "format": "site",
                                     "calendartype": "",
                                     "showgrades": "1",
@@ -155,14 +155,64 @@ def generate_xapi_statement(*, user, course, time, verb, artefact, group=None, p
                                 }
                             },
                             "description": {
-                                "en": "IKARion Projekt"
+                                "de": "IKARion Projekt"
                             },
                             "name": {
-                                "en": "IKARion Projekt"
+                                "de": "IKARion Projekt"
                             },
                             "type": "http://id.tincanapi.com/activitytype/site"
                         },
                         "id": "https://moodle.ikarion-projekt.de",
+                        "objectType": "Activity"
+                    },
+                    {
+                        "definition": {
+                            "extensions": {
+                                "http://lrs.learninglocker.net/define/extensions/moodle_course": {
+                                    "cacherev": "1525245406",
+                                    "showreports": "1",
+                                    "groupmode": "0",
+                                    "idnumber": "",
+                                    "completionnotify": "0",
+                                    "summary": "<p>Dieser kurze Online Kurs gibt den Teilnehmern einen Überblick über die Entwicklung von Webapplikationen mittels diverser moderner Javascript Frameworks. Neben der Vermittlung von Grundlagen und Praxiswissen, erarbeiten die Teilnehmer in Kleingruppen selbständig kleinere Beispielapplikationen.</p><p>Bei Fragen bitte per Email wenden an:</p><ul><li>Tobias Hecking (hecking@collide.info)</li><li>Dorian Doberstein (doberstein@collide.info)</li><li>Lydia Harbarth (harbarth@collide.info)</li></ul><p>(Betreff: \"Frage zum Mikrokurs\")<br></p>",
+                                    "shortname": "modweb",
+                                    "maxbytes": "0",
+                                    "theme": "",
+                                    "enddate": "0",
+                                    "groupmodeforce": "0",
+                                    "newsitems": "5",
+                                    "legacyfiles": "0",
+                                    "lang": "de",
+                                    "requested": "0",
+                                    "url": "https://moodle.ikarion-projekt.de/course/view.php?id=7",
+                                    "sortorder": "10001",
+                                    "startdate": "1525042800",
+                                    "visible": "1",
+                                    "visibleold": "1",
+                                    "timemodified": "1525101857",
+                                    "format": "topics",
+                                    "calendartype": "",
+                                    "showgrades": "1",
+                                    "marker": "0",
+                                    "fullname": "Moderne Webtechnologien (Microcourse)",
+                                    "type": "course",
+                                    "id": "7",
+                                    "timecreated": "1515428730",
+                                    "summaryformat": "1",
+                                    "category": "1",
+                                    "enablecompletion": "1",
+                                    "defaultgroupingid": "0"
+                                }
+                            },
+                            "description": {
+                                "de": "Dieser kurze Online Kurs gibt den Teilnehmern einen Überblick über die Entwicklung von Webapplikationen mittels diverser moderner Javascript Frameworks. Neben der Vermittlung von Grundlagen und Praxiswissen, erarbeiten die Teilnehmer in Kleingruppen selbständig kleinere Beispielapplikationen.Bei Fragen bitte per Email wenden an:Tobias Hecking (hecking@collide.info)Dorian Doberstein (doberstein@collide.info)Lydia Harbarth (harbarth@collide.info)(Betreff: \"Frage zum Mikrokurs\")"
+                            },
+                            "name": {
+                                "de": "Moderne Webtechnologien (Microcourse)"
+                            },
+                            "type": "http://lrs.learninglocker.net/define/type/moodle/course"
+                        },
+                        "id": "https://moodle.ikarion-projekt.de/course/view.php?id=7",
                         "objectType": "Activity"
                     }
                 ],

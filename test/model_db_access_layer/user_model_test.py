@@ -154,7 +154,7 @@ class UserModelEndpointsTestCase(unittest.TestCase):
         print("courses")
         response = self.app.get(UM_PRE+"/courses")
         print(response.data)
-        courses = json.loads(response.data)["courses"]
+        courses = json.loads(response.data)["data"]
         print(courses)
         self.assertEqual(set(courses), {"0", "1"})
 
@@ -179,7 +179,7 @@ class UserModelEndpointsTestCase(unittest.TestCase):
         response = self.app.get(UM_PRE+"/groups_for_course/0")
         print(response.data)
         r_json = json.loads(response.data)
-        self.assertEqual(len(r_json["groups"]), 4)
+        self.assertEqual(len(r_json["data"]), 4)
 
     def test_avg_latency_user(self):
         print("avg_latency")
