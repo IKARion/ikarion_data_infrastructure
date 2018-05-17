@@ -103,8 +103,22 @@ def restructure_extensions(statement):
         extensions_map["extensions"] = mongo_compliant_extensions
 
 
+def process_groups(statement):
+    extensions = statement["context"]["extensions"]
+
+    group_ext_id = "http://collide.info/extensions/group"
+
+    extensions = [item for item in extensions if item["id"] == group_ext_id]
+    groups = []
+    for extension in extensions:
+        for k, v in extension.items():
+            if k != "id":
+                groups.append(v)
+    statement["context"]["groups"] = groups
+
 def process_statement(statement):
     restructure_extensions(statement)
     replace_dots(statement)
     convert_timestamp(statement)
+    process_groups(statement)
 

@@ -98,6 +98,10 @@ class UserModelDAOTestCase(unittest.TestCase):
         print(times)
         self.assertEqual(len(times), 36)
 
+    def test_get_users_for_group(self):
+        users = um.get_all_users_for_group("0", "0")
+        print(users)
+
     def test_get_groups_for_course(self):
         groups = um.get_all_groups_for_course("0")
         print(groups)
@@ -117,10 +121,12 @@ class UserModelDAOTestCase(unittest.TestCase):
         print(avg_lat_group_1)
 
     def test_get_group_activities(self):
-        groups = um.get_all_groups_for_course("0")
-        for group in groups:
-            group_activities = um.get_group_activities("0", group, 0)
-            print(group_activities)
+        group_activities = um.get_group_activities("0", "0", 0)
+        print(group_activities)
+
+    def test_get_all_courses(self):
+        courses = um.get_all_courses()
+        print(courses)
 
 
     def test_get_xapi_statements(self):
@@ -151,6 +157,7 @@ class UserModelEndpointsTestCase(unittest.TestCase):
         print(user_model)
 
     def test_get_all_courses(self):
+        # Does not work with mongomock
         print("courses")
         response = self.app.get(UM_PRE+"/courses")
         print(response.data)

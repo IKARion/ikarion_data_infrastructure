@@ -19,10 +19,8 @@ RES_USED_FIELD = 'resource_accesses'
 DISTINCT_RES_USED = 'distinct_resource_accesses'
 
 
-# TODO Write Tests because this won't work from the start :)
-
 course_schema = "context.extensions.courseid"
-group_schema = "context.extensions.groupid"
+group_schema = "context.groups.id"
 artefact_schema = "object.id"
 artefact_type_schema = "object.definition.type"
 user_schema = "actor.name"
@@ -56,6 +54,7 @@ def group_query(group):
             group_schema: group
         }
         return query
+
 
 
 def user_query(user):
@@ -105,32 +104,6 @@ def get_all_user_times(user, course, *constraints):
     return result
 
 
-
-# def get_all_courses():
-#     query = {
-#         # course_schema: {"$exists": True}
-#     }
-#
-#     projection = {
-#         "course_id": "$"+course_schema,
-#         # "course_name": "$"+course_name_schema,
-#     }
-#     aggregation = [
-#         {"$match": query},
-#         {"$project": projection},
-#     ]
-#     course_list = []
-#     for statement in con.db.xapi_statements.aggregate(aggregation):
-#         print(statement)
-#         course = {
-#             "course_id": statement["course_id"],
-#             # course_name returns an array because the schema applies to the whole project
-#             # and the specific course
-#             "course_name": statement["course_name"][1]
-#
-#         }
-#         course_list.append(course)
-
 def get_all_courses():
     return list(con.db.xapi_statements.aggregate(course_list_query))
 
@@ -153,7 +126,7 @@ def get_all_users_for_group(course, group, *constraints):
 
 def get_all_groups_for_course(course):
     query = merge_query(course_query(course))
-    result = list(con.db.xapi_statements.distinct(group_schema, query))
+    result = list(con.db.xapi_statements.distinct(group_schema))
     return result
 
 def get_all_courses_for_user(user):
