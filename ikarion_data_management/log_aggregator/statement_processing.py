@@ -1,7 +1,7 @@
 import datetime
 from collections import abc
 import pytz
-import dateutil.parser as dp
+import bdateutil.parser as dp
 import ikarion_data_management.data_access_layer.model_db_access_layer.user_model_dao as umd
 
 

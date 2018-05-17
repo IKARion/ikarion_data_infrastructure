@@ -31,6 +31,12 @@ action_schema = "verb.id"
 verb_schema = "verb.id"
 # Retrieve
 
+# Standart queries
+course_list_query = [
+                        {"$match" : {"object.definition.type":"http://lrs.learninglocker.net/define/type/moodle/course"}},
+                        {"$group" : {"_id" : {"courseid" : "$context.extensions.courseid", "name" : "$object.definition.name"}}},
+                        {"$project" : {"_id" : 0, "courseid" : {"$arrayElemAt" : ["$_id.courseid", 0]}, "name" :  "$_id.name"}}
+                   ]
 
 def course_query(course):
     if course is None:
@@ -85,12 +91,17 @@ def get_all_user_statements(user, *constraints):
     result = con.db.xapi_statements.find(query)
     return list(result)
 
+def get_all_course_statements(course, *constraints):
+    query = merge_query(course_query(course), *constraints)
+    result = con.db.xapi_statements.find(query)
+    return list(result)
 
 def get_all_user_times(user, course, *constraints):
     query = merge_query(user_query(user), course_query(course), *constraints)
     result = con.db.xapi_statements.find(query, {time_stamp_schema: 1})
     result = list(set([item[time_stamp_schema] for item in result]))
-    result.sort()
+    # sorted(map(float, result))
+    #sorted(map(float, result))
     return result
 
 
@@ -121,10 +132,11 @@ def get_all_user_times(user, course, *constraints):
 #         course_list.append(course)
 
 def get_all_courses():
-    return list(con.db.xapi_statements.distinct(course_schema))
+    return list(con.db.xapi_statements.aggregate(course_list_query))
 
 
 def get_all_users():
+
     return list(con.db.xapi_statements.distinct(user_schema))
 
 
