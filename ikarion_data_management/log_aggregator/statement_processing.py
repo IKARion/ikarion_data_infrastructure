@@ -98,6 +98,8 @@ def restructure_extensions(statement):
         extensions = extensions_map["extensions"]
         mongo_compliant_extensions = []
         for k, v in extensions.items():
+            if isinstance(v, list):
+                v = {}
             v["id"] = k
             mongo_compliant_extensions.append(v)
         extensions_map["extensions"] = mongo_compliant_extensions

@@ -200,12 +200,15 @@ def get_group_activities(course, group, start_time, *constraints):
     :return:
     :rtype:
     """
+    # TODO Project content especially forum post text
     print(con.db.name)
     users = get_all_users_for_group(course, group, *constraints)
     projection = {
-        "artefact_id": "$" + artefact_schema,
+        "object_id": "$" + artefact_schema,
         "verb_id": "$" + verb_schema,
         "timestamp": True,
+        "object_type": "$" +artefact_type_schema,
+        "object_name": "$" + "object.definition.name"
     }
     group_activities = []
     for user in users:
@@ -223,8 +226,10 @@ def get_group_activities(course, group, start_time, *constraints):
                 "group_id": group,
                 "user_id": user,
                 "verb_id": statement["verb_id"],
-                "object_id": statement["artefact_id"],
+                "object_id": statement["object_id"],
                 "timestamp": statement["timestamp"],
+                "object_type": statement["object_type"],
+                "object_name": list(statement["object_name"].values())[0]
             }
             group_activities.append(activity)
     group_activities = [item for item in group_activities if item["timestamp"] > start_time]

@@ -32,7 +32,8 @@ app.register_blueprint(xapi_access_endpoints, url_prefix='/xapi')
 #app.config['MONGO_DBNAME'] = "test"
 #app.config['MONGO_USERNAME'] = "ikarion"
 #app.config['MONGO_PASSWORD'] = "ikariondb"
-app.config['MONGO_URI'] = "mongodb://ikarion:ikariondb@cluster0-shard-00-00-n3pml.mongodb.net:27017,cluster0-shard-00-01-n3pml.mongodb.net:27017,cluster0-shard-00-02-n3pml.mongodb.net:27017/db?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
+MONGO_URI = "mongodb://ikarion:ikariondb@cluster0-shard-00-00-n3pml.mongodb.net:27017,cluster0-shard-00-01-n3pml.mongodb.net:27017,cluster0-shard-00-02-n3pml.mongodb.net:27017/db2?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
+app.config['MONGO_URI'] = MONGO_URI
 # app.config['MONGO2_DBNAME'] = "db"
 from ikarion_data_management.data_access_layer import modelDBConnection
 modelDBConnection.init_app(app)
