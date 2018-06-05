@@ -1,6 +1,9 @@
 from flask import Flask
 import flask_pymongo as fp
 # Blueprints for the different APIs
+
+app = Flask("db")
+
 from ikarion_data_management.data_model_api import user_model_blueprint
 from ikarion_data_management.data_model_api import group_model_blueprint
 from ikarion_data_management.data_model_api import advanced_model_blueprint
@@ -10,7 +13,7 @@ import ikarion_data_management.data_access_layer.model_db_access_layer.user_mode
 
 #CONFIG = 'conf.ini'
 
-app = Flask("db")
+
 
 # Register API endpoints
 # Data Model API

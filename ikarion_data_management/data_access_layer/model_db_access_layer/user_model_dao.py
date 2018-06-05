@@ -300,7 +300,11 @@ def get_user_model_for_course(user, course, *constraints):
 
 
 def get_user_last_updated_at(user, course, *constraints):
-    return get_all_user_times(user, course, *constraints)[-1]
+    user_times = get_all_user_times(user, course, *constraints)
+    if len(user_times) > 0:
+        return user_times[-1]
+    else:
+        return 
 
 
 def merge_query(*args):

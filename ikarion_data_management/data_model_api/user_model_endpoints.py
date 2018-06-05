@@ -1,8 +1,9 @@
 from flask import Blueprint, jsonify, request
 from ..data_access_layer.model_db_access_layer import user_model_dao as umd
 
-user_model_blueprint = Blueprint('user_model_blueprint', __name__)
+from concurrent.futures import ThreadPoolExecutor
 
+user_model_blueprint = Blueprint('user_model_blueprint', __name__)
 
 @user_model_blueprint.route('/about')
 def about():
@@ -17,8 +18,14 @@ def get_user_model(course, user):
 
 @user_model_blueprint.route("/models/<course>")
 def get_all_user_models(course):
+    from ikarion_data_management.ikarion_data_infrastructure import app
     users = umd.get_all_users_for_course(course)
-    user_models = [umd.get_user_model_for_course(user, course) for user in users]
+
+    def get_user_model(user):
+        with app.app_context():
+            return umd.get_user_model_for_course(user, course)
+    with ThreadPoolExecutor(max_workers=100) as thread_pool:
+        user_models = list(thread_pool.map(get_user_model, users))
     return jsonify(data=user_models)
 
 

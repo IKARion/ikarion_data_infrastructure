@@ -156,6 +156,12 @@ class UserModelEndpointsTestCase(unittest.TestCase):
         user_model = json.loads(response.data)
         print(user_model)
 
+    def test_get_user_models_for_course(self):
+        print("usermodels")
+        response = self.app.get(UM_PRE+"/models/0")
+        user_models = json.loads(response.data)
+        print(user_models)
+
     def test_get_all_courses(self):
         # Does not work with mongomock
         print("courses")
