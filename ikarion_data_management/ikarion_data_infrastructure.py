@@ -9,6 +9,7 @@ from ikarion_data_management.data_model_api import group_model_blueprint
 from ikarion_data_management.data_model_api import advanced_model_blueprint
 from ikarion_data_management.log_aggregator import log_receiver_blueprint
 from ikarion_data_management.data_access_layer.xapi_access_layer import xapi_access_endpoints
+from flask import request
 import ikarion_data_management.data_access_layer.model_db_access_layer.user_model_dao as umd
 
 #CONFIG = 'conf.ini'
@@ -52,8 +53,17 @@ def hello_world():
 
 
 if __name__ == '__main__':
+    print("***4")
     app.run(host="0.0.0.0")
+    print(request.u)
 
 
 # URL for latency calculation test:
-# http://127.0.0.1:5000/groups/models/008/007/005
+# OLD: http://127.0.0.1:5000/groups/models/008/007/005
+
+# http://0.0.0.0:5000/user_model/groups_for_course/7
+#http://0.0.0.0:5000/user_model/
+# http://descartes.inf.uni-due.de:5000/user_model/
+
+# http://0.0.0.0:5000/user_model/courses
+# http://descartes.inf.uni-due.de:5000/user_model/courses
