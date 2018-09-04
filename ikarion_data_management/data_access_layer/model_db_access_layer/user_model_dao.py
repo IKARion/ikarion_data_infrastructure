@@ -23,10 +23,12 @@ DISTINCT_RES_USED = 'distinct_resource_accesses'
 group_schema = "context.groups.id"
 artefact_schema = "object.id"
 artefact_type_schema = "object.definition.type"
+#artefact_
 user_schema = "actor.name"
 time_stamp_schema = "timestamp"
 action_schema = "verb.id"
 verb_schema = "verb.id"
+repository_schema = "context.extensions.repository"
 # Retrieve
 
 # Standart queries
@@ -89,6 +91,12 @@ def user_query(user):
     }
     return query
 
+def repo_query(repo):
+    query = {
+        repository_schema: repo
+    }
+    return query
+
 
 def verb_query(verb):
     query = {
@@ -122,9 +130,13 @@ def get_all_course_statements(course, *constraints):
     return list(result)
 
 def get_all_user_times(user, course, *constraints):
+    #print("q1")
     query = merge_query(user_query(user), course_query(course), *constraints)
+    print("q")
+    print(query)
     result = con.db.xapi_statements.find(query, {time_stamp_schema: 1})
     result = list(set([item[time_stamp_schema] for item in result]))
+
     # sorted(map(float, result))
     #sorted(map(float, result))
     return result
@@ -138,9 +150,14 @@ def get_all_users():
 
     return list(con.db.xapi_statements.distinct(user_schema))
 
+def get_all_group_repos():
+    return list(con.db.xapi_statements.distinct(repository_schema))
 
 def get_all_users_for_course(course, *constraints):
     query = merge_query(course_query(course), *constraints)
+    print("q2")
+    print(query)
+    print(course)
     result = list(con.db.xapi_statements.distinct(user_schema, query))
     return result
 
@@ -148,6 +165,11 @@ def get_all_users_for_course(course, *constraints):
 def get_all_users_for_group(course, group, *constraints):
     query = merge_query(course_query(course), group_query(group), *constraints)
     result = list(con.db.xapi_statements.distinct(user_schema, query))
+    return result
+
+def get_all_users_for_git_repo(repo, *constraints):
+    #query = merge_query(course_query(course), group_query(group), *constraints)
+    result = list(con.db.xapi_statements.distinct(user_schema, repo_query(repo)))
     return result
 
 def get_all_groups_for_course(course):
@@ -162,6 +184,7 @@ def get_all_courses_for_user(user):
 
 
 def get_user_active_days(user, course, *constraints):
+    #print("**")
     epoch_times = get_all_user_times(user, course, *constraints)
     datetimes = [datetime.datetime.utcfromtimestamp(item) for item in epoch_times]
     dates = [item.date() for item in datetimes]
@@ -263,6 +286,54 @@ def get_group_activities(course, group, start_time, *constraints):
     group_activities.sort(key=lambda x: x["timestamp"], reverse=True)
     return group_activities
 
+def get_repo_activities(repo, start_time, *constraints):
+    """
+    Returns json array of objects with fields [group_id, user_id, verb_id, object_id, timestamp]
+    :param group:
+    :type group:
+    :return:
+    :rtype:
+    """
+    # TODO Project content especially forum post text
+    print(con.db.name)
+    #users = get_all_users_for_group(course, group, *constraints)
+    users = get_all_users_for_git_repo(repo, *constraints)
+
+    projection = {
+        "object_id": "$" + artefact_schema,
+        "verb_id": "$" + verb_schema,
+        "timestamp": True,
+        "added_lines": "$" + "object.definition.extensions.added_lines",
+        "deleted_lines": "$" + "object.definition.extensions.deleted_lines",
+        "fileURL": "$" + "object.definition.extensions.fileURL"
+    }
+    group_activities = []
+    for user in users:
+
+        query = merge_query(user_query(user), repo_query(repo))
+        aggregation = [
+            {"$match": query},
+            {"$project": projection},
+        ]
+        user_statements = list(con.db.xapi_statements.aggregate(aggregation))
+
+        for statement in user_statements:
+
+            activity = {
+                "group_id": repo,
+                "user_id": user,
+                "verb_id": statement["verb_id"],
+                "object_id": statement["object_id"],
+                "timestamp": statement["timestamp"],
+                "added_lines": statement["added_lines"][0],
+                "deleted_lines": statement["deleted_lines"][0],
+                "fileURL": statement["fileURL"][0]
+            }
+            group_activities.append(activity)
+    group_activities = [item for item in group_activities if item["timestamp"] > start_time]
+    group_activities.sort(key=lambda x: x["timestamp"], reverse=True)
+    return group_activities
+
 
 
 
@@ -340,7 +411,7 @@ def merge_query(*args):
     }
     for arg in args:
         merged_query.update(arg)
-
+    print(merged_query)
     return merged_query
 
 # Exception classes
