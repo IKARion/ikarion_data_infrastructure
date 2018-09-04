@@ -19,7 +19,7 @@ RES_USED_FIELD = 'resource_accesses'
 DISTINCT_RES_USED = 'distinct_resource_accesses'
 
 
-course_schema = "context.extensions.courseid"
+#course_schema = "context.extensions.courseid"
 group_schema = "context.groups.id"
 artefact_schema = "object.id"
 artefact_type_schema = "object.definition.type"
@@ -156,6 +156,7 @@ def get_all_groups_for_course(course):
     return result
 
 def get_all_courses_for_user(user):
+    # TODO: Update course schema
     result = list(con.db.xapi_statements.distinct(course_schema, user_query(user)))
     return result
 

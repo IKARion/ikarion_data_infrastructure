@@ -14,7 +14,6 @@ headers = {
     "X-Experience-API-Version": XPERIENCE_API_VERSION,
 }
 
-
 def batch_processing(dbname):
     client = pymongo.MongoClient(idi.MONGO_URI)
     more = True
