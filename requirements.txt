@@ -5,3 +5,5 @@ mongomock==3.9.0
 pymongo==3.6.0
 pytz
 bdateutil
+APScheduler
+flask_apscheduler
