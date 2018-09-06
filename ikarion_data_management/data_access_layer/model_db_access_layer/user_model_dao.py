@@ -29,6 +29,7 @@ time_stamp_schema = "timestamp"
 action_schema = "verb.id"
 verb_schema = "verb.id"
 repository_schema = "context.extensions.repository"
+object_content_schema = "object.definition.extensions.message"
 # Retrieve
 
 # Standart queries
@@ -174,7 +175,7 @@ def get_all_users_for_git_repo(repo, *constraints):
 
 def get_all_groups_for_course(course):
     query = merge_query(course_query(course))
-    result = list(con.db.xapi_statements.distinct(group_schema))
+    result = list(con.db.xapi_statements.distinct(group_schema, query))
     return result
 
 def get_all_courses_for_user(user):
@@ -258,7 +259,8 @@ def get_group_activities(course, group, start_time, *constraints):
         "verb_id": "$" + verb_schema,
         "timestamp": True,
         "object_type": "$" +artefact_type_schema,
-        "object_name": "$" + "object.definition.name"
+        "object_name": "$" + "object.definition.name",
+        "object_content": "$" + "object.definition.extensions.message"
     }
     group_activities = []
     for user in users:
@@ -279,7 +281,8 @@ def get_group_activities(course, group, start_time, *constraints):
                 "object_id": statement["object_id"],
                 "timestamp": statement["timestamp"],
                 "object_type": statement["object_type"],
-                "object_name": list(statement["object_name"].values())[0]
+                "object_name": list(statement["object_name"].values())[0],
+                "object_content": statement["object_content"]
             }
             group_activities.append(activity)
     group_activities = [item for item in group_activities if item["timestamp"] > start_time]
