@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify
 from ..data_access_layer.model_db_access_layer import group_model_dao
-from ..data_access_layer.model_db_access_layer import user_model_dao as umd
-from ikarion_data_management.data_model_api.user_model_endpoints import fix_url_chars
+from .util import fix_url_chars
 
 group_model_blueprint = Blueprint('group_model_blueprint', __name__)
 
@@ -22,9 +21,9 @@ def getAllGroups():
     return jsonify(model=group_model_dao.getGroups())
 
 
-@group_model_blueprint.route("/group_tasks/<course>")
+@group_model_blueprint.route("/group_tasks/<string:course>")
 def get_group_tasks(course):
-    return jsonify(model=umd.get_group_tasks(course))
+    return jsonify(model=group_model_dao.get_group_tasks(fix_url_chars(course)))
 
 
 def getGroupsInContext(context):

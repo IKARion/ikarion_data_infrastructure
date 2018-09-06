@@ -1,8 +1,5 @@
 from .. import modelDBConnection as con
 from pymongo import MongoClient
-mongo_uri = "mongodb://ikarion:ikariondb@cluster0-shard-00-00-n3pml.mongodb.net:27017,cluster0-shard-00-01-n3pml.mongodb.net:27017,cluster0-shard-00-02-n3pml.mongodb.net:27017/db?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
-
-# con = MongoClient(mongo_uri)
 
 import datetime
 
@@ -410,13 +407,6 @@ def get_user_model_for_course(user, course, *constraints):
         "artifacts": artefacts,
     }
     return user_model
-
-def get_group_tasks(course):
-
-    query = {"courseid": course}
-    group_tasks = list(con.db.grouptasks.find(query, {"_id": 0}))
-    return group_tasks
-
 
 def update_group(group):
     con.db.groups.update({"id": group["id"]}, group, upsert=True)

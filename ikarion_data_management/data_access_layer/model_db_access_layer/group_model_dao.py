@@ -28,3 +28,8 @@ def getLatencies(course, group, context):
     average_latency = round(overall_latency / (elem_count-1))
 
     return average_latency, all_latencies
+
+def get_group_tasks(course):
+    query = {"courseid": course}
+    group_tasks = list(con.db.grouptasks.find(query, {"_id": 0}))
+    return group_tasks
