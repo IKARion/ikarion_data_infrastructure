@@ -15,15 +15,15 @@ def addScheduledRscript(uri, interval, description):
     ))
     #TODO: Handle exception
 
-@data_management_blueprint.route('/add_python_script/<string:uri>')
-def addScheduledPythonscript(scriptUri, description):
+@data_management_blueprint.route('/add_python_script/<string:description>/<int:interval>/<path:uri>')
+def addScheduledPythonscript(uri, interval, description):
     return jsonify(
         management_dao.addScheduledScript(uri, interval, description, management_dao.scriptTypes['PYTHON'])
     )
     # TODO: Handle exception
 
-@data_management_blueprint.route('/add_awb_wf/<string:uri>')
-def addScheduledAWBworkflow(scriptUri, description):
+@data_management_blueprint.route('/add_awb_wf/<string:description>/<int:interval>/<path:uri>')
+def addScheduledAWBworkflow(uri, interval, description):
     return jsonify(
         management_dao.addScheduledScript(uri, interval, description, management_dao.scriptTypes['AWB'])
     )
