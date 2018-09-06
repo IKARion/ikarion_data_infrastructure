@@ -180,7 +180,7 @@ def get_all_groups_for_course(course):
 
 def get_all_courses_for_user(user):
     # TODO: Update course schema
-    result = list(con.db.xapi_statements.distinct(course_schema, user_query(user)))
+    result = list(con.db.xapi_statements.distinct("FIX ME", user_query(user)))
     return result
 
 
@@ -398,6 +398,20 @@ def get_user_model_for_course(user, course, *constraints):
         "artifacts": artefacts,
     }
     return user_model
+
+def get_group_tasks(course):
+
+    query = {"courseid": course}
+    group_tasks = list(con.db.grouptasks.find(query, {"_id": 0}))
+    return group_tasks
+
+
+def update_group(group):
+    con.db.groups.update({"id": group["id"]}, group, upsert=True)
+
+
+def update_group_task(task):
+    con.db.grouptasks.update({"task_id": task["task_id"]}, task, upsert=True)
 
 
 def get_user_last_updated_at(user, course, *constraints):

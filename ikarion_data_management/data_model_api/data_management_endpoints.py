@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from ..data_access_layer.management_access_layer import management_dao
+from ikarion_data_management.data_access_layer.management_access_layer import management_dao
 
 data_management_blueprint = Blueprint('data_management_blueprint', __name__)
 

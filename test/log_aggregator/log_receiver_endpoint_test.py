@@ -41,7 +41,16 @@ class LogReceiverTestCase(unittest.TestCase):
         #              content_type='application/json')
 
         db_statement_list = list(lre.con.db.xapi_statements.find({}))
+        print(db_statement_list)
         print(len(db_statement_list))
         print(db_statement_list[0])
+        groups = list(lre.con.db.groups.find({}))
+        print(groups)
+
+        tasks = list(lre.con.db.grouptasks.find({}))
+        print(tasks)
+
+
+
 
 

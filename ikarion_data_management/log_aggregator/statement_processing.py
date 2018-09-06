@@ -118,9 +118,36 @@ def process_groups(statement):
                 groups.append(v)
     statement["context"]["groups"] = groups
 
+def extract_course_id(statement):
+    groupings = statement["context"]["contextActivities"]["grouping"]
+    course_type = "http://lrs.learninglocker.net/define/type/moodle/course"
+    for grouping in groupings:
+        if grouping["definition"]["type"] == course_type:
+            return grouping["id"]
+    return "no course id"
+
+def write_new_groups_and_tasks(statement):
+    courseid = extract_course_id(statement)
+    groups = statement["context"]["groups"]
+    statement["relevant_group_task"] = {}
+    groupings = statement["context"]["contextActivities"]["grouping"]
+    for group in groups:
+        task = group["task"]
+        task["courseid"] = courseid
+        task_modules = task["task_resources"]
+        for grouping in groupings:
+            if grouping["id"] in task_modules:
+                statement["relevant_group_task"] = group
+                break
+        group["courseid"] = courseid
+        umd.update_group(group)
+        umd.update_group_task(task)
+
+
 def process_statement(statement):
     restructure_extensions(statement)
     replace_dots(statement)
     convert_timestamp(statement)
     process_groups(statement)
+    write_new_groups_and_tasks(statement)
 

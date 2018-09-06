@@ -5,6 +5,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 user_model_blueprint = Blueprint('user_model_blueprint', __name__)
 
+@user_model_blueprint.url_value_preprocessor
+def fix_url_encoding(endpoint, values):
+    for k, v in values.items():
+        values[k] = fix_url_chars(v)
+
 @user_model_blueprint.route('/about')
 def about():
     return 'User model endpoints.'
@@ -217,5 +222,10 @@ def fix_url_chars(string):
     string = string.replace("$slash$", "/")
     string = string.replace("$qmark$", "?")
     return(string)
+
+def encode_url_chars(url):
+    url = url.replace("/", "$slash$")
+    url = url.replace("?", "$qmark$")
+    return url
 
 

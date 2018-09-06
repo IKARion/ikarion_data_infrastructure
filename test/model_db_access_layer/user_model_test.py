@@ -5,6 +5,7 @@ from test.model_db_access_layer import user_model_test_data as umd
 from test.model_db_access_layer import populate_database_test_data as pdt
 
 from ikarion_data_management.data_access_layer.model_db_access_layer import user_model_dao as um
+from ikarion_data_management.data_model_api.user_model_endpoints import encode_url_chars
 import ikarion_data_management.ikarion_data_infrastructure as idi
 import json
 
@@ -65,6 +66,8 @@ ITEM_NUMBER = 5
 
 # Usermodel Url prefix
 UM_PRE = "/user_model"
+GM_PRE = "/groups"
+COURSEID = encode_url_chars("http://localhost/ikarion_moodle/course/view.php?id=3")
 
 class UserModelDAOTestCase(unittest.TestCase):
 
@@ -208,6 +211,13 @@ class UserModelEndpointsTestCase(unittest.TestCase):
         response = self.app.get(UM_PRE+"/group_activities/0/0")
         r_json = json.loads(response.data)
         print(r_json)
+
+    def test_get_group_tasks(self):
+        response = self.app.get(GM_PRE+"/group_tasks/"+COURSEID)
+        print(response)
+        r_json = json.loads(response.data)
+        print(r_json)
+
 
 
 

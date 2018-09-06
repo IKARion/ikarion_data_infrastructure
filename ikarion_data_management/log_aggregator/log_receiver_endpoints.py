@@ -6,6 +6,8 @@ from flask import Response
 from ikarion_data_management.data_access_layer import modelDBConnection as con
 from ikarion_data_management.log_aggregator import statement_processing as sp
 
+from ikarion_data_management.data_access_layer.model_db_access_layer.user_model_dao import course_query
+
 log_receiver_blueprint = Blueprint('log_receiver_blueprint', __name__)
 
 
@@ -33,10 +35,12 @@ def processLog():
     relevant = sp.statement_relevant(statement)
     if relevant:
         print("relevant")
-        print(statement)
         sp.process_statement(statement)
         con.db.xapi_statements.insert_one(statement)
     return Response(status=200)
+
+
+
 
 
 
