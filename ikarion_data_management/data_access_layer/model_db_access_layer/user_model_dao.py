@@ -131,10 +131,10 @@ def get_all_course_statements(course, *constraints):
     return list(result)
 
 def get_all_user_times(user, course, *constraints):
-    #print("q1")
+    ##print("q1")
     query = merge_query(user_query(user), course_query(course), *constraints)
-    print("q")
-    print(query)
+    #print("q")
+    #print(query)
     result = con.db.xapi_statements.find(query, {time_stamp_schema: 1})
     result = list(set([item[time_stamp_schema] for item in result]))
 
@@ -156,9 +156,9 @@ def get_all_group_repos():
 
 def get_all_users_for_course(course, *constraints):
     query = merge_query(course_query(course), *constraints)
-    print("q2")
-    print(query)
-    print(course)
+    #print("q2")
+    #print(query)
+    #print(course)
     result = list(con.db.xapi_statements.distinct(user_schema, query))
     return result
 
@@ -260,7 +260,8 @@ def get_group_activities(course, group, start_time, *constraints):
         "timestamp": True,
         "object_type": "$" +artefact_type_schema,
         "object_name": "$" + "object.definition.name",
-        "object_content": "$" + "object.definition.extensions.message"
+        "forum_content": "$" + "object.definition.extensions.message",
+        "wiki_content": "$" + "context.extensions.other"
     }
     group_activities = []
     for user in users:
@@ -282,8 +283,19 @@ def get_group_activities(course, group, start_time, *constraints):
                 "timestamp": statement["timestamp"],
                 "object_type": statement["object_type"],
                 "object_name": list(statement["object_name"].values())[0],
-                "object_content": statement["object_content"]
             }
+
+            #TODO fix: only write object content if not empty
+            if "forum_content" in statement:
+                if statement["forum_content"]:
+                    activity["forum_content"] = statement["forum_content"]
+
+            #TODO fix: only write object content if not empty
+            print(statement["verb_id"])
+            if not statement["verb_id"] == "http://id.tincanapi.com/verb/replied":
+                activity["wiki_content"] = statement["wiki_content"]
+
+
             group_activities.append(activity)
     group_activities = [item for item in group_activities if item["timestamp"] > start_time]
     group_activities.sort(key=lambda x: x["timestamp"], reverse=True)
