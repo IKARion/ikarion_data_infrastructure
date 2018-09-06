@@ -4,7 +4,7 @@ from .util import fix_url_chars
 
 data_management_blueprint = Blueprint('data_management_blueprint', __name__)
 
-@data_management_blueprint.route('/about', methods=['GET', 'POST'])
+@data_management_blueprint.route('/about')
 def about():
     return 'Data management endpoints.'
 

@@ -29,6 +29,7 @@ time_stamp_schema = "timestamp"
 action_schema = "verb.id"
 verb_schema = "verb.id"
 repository_schema = "context.extensions.repository"
+object_content_schema = "object.definition.extensions.message"
 # Retrieve
 
 # Standart queries
@@ -130,10 +131,10 @@ def get_all_course_statements(course, *constraints):
     return list(result)
 
 def get_all_user_times(user, course, *constraints):
-    #print("q1")
+    ##print("q1")
     query = merge_query(user_query(user), course_query(course), *constraints)
-    print("q")
-    print(query)
+    #print("q")
+    #print(query)
     result = con.db.xapi_statements.find(query, {time_stamp_schema: 1})
     result = list(set([item[time_stamp_schema] for item in result]))
 
@@ -155,9 +156,9 @@ def get_all_group_repos():
 
 def get_all_users_for_course(course, *constraints):
     query = merge_query(course_query(course), *constraints)
-    print("q2")
-    print(query)
-    print(course)
+    #print("q2")
+    #print(query)
+    #print(course)
     result = list(con.db.xapi_statements.distinct(user_schema, query))
     return result
 
@@ -174,12 +175,12 @@ def get_all_users_for_git_repo(repo, *constraints):
 
 def get_all_groups_for_course(course):
     query = merge_query(course_query(course))
-    result = list(con.db.xapi_statements.distinct(group_schema))
+    result = list(con.db.xapi_statements.distinct(group_schema, query))
     return result
 
 def get_all_courses_for_user(user):
     # TODO: Update course schema
-    result = list(con.db.xapi_statements.distinct(course_schema, user_query(user)))
+    result = list(con.db.xapi_statements.distinct("FIX ME", user_query(user)))
     return result
 
 
@@ -258,7 +259,9 @@ def get_group_activities(course, group, start_time, *constraints):
         "verb_id": "$" + verb_schema,
         "timestamp": True,
         "object_type": "$" +artefact_type_schema,
-        "object_name": "$" + "object.definition.name"
+        "object_name": "$" + "object.definition.name",
+        "forum_content": "$" + "object.definition.extensions.message",
+        "wiki_content": "$" + "context.extensions.other"
     }
     group_activities = []
     for user in users:
@@ -279,8 +282,20 @@ def get_group_activities(course, group, start_time, *constraints):
                 "object_id": statement["object_id"],
                 "timestamp": statement["timestamp"],
                 "object_type": statement["object_type"],
-                "object_name": list(statement["object_name"].values())[0]
+                "object_name": list(statement["object_name"].values())[0],
             }
+
+            #TODO fix: only write object content if not empty
+            if "forum_content" in statement:
+                if statement["forum_content"]:
+                    activity["forum_content"] = statement["forum_content"]
+
+            #TODO fix: only write object content if not empty
+            print(statement["verb_id"])
+            if not statement["verb_id"] == "http://id.tincanapi.com/verb/replied":
+                activity["wiki_content"] = statement["wiki_content"]
+
+
             group_activities.append(activity)
     group_activities = [item for item in group_activities if item["timestamp"] > start_time]
     group_activities.sort(key=lambda x: x["timestamp"], reverse=True)
@@ -395,6 +410,20 @@ def get_user_model_for_course(user, course, *constraints):
         "artifacts": artefacts,
     }
     return user_model
+
+def get_group_tasks(course):
+
+    query = {"courseid": course}
+    group_tasks = list(con.db.grouptasks.find(query, {"_id": 0}))
+    return group_tasks
+
+
+def update_group(group):
+    con.db.groups.update({"id": group["id"]}, group, upsert=True)
+
+
+def update_group_task(task):
+    con.db.grouptasks.update({"task_id": task["task_id"]}, task, upsert=True)
 
 
 def get_user_last_updated_at(user, course, *constraints):

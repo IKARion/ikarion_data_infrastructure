@@ -44,7 +44,7 @@ def generate_xapi_model(process=True):
                     course_str = str(course)
                     group_str = str(group)
                     user_str = str(user)
-                    statement = umd.generate_xapi_statement(user=user_str,
+                    statement = umd.generate_xapi_statement2(user=user_str,
                                                             course=course_str,
                                                             group=group_str,
                                                             time=time,

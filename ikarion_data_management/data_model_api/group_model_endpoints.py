@@ -1,9 +1,17 @@
 from flask import Blueprint, jsonify
 from ..data_access_layer.model_db_access_layer import group_model_dao
+from ..data_access_layer.model_db_access_layer import user_model_dao as umd
+from ikarion_data_management.data_model_api.user_model_endpoints import fix_url_chars
 
 group_model_blueprint = Blueprint('group_model_blueprint', __name__)
 
 # models: group content, group sequence, group structure
+
+# Convert special char replacements back to normal
+@group_model_blueprint.url_value_preprocessor
+def fix_url_encoding(endpoint, values):
+    for k, v in values.items():
+        values[k] = fix_url_chars(v)
 
 @group_model_blueprint.route('/about')
 def about():
@@ -12,6 +20,12 @@ def about():
 @group_model_blueprint.route("/")
 def getAllGroups():
     return jsonify(model=group_model_dao.getGroups())
+
+
+@group_model_blueprint.route("/group_tasks/<course>")
+def get_group_tasks(course):
+    return jsonify(model=umd.get_group_tasks(course))
+
 
 def getGroupsInContext(context):
     # context: task or course or both

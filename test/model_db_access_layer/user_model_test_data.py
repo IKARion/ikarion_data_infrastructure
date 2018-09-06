@@ -5,309 +5,6 @@ import ikarion_data_management.log_aggregator.statement_processing as sp
 ARTEFACT_TEMPLATE = "https://moodle.test-data.de/mod/{}/view.php?id={}"
 
 
-# def fill_user_model(uid, course, active_days, n_artifacts, *,
-#                     updated_at=1416649608,
-#                     base_time=1517443200.0,
-#                     num_actions=1,
-#                     randomized=False):
-#     skeleton = create_user_skeleton()
-#     skeleton["uid"] = str(uid)
-#     skeleton["course"] = str(course)
-#     skeleton["updated_at"] = str(updated_at)
-#     skeleton["active_days"] = active_days
-#
-#     artifacts_actions = {"videos": ["viewed"],
-#                          "literature": ["viewed"],
-#                          "forum_posts": ["viewed", "created"],
-#                          "quizzes": ["taken"],
-#                          "wiki_articles": ["viewed", "updated"]}
-#
-#     for artifact_type, action_types in artifacts_actions.items():
-#         for action_type in action_types:
-#             for n in range(n_artifacts):
-#                 action_id = ARTEFACT_TEMPLATE.format(artifact_type, n)
-#                 for n_actions in range(num_actions):
-#                     if randomized:
-#                         added_time = random.random()*(n_actions * 3600)
-#                     else:
-#                         added_time = (n_actions * 3600)
-#                     time_stamp = base_time + added_time
-#                     action_data = create_action(action_id, time_stamp)
-#                     add_action(skeleton, artifact_type, action_type, action_data)
-#
-#     return skeleton
-#
-#
-# def create_user_skeleton():
-#     skeleton = {
-#         "uid": "user_id",
-#         "course": "course_id",
-#         "updated_at": "last_update_timestamp",
-#         "active_days": [1, 2],
-#         "artifacts": {
-#             "videos": {
-#                 "viewed": []
-#             },
-#             "literature": {
-#                 "viewed": []
-#             },
-#             "forum_posts": {
-#                 "viewed": [],
-#                 "created": []
-#             },
-#             "quizzes": {
-#                 "taken": []
-#             },
-#             "wiki_articles": {
-#                 "viewed": [],
-#                 "updated": []
-#             }
-#         }
-#     }
-#     return skeleton
-#
-#
-# def add_action(user_model, artifact_type, action, action_data):
-#     user_model["artifacts"][artifact_type][action] = action_data
-#
-#
-# def create_action(action_id, time, **kwargs):
-#     action_data = {
-#         "id": action_id,
-#         "time": time,
-#     }
-#     return {**action_data, **kwargs}
-
-
-# def generate_xapi_statement(*, user, course, time, verb, artefact, group=None, process=True):
-#     statement = {
-#         "stored": "2018-03-15T12:19:47.424Z",
-#         "context": {
-#             "extensions": {
-#                 "http://lrs.learninglocker.net/define/extensions/info": {
-#                     "https://moodle.org/": "3.2.3+ (Build: 20170509)"
-#                 },
-#                 "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log": {
-#                     "realuserid": None,
-#                     "eventname": "\\core\\event\\course_viewed",
-#                     "userid": "22",
-#                     "origin": "web",
-#                     "ip": "134.91.34.168",
-#                     "contextid": 212,
-#                     "anonymous": 0,
-#                     "edulevel": 2,
-#                     "objecttable": None,
-#                     "other": "N;",
-#                     "target": "course",
-#                     "relateduserid": None,
-#                     "contextlevel": 50,
-#                     "action": "viewed",
-#                     "courseid": course,
-#                     "groupid": group,
-#                     "objectid": None,
-#                     "timecreated": 1521116387,
-#                     "component": "core",
-#                     "crud": "r",
-#                     "contextinstanceid": "7"
-#                 }
-#             },
-#             "language": "en",
-#             "platform": "Moodle",
-#             "contextActivities": {
-#                 "grouping": [
-#                     {
-#                         "definition": {
-#                             "extensions": {
-#                                 "http://lrs.learninglocker.net/define/extensions/moodle_course": {
-#                                     "cacherev": "1524752009",
-#                                     "showreports": "0",
-#                                     "groupmode": "0",
-#                                     "idnumber": "",
-#                                     "completionnotify": "0",
-#                                     "summary": "",
-#                                     "shortname": "IKARion Projekt",
-#                                     "maxbytes": "0",
-#                                     "theme": "",
-#                                     "enddate": "0",
-#                                     "groupmodeforce": "0",
-#                                     "newsitems": "3",
-#                                     "legacyfiles": "0",
-#                                     "lang": "",
-#                                     "requested": "0",
-#                                     "url": "https://moodle.ikarion-projekt.de",
-#                                     "sortorder": "1",
-#                                     "startdate": "0",
-#                                     "visible": "1",
-#                                     "visibleold": "1",
-#                                     "timemodified": "1524571833",
-#                                     "format": "site",
-#                                     "calendartype": "",
-#                                     "showgrades": "1",
-#                                     "marker": "0",
-#                                     "fullname": "IKARion Projekt",
-#                                     "type": "site",
-#                                     "id": "1",
-#                                     "timecreated": "1500013772",
-#                                     "summaryformat": "0",
-#                                     "category": "0",
-#                                     "enablecompletion": "0",
-#                                     "defaultgroupingid": "0"
-#                                 }
-#                             },
-#                             "description": {
-#                                 "de": "IKARion Projekt"
-#                             },
-#                             "name": {
-#                                 "de": "IKARion Projekt"
-#                             },
-#                             "type": "http://id.tincanapi.com/activitytype/site"
-#                         },
-#                         "id": "https://moodle.ikarion-projekt.de",
-#                         "objectType": "Activity"
-#                     },
-#                     {
-#                         "definition": {
-#                             "extensions": {
-#                                 "http://lrs.learninglocker.net/define/extensions/moodle_course": {
-#                                     "cacherev": "1525245406",
-#                                     "showreports": "1",
-#                                     "groupmode": "0",
-#                                     "idnumber": "",
-#                                     "completionnotify": "0",
-#                                     "summary": "<p>Dieser kurze Online Kurs gibt den Teilnehmern einen Überblick über die Entwicklung von Webapplikationen mittels diverser moderner Javascript Frameworks. Neben der Vermittlung von Grundlagen und Praxiswissen, erarbeiten die Teilnehmer in Kleingruppen selbständig kleinere Beispielapplikationen.</p><p>Bei Fragen bitte per Email wenden an:</p><ul><li>Tobias Hecking (hecking@collide.info)</li><li>Dorian Doberstein (doberstein@collide.info)</li><li>Lydia Harbarth (harbarth@collide.info)</li></ul><p>(Betreff: \"Frage zum Mikrokurs\")<br></p>",
-#                                     "shortname": "modweb",
-#                                     "maxbytes": "0",
-#                                     "theme": "",
-#                                     "enddate": "0",
-#                                     "groupmodeforce": "0",
-#                                     "newsitems": "5",
-#                                     "legacyfiles": "0",
-#                                     "lang": "de",
-#                                     "requested": "0",
-#                                     "url": "https://moodle.ikarion-projekt.de/course/view.php?id=7",
-#                                     "sortorder": "10001",
-#                                     "startdate": "1525042800",
-#                                     "visible": "1",
-#                                     "visibleold": "1",
-#                                     "timemodified": "1525101857",
-#                                     "format": "topics",
-#                                     "calendartype": "",
-#                                     "showgrades": "1",
-#                                     "marker": "0",
-#                                     "fullname": "Moderne Webtechnologien (Microcourse)",
-#                                     "type": "course",
-#                                     "id": "7",
-#                                     "timecreated": "1515428730",
-#                                     "summaryformat": "1",
-#                                     "category": "1",
-#                                     "enablecompletion": "1",
-#                                     "defaultgroupingid": "0"
-#                                 }
-#                             },
-#                             "description": {
-#                                 "de": "Dieser kurze Online Kurs gibt den Teilnehmern einen Überblick über die Entwicklung von Webapplikationen mittels diverser moderner Javascript Frameworks. Neben der Vermittlung von Grundlagen und Praxiswissen, erarbeiten die Teilnehmer in Kleingruppen selbständig kleinere Beispielapplikationen.Bei Fragen bitte per Email wenden an:Tobias Hecking (hecking@collide.info)Dorian Doberstein (doberstein@collide.info)Lydia Harbarth (harbarth@collide.info)(Betreff: \"Frage zum Mikrokurs\")"
-#                             },
-#                             "name": {
-#                                 "de": "Moderne Webtechnologien (Microcourse)"
-#                             },
-#                             "type": "http://lrs.learninglocker.net/define/type/moodle/course"
-#                         },
-#                         "id": "https://moodle.ikarion-projekt.de/course/view.php?id=7",
-#                         "objectType": "Activity"
-#                     }
-#                 ],
-#                 "category": [
-#                     {
-#                         "definition": {
-#                             "description": {
-#                                 "en": "Moodle is a open source learning platform designed to provide educators, administrators and learners with a single robust, secure and integrated system to create personalised learning environments."
-#                             },
-#                             "name": {
-#                                 "en": "Moodle"
-#                             },
-#                             "type": "http://id.tincanapi.com/activitytype/source"
-#                         },
-#                         "id": "http://moodle.org",
-#                         "objectType": "Activity"
-#                     }
-#                 ]
-#             }
-#         },
-#         "actor": {
-#             "account": {
-#                 "homePage": "https://moodle.ikarion-projekt.de",
-#                 "name": "22"
-#             },
-#             "name": user,
-#             "objectType": "Agent"
-#         },
-#         "timestamp": time,
-#         "version": "1.0.0",
-#         "id": "f6ece7a5-97c1-4e9a-8694-1c52422539fa",
-#         "verb": {
-#
-#             "display": {
-#                 "en": "viewed"
-#             },
-#             "id": verb
-#         },
-#         "object": {
-#             "definition": {
-#                 "extensions": {
-#                     "http://lrs.learninglocker.net/define/extensions/moodle_course": {
-#                         "cacherev": "1521116362",
-#                         "showreports": "0",
-#                         "groupmode": "0",
-#                         "idnumber": "",
-#                         "completionnotify": "0",
-#                         "summary": "<p>Dieser kurze Online Kurs gibt den Teilnehmern einen Überblick über die Entwicklung von Webapplikationen mittels diverser moderner Javascript Frameworks. Neben der Vermittlung von Grundlagen und Praxiswissen, erarbeiten die Teilnehmer in Kleingruppen selbständig kleinere Beispielapplikationen.<br></p>",
-#                         "shortname": "modweb",
-#                         "maxbytes": "0",
-#                         "theme": "",
-#                         "enddate": "0",
-#                         "groupmodeforce": "0",
-#                         "newsitems": "5",
-#                         "legacyfiles": "0",
-#                         "lang": "",
-#                         "requested": "0",
-#                         "url": "https://moodle.ikarion-projekt.de/course/view.php?id=7",
-#                         "sortorder": "10002",
-#                         "startdate": "1519862400",
-#                         "visible": "1",
-#                         "visibleold": "1",
-#                         "timemodified": "1521113627",
-#                         "format": "topics",
-#                         "calendartype": "",
-#                         "showgrades": "1",
-#                         "marker": "0",
-#                         "fullname": "Moderne Webframeworks (Microcourse)",
-#                         "type": "course",
-#                         "id": "7",
-#                         "timecreated": "1515428730",
-#                         "summaryformat": "1",
-#                         "category": "1",
-#                         "enablecompletion": "1",
-#                         "defaultgroupingid": "0"
-#                     }
-#                 },
-#                 "description": {
-#                     "en": "Dieser kurze Online Kurs gibt den Teilnehmern einen Überblick über die Entwicklung von Webapplikationen mittels diverser moderner Javascript Frameworks. Neben der Vermittlung von Grundlagen und Praxiswissen, erarbeiten die Teilnehmer in Kleingruppen selbständig kleinere Beispielapplikationen."
-#                 },
-#                 "name": {
-#                     "en": "Moderne Webframeworks (Microcourse)"
-#                 },
-#                 "type": "http://lrs.learninglocker.net/define/type/moodle/course"
-#             },
-#             "id": artefact,
-#             "objectType": "Activity"
-#         }
-#     }
-#     if process:
-#         sp.process_statement(statement)
-#
-#     return statement
-
-
 def generate_xapi_statement(*, user, course, time, verb, artefact, group=None, process=True):
     statement = {
         "authority": {
@@ -561,6 +258,320 @@ def generate_xapi_statement(*, user, course, time, verb, artefact, group=None, p
                 },
                 "name": {
                     "de": "Beginn Woche 2"
+                },
+                "type": "http://lrs.learninglocker.net/define/type/moodle/forum_discussions"
+            },
+            "id": artefact,
+            "objectType": "Activity"
+        }
+    }
+    if process:
+        sp.process_statement(statement)
+
+    return statement
+
+
+def generate_xapi_statement2(*, user, course, time, verb, artefact, group=None, process=True):
+    statement = {
+        "authority": {
+            "objectType": "Agent",
+            "name": "New Client",
+            "mbox": "mailto:hello@learninglocker.net"
+        },
+        "stored": "2018-09-06T10:20:49.931Z",
+        "context": {
+            "extensions": {
+                "http://collide.info/extensions/group": {
+                    "29": {
+                        "group_members": [
+                            {
+                                "fullname": "test_firstname_3 test_lastname_3",
+                                "email": "test_email_3@abc.invalid",
+                                "username": "test_user_3"
+                            },
+                            {
+                                "fullname": "test_firstname_5 test_lastname_5",
+                                "email": "test_email_5@abc.invalid",
+                                "username": "test_user_5"
+                            },
+                            {
+                                "fullname": "test_firstname_7 test_lastname_7",
+                                "email": "test_email_7@abc.invalid",
+                                "username": "test_user_7"
+                            },
+                            {
+                                "fullname": "test_firstname_8 test_lastname_8",
+                                "email": "test_email_8@abc.invalid",
+                                "username": "test_user_8"
+                            },
+                            {
+                                "fullname": "test_firstname_11 test_lastname_11",
+                                "email": "test_email_11@abc.invalid",
+                                "username": "test_user_11"
+                            },
+                            {
+                                "fullname": "test_firstname_18 test_lastname_18",
+                                "email": "test_email_18@abc.invalid",
+                                "username": "test_user_18"
+                            },
+                            {
+                                "fullname": "test_firstname_19 test_lastname_19",
+                                "email": "test_email_19@abc.invalid",
+                                "username": "test_user_19"
+                            }
+                        ],
+                        "task": {
+                            "task_resources": [
+                                "http://localhost/ikarion_moodle/mod/assign/view.php?id=3",
+                                "http://localhost/ikarion_moodle/mod/forum/view.php?id=4"
+                            ],
+                            "task_type": "collaborative programming",
+                            "task_end": "1536751800",
+                            "task_start": "1536147000",
+                            "task_name": "the new task",
+                            "task_id": "2"
+                        },
+                        "timemodified": "1536147081",
+                        "timecreated": "1536147081",
+                        "description": "none",
+                        "name": "Group A",
+                        "id": group
+                    }
+                },
+                "http://lrs.learninglocker.net/define/extensions/info": {
+                    "https://moodle.org/": "3.2.3+ (Build: 20170509)"
+                },
+                "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log": {
+                    "realuserid": "2",
+                    "eventname": "\\mod_forum\\event\\discussion_viewed",
+                    "userid": "21",
+                    "origin": "web",
+                    "ip": "0:0:0:0:0:0:0:1",
+                    "contextid": 47,
+                    "anonymous": 0,
+                    "edulevel": 2,
+                    "objecttable": "forum_discussions",
+                    "other": "N;",
+                    "target": "discussion",
+                    "relateduserid": None,
+                    "contextlevel": 70,
+                    "action": "viewed",
+                    "courseid": course,
+                    "objectid": "1",
+                    "timecreated": 1536229245,
+                    "component": "mod_forum",
+                    "crud": "r",
+                    "contextinstanceid": "4"
+                }
+            },
+            "language": "en",
+            "platform": "Moodle",
+            "contextActivities": {
+                "grouping": [
+                    {
+                        "definition": {
+                            "extensions": {
+                                "http://lrs.learninglocker.net/define/extensions/moodle_course": {
+                                    "cacherev": "1536148778",
+                                    "showreports": "0",
+                                    "groupmode": "0",
+                                    "idnumber": "",
+                                    "completionnotify": "0",
+                                    "summary": "<p>hello to ikarion moodle<br></p>",
+                                    "shortname": "ikarion",
+                                    "maxbytes": "0",
+                                    "theme": "",
+                                    "enddate": "0",
+                                    "groupmodeforce": "0",
+                                    "newsitems": "3",
+                                    "legacyfiles": "0",
+                                    "lang": "",
+                                    "requested": "0",
+                                    "url": "http://localhost/ikarion_moodle",
+                                    "sortorder": "1",
+                                    "startdate": "0",
+                                    "visible": "1",
+                                    "visibleold": "1",
+                                    "timemodified": "1533818889",
+                                    "format": "site",
+                                    "calendartype": "",
+                                    "showgrades": "1",
+                                    "marker": "0",
+                                    "fullname": "ikarion_moodle",
+                                    "type": "site",
+                                    "id": "1",
+                                    "timecreated": "1533818161",
+                                    "summaryformat": "0",
+                                    "category": "0",
+                                    "enablecompletion": "0",
+                                    "defaultgroupingid": "0"
+                                }
+                            },
+                            "description": {
+                                "en": "hello to ikarion moodle"
+                            },
+                            "name": {
+                                "en": "ikarion_moodle"
+                            },
+                            "type": "http://id.tincanapi.com/activitytype/site"
+                        },
+                        "id": "http://localhost/ikarion_moodle",
+                        "objectType": "Activity"
+                    },
+                    {
+                        "definition": {
+                            "extensions": {
+                                "http://lrs.learninglocker.net/define/extensions/moodle_course": {
+                                    "cacherev": "1536148778",
+                                    "showreports": "0",
+                                    "groupmode": "0",
+                                    "idnumber": "",
+                                    "completionnotify": "0",
+                                    "summary": "<p>bla blub<br></p>",
+                                    "shortname": "gen_test",
+                                    "maxbytes": "0",
+                                    "theme": "",
+                                    "enddate": "0",
+                                    "groupmodeforce": "0",
+                                    "newsitems": "0",
+                                    "legacyfiles": "0",
+                                    "lang": "",
+                                    "requested": "0",
+                                    "url": "http://localhost/ikarion_moodle/course/view.php?id=3",
+                                    "sortorder": "10001",
+                                    "startdate": "1534111200",
+                                    "visible": "1",
+                                    "visibleold": "1",
+                                    "timemodified": "1534169038",
+                                    "format": "topics",
+                                    "calendartype": "",
+                                    "showgrades": "1",
+                                    "marker": "0",
+                                    "fullname": "generated_test_course",
+                                    "type": "course",
+                                    "id": "3",
+                                    "timecreated": "1534169038",
+                                    "summaryformat": "0",
+                                    "category": "1",
+                                    "enablecompletion": "0",
+                                    "defaultgroupingid": "0"
+                                }
+                            },
+                            "description": {
+                                "en": "bla blub"
+                            },
+                            "name": {
+                                "en": "generated_test_course"
+                            },
+                            "type": "http://lrs.learninglocker.net/define/type/moodle/course"
+                        },
+                        "id": "http://localhost/ikarion_moodle/course/view.php?id=3",
+                        "objectType": "Activity"
+                    },
+                    {
+                        "definition": {
+                            "extensions": {
+                                "http://lrs.learninglocker.net/define/extensions/moodle_module": {
+                                    "introformat": "1",
+                                    "displaywordcount": "0",
+                                    "assessed": "0",
+                                    "assesstimefinish": "0",
+                                    "maxbytes": "512000",
+                                    "lockdiscussionafter": "0",
+                                    "scale": "100",
+                                    "name": "testforum",
+                                    "rsstype": "0",
+                                    "completionreplies": "0",
+                                    "intro": "<p>blablabalbl<br></p>",
+                                    "maxattachments": "9",
+                                    "blockperiod": "0",
+                                    "blockafter": "0",
+                                    "url": "http://localhost/ikarion_moodle/mod/forum/view.php?id=4",
+                                    "rssarticles": "0",
+                                    "completiondiscussions": "0",
+                                    "trackingtype": "1",
+                                    "assesstimestart": "0",
+                                    "timemodified": "1535723483",
+                                    "warnafter": "0",
+                                    "completionposts": "0",
+                                    "type": "forum",
+                                    "course": "3",
+                                    "id": "2",
+                                    "forcesubscribe": "0"
+                                }
+                            },
+                            "description": {
+                                "en": "<p>blablabalbl<br></p>"
+                            },
+                            "name": {
+                                "en": "testforum"
+                            },
+                            "type": "http://lrs.learninglocker.net/define/type/moodle/forum"
+                        },
+                        "id": "http://localhost/ikarion_moodle/mod/forum/view.php?id=4",
+                        "objectType": "Activity"
+                    }
+                ],
+                "category": [
+                    {
+                        "definition": {
+                            "description": {
+                                "en": "Moodle is a open source learning platform designed to provide educators, administrators and learners with a single robust, secure and integrated system to create personalised learning environments."
+                            },
+                            "name": {
+                                "en": "Moodle"
+                            },
+                            "type": "http://id.tincanapi.com/activitytype/source"
+                        },
+                        "id": "http://moodle.org",
+                        "objectType": "Activity"
+                    }
+                ]
+            }
+        },
+        "actor": {
+            "account": {
+                "homePage": "http://localhost/ikarion_moodle",
+                "name": "21"
+            },
+            "name": user,
+            "objectType": "Agent"
+        },
+        "timestamp": time,
+        "version": "1.0.0",
+        "id": "c734d8a5-3c15-48d3-97d7-e6b1597f4753",
+        "verb": {
+            "display": {
+                "en": "viewed"
+            },
+            "id": verb
+        },
+        "object": {
+            "definition": {
+                "extensions": {
+                    "http://lrs.learninglocker.net/define/extensions/moodle_discussion": {
+                        "forum": "2",
+                        "assessed": "0",
+                        "userid": "19",
+                        "name": "testsubject_context",
+                        "timeend": "0",
+                        "url": "http://localhost/ikarion_moodle/mod/forum/discuss.php?d=1",
+                        "firstpost": "1",
+                        "usermodified": "21",
+                        "timestart": "0",
+                        "timemodified": "1536229244",
+                        "pinned": "0",
+                        "type": "forum_discussions",
+                        "groupid": "-1",
+                        "course": "3",
+                        "id": "1"
+                    }
+                },
+                "description": {
+                    "en": "A Moodle discussion."
+                },
+                "name": {
+                    "en": "testsubject_context"
                 },
                 "type": "http://lrs.learninglocker.net/define/type/moodle/forum_discussions"
             },
