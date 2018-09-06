@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint
 from ..data_access_layer.model_db_access_layer import user_model_dao
 #from ..data_access_layer.model_db_access_layer import group_model_dao
@@ -29,7 +30,9 @@ def processLog():
         print(request)
         print(request.content_type)
         statement = request.get_json(force=True)
-
+    statement_string = json.dumps(statement)
+    statement_string = statement_string.replace("&46;", ".")
+    statement = json.loads(statement_string)
     relevant = sp.statement_relevant(statement)
     if relevant:
         print("relevant")
