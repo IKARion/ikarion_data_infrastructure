@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ..data_access_layer.model_db_access_layer import user_model_dao as umd
+from .util import fix_url_chars
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -213,9 +214,5 @@ def get_all_courses_for_user(user):
 
     return jsonify(data=umd.get_all_courses_for_user(user))
 
-def fix_url_chars(string):
-    string = string.replace("$slash$", "/")
-    string = string.replace("$qmark$", "?")
-    return(string)
 
 

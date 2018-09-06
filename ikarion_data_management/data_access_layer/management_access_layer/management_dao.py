@@ -11,6 +11,7 @@ scriptTypes = {
 }
 
 def scheduledRscript(uri):
+    print("EXECUTE: " + uri)
     subprocess.call([scriptConf['RSCRIPT'], uri])
 
 def scheduledAWBworkflow(uri):
