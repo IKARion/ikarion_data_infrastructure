@@ -2,6 +2,7 @@ import json
 from flask import Blueprint
 from ..data_access_layer.model_db_access_layer import user_model_dao
 #from ..data_access_layer.model_db_access_layer import group_model_dao
+import sys
 from flask import request
 from flask import Response
 from ikarion_data_management.data_access_layer import modelDBConnection as con
@@ -40,6 +41,7 @@ def processLog():
         print("relevant")
         sp.process_statement(statement)
         con.db.xapi_statements.insert_one(statement)
+    sys.stdout.flush()
     return Response(status=200)
 
 
