@@ -408,12 +408,12 @@ def get_user_model_for_course(user, course, *constraints):
     }
     return user_model
 
-def update_group(group):
-    con.db.groups.update({"id": group["id"]}, group, upsert=True)
+def update_group(group, course):
+    con.db.groups.update({"id": group["id"], "courseid": course}, group, upsert=True)
 
 
-def update_group_task(task):
-    con.db.grouptasks.update({"task_id": task["task_id"]}, task, upsert=True)
+def update_group_task(task, course):
+    con.db.grouptasks.update({"task_id": task["task_id"], "courseid": course}, task, upsert=True)
 
 
 def get_user_last_updated_at(user, course, *constraints):

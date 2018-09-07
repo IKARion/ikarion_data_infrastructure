@@ -34,8 +34,12 @@ class UserModelEndpointsTestCase(unittest.TestCase):
 
     def test_get_group_tasks(self):
         response = self.app.get(GM_PRE+"/group_tasks/"+COURSEID)
+        print(COURSEID)
         print(response)
-        r_json = json.loads(response.data)
+        print(response.data)
+        response_str = response.data.decode("utf-8")
+        print(response_str)
+        r_json = json.loads(response_str)
         print(r_json)
 
     def tearDown(self):

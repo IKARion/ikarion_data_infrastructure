@@ -34,6 +34,7 @@ def convert_timestamp(statement):
     statement["timestamp"] = epoch_timestamp
     return epoch_timestamp
 
+
 def nested_json_extensions(nested):
     """
     yields any map that has a extentions key
@@ -50,6 +51,7 @@ def nested_json_extensions(nested):
     if isinstance(nested, list):
         for value in nested:
             yield from nested_json_extensions(value)
+
 
 def nested_data(nested):
     """
@@ -85,6 +87,7 @@ def replace_dots(statement):
                 statement_map[replaced_key] = value
                 statement_map.pop(key, None)
 
+
 def statement_relevant(statement):
     # TODO find out what statements are not relevant and filter them.
     return True
@@ -118,6 +121,7 @@ def process_groups(statement):
                 groups.append(v)
     statement["context"]["groups"] = groups
 
+
 def extract_course_id(statement):
     groupings = statement["context"]["contextActivities"]["grouping"]
     course_type = "http://lrs.learninglocker.net/define/type/moodle/course"
@@ -125,6 +129,7 @@ def extract_course_id(statement):
         if grouping["definition"]["type"] == course_type:
             return grouping["id"]
     return "no course id"
+
 
 def write_new_groups_and_tasks(statement):
     print("Writing groups and tasks")
@@ -141,8 +146,8 @@ def write_new_groups_and_tasks(statement):
                 statement["relevant_group_task"] = group
                 break
         group["courseid"] = courseid
-        umd.update_group(group)
-        umd.update_group_task(task)
+        umd.update_group(group, courseid)
+        umd.update_group_task(task, courseid)
 
     print("Writing groups and tasks end")
 
@@ -153,4 +158,3 @@ def process_statement(statement):
     convert_timestamp(statement)
     process_groups(statement)
     write_new_groups_and_tasks(statement)
-

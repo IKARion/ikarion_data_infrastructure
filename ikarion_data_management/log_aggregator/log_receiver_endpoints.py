@@ -30,7 +30,6 @@ def processLog():
 
     if request.method =="POST":
         print("processing log Post")
-        print(request)
         print(request.content_type)
         statement = request.get_json(force=True)
     statement_string = json.dumps(statement)

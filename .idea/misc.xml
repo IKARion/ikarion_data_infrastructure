@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.6.0 (C:\Users\Yassin\Anaconda3\envs\ikarion_data_inf\python.exe)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.5.2 (ssh://taskin@descartes.inf.uni-due.de:22/home/taskin/ikarion_web_app/ikarion_venv/bin/python)" project-jdk-type="Python SDK" />
 </project>
