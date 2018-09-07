@@ -9,7 +9,6 @@ from ikarion_data_management.data_model_api.user_model_endpoints import encode_u
 import ikarion_data_management.ikarion_data_infrastructure as idi
 import json
 
-
 ITEM_NUMBER = 5
 
 # class UserModelDAOTestCase(unittest.TestCase):
@@ -69,14 +68,15 @@ UM_PRE = "/user_model"
 GM_PRE = "/groups"
 COURSEID = encode_url_chars("http://localhost/ikarion_moodle/course/view.php?id=3")
 
-class UserModelDAOTestCase(unittest.TestCase):
 
+class UserModelDAOTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         mock_con = mongomock.MongoClient()
         um.con = mock_con
         pdt.populate_xapi_model(mock_con)
         cls.con = mock_con
+
     def setUp(self):
         pass
 
@@ -131,18 +131,15 @@ class UserModelDAOTestCase(unittest.TestCase):
         courses = um.get_all_courses()
         print(courses)
 
-
     def test_get_xapi_statements(self):
         statements = list(UserModelDAOTestCase.con.db.xapi_statements.find({}))
         print(len(statements))
-
 
     def tearDown(self):
         pass
 
 
 class UserModelEndpointsTestCase(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         idi.app.testing = True
@@ -155,20 +152,20 @@ class UserModelEndpointsTestCase(unittest.TestCase):
 
     def test_get_user_model_for_course(self):
         print("user")
-        response = self.app.get(UM_PRE+"/model/0/2")
+        response = self.app.get(UM_PRE + "/model/0/2")
         user_model = json.loads(response.data)
         print(user_model)
 
     def test_get_user_models_for_course(self):
         print("usermodels")
-        response = self.app.get(UM_PRE+"/models/0")
+        response = self.app.get(UM_PRE + "/models/0")
         user_models = json.loads(response.data)
         print(user_models)
 
     def test_get_all_courses(self):
         # Does not work with mongomock
         print("courses")
-        response = self.app.get(UM_PRE+"/courses")
+        response = self.app.get(UM_PRE + "/courses")
         print(response.data)
         courses = json.loads(response.data)["data"]
         print(courses)
@@ -176,52 +173,41 @@ class UserModelEndpointsTestCase(unittest.TestCase):
 
     def test_get_users(self):
         print("users")
-        response = self.app.get(UM_PRE+"/users")
+        response = self.app.get(UM_PRE + "/users")
         print(response.data)
 
     def test_get_users_for_course(self):
         print("users for course")
-        response = self.app.get(UM_PRE+"/0")
+        response = self.app.get(UM_PRE + "/0")
         r_json = json.loads(response.data)
         print(response.data)
         print(r_json)
 
     def test_get_user_times(self):
         print("times:")
-        response = self.app.get(UM_PRE+"/times/0/0")
+        response = self.app.get(UM_PRE + "/times/0/0")
         print(response.data)
 
     def test_get_groups_for_course(self):
-        response = self.app.get(UM_PRE+"/groups_for_course/0")
+        response = self.app.get(UM_PRE + "/groups_for_course/0")
         print(response.data)
         r_json = json.loads(response.data)
         self.assertEqual(len(r_json["data"]), 4)
 
     def test_avg_latency_user(self):
         print("avg_latency")
-        response = self.app.get(UM_PRE+"/avg_latency/0/0")
+        response = self.app.get(UM_PRE + "/avg_latency/0/0")
         print(response.data)
 
     def test_avg_latency_group(self):
         print("avg_latency")
-        response = self.app.get(UM_PRE+"/avg_group_latency/0/0/1517443200")
+        response = self.app.get(UM_PRE + "/avg_group_latency/0/0/1517443200")
         print(response.data)
 
     def test_group_activity(self):
-        response = self.app.get(UM_PRE+"/group_activities/0/0")
+        response = self.app.get(UM_PRE + "/group_activities/0/0")
         r_json = json.loads(response.data)
         print(r_json)
-
-    def test_get_group_tasks(self):
-        response = self.app.get(GM_PRE+"/group_tasks/"+COURSEID)
-        print(response)
-        r_json = json.loads(response.data)
-        print(r_json)
-
-
-
-
-
 
     def tearDown(self):
         pass

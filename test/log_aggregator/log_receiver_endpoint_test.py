@@ -5,7 +5,8 @@ import json
 from ikarion_data_management import ikarion_data_infrastructure as idi
 from ikarion_data_management.log_aggregator import log_receiver_endpoints as lre
 from test.model_db_access_layer import populate_database_test_data as pdtd
-from test.model_db_access_layer import user_model_test_data as umd
+from ikarion_data_management.data_access_layer.model_db_access_layer import group_model_dao as gm, user_model_dao as um
+
 
 
 LOG_PRE = "/logs"
@@ -19,11 +20,12 @@ class LogReceiverTestCase(unittest.TestCase):
     def setUp(self):
         self.app = idi.app.test_client()
         mock_con = mongomock.MongoClient()
+        um.con = mock_con
+        gm.con = mock_con
         lre.con = mock_con
         self.con = mock_con
 
     def test_process_log(self):
-        lre.con = self.con
         statement_list = pdtd.generate_xapi_model(process=False)
         # statement = umd.generate_xapi_statement(user="test",
         #                                         course="test",
