@@ -127,9 +127,10 @@ def extract_course_id(statement):
     return "no course id"
 
 def write_new_groups_and_tasks(statement):
+    print("Writing groups and tasks")
     courseid = extract_course_id(statement)
     groups = statement["context"]["groups"]
-    statement["relevant_group_task"] = {}
+    statement["relevant_group_task"] = {"id": -1}
     groupings = statement["context"]["contextActivities"]["grouping"]
     for group in groups:
         task = group["task"]
@@ -142,6 +143,8 @@ def write_new_groups_and_tasks(statement):
         group["courseid"] = courseid
         umd.update_group(group)
         umd.update_group_task(task)
+
+    print("Writing groups and tasks end")
 
 
 def process_statement(statement):
