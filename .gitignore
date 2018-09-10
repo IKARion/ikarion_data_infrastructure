@@ -5,8 +5,7 @@
 /dist
 /build
 /ikarion_data_infrastructure.egg-info
-.idea/
+/**/.idea/
 *.pyc
 venv/
 /**/__pycache__/
-/ikarion_data_management/.idea
