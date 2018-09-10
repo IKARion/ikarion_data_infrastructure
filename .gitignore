@@ -8,5 +8,5 @@
 .idea/
 *.pyc
 venv/
-__pycache__
-ikarion_data_management/.idea
+/**/__pycache__/
+/ikarion_data_management/.idea
