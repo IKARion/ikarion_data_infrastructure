@@ -1,6 +1,7 @@
 from .. import modelDBConnection as con
 from pymongo import MongoClient
-
+from .util import *
+from .queries import course_list_query, course_query
 import datetime
 
 
@@ -10,79 +11,7 @@ import datetime
 
 context_extension_id = "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log"
 
-# Fields
-RES_USED_LIST = 'resources_list'
-RES_USED_FIELD = 'resource_accesses'
-DISTINCT_RES_USED = 'distinct_resource_accesses'
-
-
-#course_schema = "context.extensions.courseid"
-group_schema = "context.groups.id"
-artefact_schema = "object.id"
-artefact_type_schema = "object.definition.type"
-#artefact_
-user_schema = "actor.name"
-time_stamp_schema = "timestamp"
-action_schema = "verb.id"
-verb_schema = "verb.id"
-repository_schema = "context.extensions.repository"
-object_content_schema = "object.definition.extensions.message"
 # Retrieve
-
-# Standart queries
-course_list_query = [
-    {"$match" : {
-        "context.contextActivities.grouping" : {
-            "$elemMatch" : {"definition.type" : "http://lrs.learninglocker.net/define/type/moodle/course"}
-         }
-     }},
-     {"$project" : {
-         "course" : {
-            "$filter" : {
-                "input" : "$context.contextActivities.grouping",
-                "as" : "item",
-                "cond" : {"$eq": ["$$item.definition.type", "http://lrs.learninglocker.net/define/type/moodle/course"]}
-            }
-         }
-     }},
-     {"$unwind" : "$course"},
-     {"$unwind" : "$course.definition.extensions"},
-     {"$group" : {
-         "_id" : {"courseid" : "$course.definition.extensions.url", "name" : "$course.definition.extensions.fullname"}
-     }},
-     {"$project" : {
-         "_id" : 0, "courseid" : "$_id.courseid", "name" :  "$_id.name"
-     }}
-]
-
-def course_query(course):
-    if course is None:
-        return {}
-    else:
-        query = {
-            "context.contextActivities.grouping" : {
-                "$elemMatch" : {
-                    "definition.type" : "http://lrs.learninglocker.net/define/type/moodle/course",
-                    "definition.extensions" : {
-                        "$elemMatch" : {"url" : course}
-                    }
-                }
-            }
-        }
-        return query
-
-
-def group_query(group):
-    if group is None:
-        return {}
-    else:
-        query = {
-            group_schema: group
-        }
-        return query
-
-
-
 def user_query(user):
     query = {
         user_schema: user
@@ -116,7 +45,6 @@ def artefact_type_query(artefact_type):
     }
     return query
 
-
 def get_all_user_statements(user, *constraints):
     query = merge_query(user_query(user), *constraints)
     result = con.db.xapi_statements.find(query)
@@ -128,15 +56,10 @@ def get_all_course_statements(course, *constraints):
     return list(result)
 
 def get_all_user_times(user, course, *constraints):
-    ##print("q1")
+
     query = merge_query(user_query(user), course_query(course), *constraints)
-    #print("q")
-    #print(query)
     result = con.db.xapi_statements.find(query, {time_stamp_schema: 1})
     result = list(set([item[time_stamp_schema] for item in result]))
-
-    # sorted(map(float, result))
-    #sorted(map(float, result))
     return result
 
 
@@ -153,26 +76,12 @@ def get_all_group_repos():
 
 def get_all_users_for_course(course, *constraints):
     query = merge_query(course_query(course), *constraints)
-    #print("q2")
-    #print(query)
-    #print(course)
-    result = list(con.db.xapi_statements.distinct(user_schema, query))
-    return result
-
-
-def get_all_users_for_group(course, group, *constraints):
-    query = merge_query(course_query(course), group_query(group), *constraints)
     result = list(con.db.xapi_statements.distinct(user_schema, query))
     return result
 
 def get_all_users_for_git_repo(repo, *constraints):
     #query = merge_query(course_query(course), group_query(group), *constraints)
     result = list(con.db.xapi_statements.distinct(user_schema, repo_query(repo)))
-    return result
-
-def get_all_groups_for_course(course):
-    query = merge_query(course_query(course))
-    result = list(con.db.xapi_statements.distinct(group_schema, query))
     return result
 
 def get_all_courses_for_user(user):
@@ -240,63 +149,6 @@ def get_user_artefact_type_action_stats(user, artefact_type, verb, course, *cons
         result.append(data)
     return result
 
-def get_group_activities(course, group, start_time, *constraints):
-    """
-    Returns json array of objects with fields [group_id, user_id, verb_id, object_id, timestamp]
-    :param group:
-    :type group:
-    :return:
-    :rtype:
-    """
-    # TODO Project content especially forum post text
-    print(con.db.name)
-    users = get_all_users_for_group(course, group, *constraints)
-    projection = {
-        "object_id": "$" + artefact_schema,
-        "verb_id": "$" + verb_schema,
-        "timestamp": True,
-        "object_type": "$" +artefact_type_schema,
-        "object_name": "$" + "object.definition.name",
-        "forum_content": "$" + "object.definition.extensions.message",
-        "wiki_content": "$" + "context.extensions.other"
-    }
-    group_activities = []
-    for user in users:
-
-        query = merge_query(user_query(user), group_query(group))
-        aggregation = [
-            {"$match": query},
-            {"$project": projection},
-        ]
-        user_statements = list(con.db.xapi_statements.aggregate(aggregation))
-
-        for statement in user_statements:
-
-            activity = {
-                "group_id": group,
-                "user_id": user,
-                "verb_id": statement["verb_id"],
-                "object_id": statement["object_id"],
-                "timestamp": statement["timestamp"],
-                "object_type": statement["object_type"],
-                "object_name": list(statement["object_name"].values())[0],
-            }
-
-            #TODO fix: only write object content if not empty
-            if "forum_content" in statement:
-                if statement["forum_content"]:
-                    activity["forum_content"] = statement["forum_content"]
-
-            #TODO fix: only write object content if not empty
-            print(statement["verb_id"])
-            if not statement["verb_id"] == "http://id.tincanapi.com/verb/replied":
-                activity["wiki_content"] = statement["wiki_content"]
-
-
-            group_activities.append(activity)
-    group_activities = [item for item in group_activities if item["timestamp"] > start_time]
-    group_activities.sort(key=lambda x: x["timestamp"], reverse=True)
-    return group_activities
 
 def get_repo_activities(repo, start_time, *constraints):
     """
@@ -347,32 +199,6 @@ def get_repo_activities(repo, start_time, *constraints):
     return group_activities
 
 
-
-
-def get_group_average_latency(startpoint, group, course, *constraints):
-    users = get_all_users_for_group(course, group)
-    group_times = []
-    for user in users:
-        constraints = list(constraints) + [group_query(group)]
-        user_times = get_all_user_times(user, course, *constraints)
-        time_tuples = [(time, user) for time in user_times]
-        group_times.extend(time_tuples)
-
-    group_times.sort()
-    response_times = []
-    current_time = startpoint
-    current_user = None
-    for time, user in group_times:
-        if user != current_user:
-            diff_time = time - current_time
-            current_time = time
-            response_times.append(diff_time)
-
-    avg_latency = sum(response_times)/len(response_times)
-
-    return avg_latency
-
-
 def get_user_average_latency(user, course, *constraints):
 
     times = get_all_user_times(user, course, *constraints)
@@ -408,30 +234,12 @@ def get_user_model_for_course(user, course, *constraints):
     }
     return user_model
 
-def update_group(group, course):
-    con.db.groups.update({"id": group["id"], "courseid": course}, group, upsert=True)
-
-
-def update_group_task(task, course):
-    con.db.grouptasks.update({"task_id": task["task_id"], "courseid": course}, task, upsert=True)
-
-
 def get_user_last_updated_at(user, course, *constraints):
     user_times = get_all_user_times(user, course, *constraints)
     if len(user_times) > 0:
         return user_times[-1]
     else:
-        return 
-
-
-def merge_query(*args):
-    merged_query = {
-
-    }
-    for arg in args:
-        merged_query.update(arg)
-    print(merged_query)
-    return merged_query
+        return
 
 # Exception classes
 class NoSuchUserException(Exception):
