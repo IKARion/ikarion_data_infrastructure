@@ -67,7 +67,7 @@ def get_all_groups_for_task(task):
 
     return list(con.db.xapi_statements.distinct(group_schema, group_task_query(task)))
 
-def get_group_activities(course, group, start_time, *constraints):
+def get_group_activities(course, group, *constraints):
     """
     Returns json array of objects with fields [group_id, user_id, verb_id, object_id, timestamp]
     :param group:
@@ -81,85 +81,76 @@ def get_group_activities(course, group, start_time, *constraints):
         "verb.id": "http://id.tincanapi.com/verb/replied",
         "object.definition.type": "http://id.tincanapi.com/activitytype/forum-topic"
     }
-    forumContentSchema = "$object.definition.extensions.message"
+    forumContentProjection = {"content": "$object.definition.extensions.message"}
 
     # wiki edits
     wikiQuery = {
         "verb.id": "http://id.tincanapi.com/verb/updated",
         "object.definition.type": "http://collide.info/moodle_wiki_page"
     }
-    forumContentSchema = "$object.definition.extensions.message"
+    wikiContentProjection = {"content": "$object.definition.extensions.content_clean"}
 
     # git commits
+    # TODO: Query Git commits.
 
-
-    db.getCollection('xapi_statements').aggregate([
-        {"$match": {"context.groups.id": "16"}},
-        {"$project": {
-            "group_id": "16",
+    projection = {
+        "$project": {
+            "_id": 0,
+            "group_id": group,
             "user_id": "$actor.name",
             "verb_id": "$verb.id",
             "object_id": "$object.id",
             "timestamp": "$timestamp",
             "object_type": "$object.definition.type",
-            "object_name": "$object.definition.name.en"
+            "object_name": "$object.definition.name.en",
+            "content": "$object.definition.extensions.message"
         }
+    }
+
+    forumPosts = list(
+        con.db.xapi_statements.aggregate([
+            merge_query(course_query(course), group_query(group), forumQuery, *constraints),
+            merge_query(projection, forumContentProjection)
+        ])
+    )
+
+    wikiEdits = list(
+        con.db.xapi_statements.aggregate([
+            merge_query(course_query(course), group_query(group), wikiQuery, *constraints),
+            {"$unwind": "$object.definition.extensions"},
+            merge_query(projection, wikiContentProjection)
+        ])
+    )
+
+    return (wikiEdits + forumPosts).sort(key=lambda x: x["timestamp"], reverse=True)
+
+
+def get_group_activities_for_task(course, group, task, *contraints):
+    get_group_activities(course, group, *contraints + group_task_query(task))
+
+def get_all_task_activities(course, task):
+    # TODO: Make sure that task id is a url (course_id + task_id). In this case the course query is not necessary.
+    # TODO: Reuse get_group_activities
+    query = merge_query(
+        group_task_query(task),
+        {"relevant_group_task.courseid": course}
+    )
+
+    projection = {
+        "$project": {
+            "_id": 0,
+            "group_id": "relevant_group_task.id",
+            "user_id": "$actor.name",
+            "verb_id": "$verb.id",
+            "object_id": "$object.id",
+            "timestamp": "$timestamp",
+            "object_type": "$object.definition.type",
+            "object_name": "$object.definition.name.en",
         }
-    ])
-    # # TODO Project content especially forum post text
-    # users = get_all_users_for_group(course, group, *constraints)
-    # projection = {
-    #     "object_id": "$" + artefact_schema,
-    #     "verb_id": "$" + verb_schema,
-    #     "timestamp": True,
-    #     "object_type": "$" + artefact_type_schema,
-    #     "object_name": "$" + "object.definition.name",
-    #     "forum_content": "$" + "object.definition.extensions.message",
-    #     "wiki_content": "$" + "context.extensions.other"
-    # }
-    # group_activities = []
-    # for user in users:
-    #
-    #     query = merge_query(user_query(user), group_query(group), *constraints)
-    #     aggregation = [
-    #         {"$match": query},
-    #         {"$project": projection},
-    #     ]
-    #     user_statements = list(con.db.xapi_statements.aggregate(aggregation))
-    #
-    #     for statement in user_statements:
-    #
-    #         activity = {
-    #             "group_id": group,
-    #             "user_id": user,
-    #             "verb_id": statement["verb_id"],
-    #             "object_id": statement["object_id"],
-    #             "timestamp": statement["timestamp"],
-    #             "object_type": statement["object_type"],
-    #             "object_name": list(statement["object_name"].values())[0],
-    #         }
-    #
-    #         #TODO fix: only write object content if not empty
-    #         if "forum_content" in statement:
-    #             if statement["forum_content"]:
-    #                 activity["forum_content"] = statement["forum_content"]
-    #
-    #         #TODO fix: only write object content if not empty
-    #         print(statement["verb_id"])
-    #         if not statement["verb_id"] == "http://id.tincanapi.com/verb/replied":
-    #             activity["wiki_content"] = statement["wiki_content"]
-    #
-    #
-    #         group_activities.append(activity)
-    # group_activities = [item for item in group_activities if item["timestamp"] > start_time]
-    group_activities.sort(key=lambda x: x["timestamp"], reverse=True)
-    return group_activities
+    }
 
-def get_group_activities_for_task(course, group, start_time, task):
-    get_group_activities(course, group, start_time, group_task_query(task))
+    return con.db.xapi_statements.aggregate([query, projection])
 
-def get_all_task_activities(task):
-    get_group_activities(course, group, start_time, group_task_query(task))
 
 # def get_group_average_latency(startpoint, group, course, *constraints):
 #     users = get_all_users_for_group(course, group)
