@@ -94,34 +94,43 @@ def get_group_activities(course, group, *constraints):
     # TODO: Query Git commits.
 
     projection = {
-        "$project": {
-            "_id": 0,
-            "group_id": group,
-            "user_id": "$actor.name",
-            "verb_id": "$verb.id",
-            "object_id": "$object.id",
-            "timestamp": "$timestamp",
-            "object_type": "$object.definition.type",
-            "object_name": "$object.definition.name.en",
-            "content": "$object.definition.extensions.message"
-        }
+        "_id": 0,
+        "group_id": group,
+        "user_id": "$actor.name",
+        "verb_id": "$verb.id",
+        "object_id": "$object.id",
+        "timestamp": "$timestamp",
+        "object_type": "$object.definition.type",
+        "object_name": "$object.definition.name.en",
+        "content": "$object.definition.extensions.message"
+
     }
+    print([
+            {"$match": merge_query(course_query(course), group_query(group), forumQuery, *constraints)},
+            {"$unwind": "$object.definition.extensions"},
+            {"$project": merge_query(projection, forumContentProjection)}
+        ])
 
     forumPosts = list(
+
         con.db.xapi_statements.aggregate([
-            merge_query(course_query(course), group_query(group), forumQuery, *constraints),
-            merge_query(projection, forumContentProjection)
+            {"$match": merge_query(course_query(course), group_query(group), forumQuery, *constraints)},
+            {"$unwind": "$object.definition.extensions"},
+            {"$project": merge_query(projection, forumContentProjection)}
         ])
     )
 
     wikiEdits = list(
         con.db.xapi_statements.aggregate([
-            merge_query(course_query(course), group_query(group), wikiQuery, *constraints),
+            {"$match": merge_query(course_query(course), group_query(group), wikiQuery, *constraints)},
             {"$unwind": "$object.definition.extensions"},
-            merge_query(projection, wikiContentProjection)
+            {"$project": merge_query(projection, wikiContentProjection)}
         ])
     )
-
+    print(wikiEdits)
+    print(forumPosts)
+    print((wikiEdits + forumPosts))
+    print((wikiEdits + forumPosts).sort(key=lambda x: x["timestamp"], reverse=True))
     return (wikiEdits + forumPosts).sort(key=lambda x: x["timestamp"], reverse=True)
 
 
