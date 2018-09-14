@@ -127,11 +127,10 @@ def get_group_activities(course, group, *constraints):
             {"$project": merge_query(projection, wikiContentProjection)}
         ])
     )
-    print(wikiEdits)
-    print(forumPosts)
-    print((wikiEdits + forumPosts))
-    print((wikiEdits + forumPosts).sort(key=lambda x: x["timestamp"], reverse=True))
-    return (wikiEdits + forumPosts).sort(key=lambda x: x["timestamp"], reverse=True)
+    combList = (wikiEdits + forumPosts)
+    combList.sort(key=lambda x: x["timestamp"], reverse=True)
+
+    return combList
 
 
 def get_group_activities_for_task(course, group, task, *contraints):
