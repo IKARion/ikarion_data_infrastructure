@@ -24,7 +24,7 @@ def getAllGroups():
 
 @group_model_blueprint.route("/group_tasks/<string:course>")
 def get_group_tasks(course):
-    return jsonify(model=group_model_dao.get_group_tasks(fix_url_chars(course)))
+    return jsonify(data=group_model_dao.get_group_tasks(fix_url_chars(course)))
 
 @group_model_blueprint.route("/groups_for_course/<course>")
 def get_all_groups_for_course(course):
