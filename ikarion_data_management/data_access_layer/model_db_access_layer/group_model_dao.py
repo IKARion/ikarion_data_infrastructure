@@ -50,9 +50,21 @@ def getLatencies(course, group, context):
 
     return average_latency, all_latencies
 
+
+def get_groups_users_for_task(task):
+    query = {"task.task_id" : task}
+    print("***2")
+    print(query)
+    groups = list(con.db.groups.find(query, {"_id": 0}))
+    print(groups)
+    return groups
+
 def get_group_tasks(course):
     query = {"courseid": course}
+    print("***1")
+    print(query)
     group_tasks = list(con.db.grouptasks.find(query, {"_id": 0}))
+    print(group_tasks)
     return group_tasks
 
 def get_all_users_for_group(course, group, *constraints):
@@ -63,9 +75,15 @@ def get_all_users_for_group(course, group, *constraints):
 def get_all_groups_for_course(course):
     return list(con.db.xapi_statements.distinct(group_schema, course_query(course)))
 
-def get_all_groups_for_task(task):
+def get_all_groups_for_task(course, task):
 
-    return list(con.db.xapi_statements.distinct(group_schema, group_task_query(task)))
+    query = {
+        "task.task_id": task,
+        "courseid": course
+    }
+    print("***3")
+    print(query)
+    return list(con.db.groups.find(query, {"_id": 0}))
 
 def get_group_activities(course, group, *constraints):
     """
