@@ -26,16 +26,22 @@ def getAllGroups():
 def get_group_tasks(course):
     return jsonify(data=group_model_dao.get_group_tasks(fix_url_chars(course)))
 
+#@group_model_blueprint.route("/group_tasks/groups/<task>")
+#def get_group_tasks(task):
+#    return jsonify(data=group_model_dao.get_group_tasks(fix_url_chars(course)))
+
+
 @group_model_blueprint.route("/groups_for_course/<course>")
 def get_all_groups_for_course(course):
     course = fix_url_chars(course)
     return jsonify(data=group_model_dao.get_all_groups_for_course(course))
 
-@group_model_blueprint.route("/groups_for_task/<task>")
-def get_all_groups_for_task(task):
+@group_model_blueprint.route("/groups_for_task/<course>/<task>")
+def get_all_groups_for_task(course,task):
 
     task = fix_url_chars(task)
-    return jsonify(data=group_model_dao.get_all_groups_for_task(task))
+    course = fix_url_chars(course)
+    return jsonify(data=group_model_dao.get_all_groups_for_task(course, task))
 
 
 """
