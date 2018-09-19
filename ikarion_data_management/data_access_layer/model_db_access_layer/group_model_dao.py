@@ -151,8 +151,9 @@ def get_group_activities(course, group, *constraints):
     return combList
 
 
-def get_group_activities_for_task(course, group, task, *contraints):
-    get_group_activities(course, group, *contraints + group_task_query(task))
+def get_group_activities_for_task(course, group, task, *constraints):
+
+    return get_group_activities(course, group, group_task_query(task))
 
 def get_all_task_activities(course, task):
     # TODO: Make sure that task id is a url (course_id + task_id). In this case the course query is not necessary.
