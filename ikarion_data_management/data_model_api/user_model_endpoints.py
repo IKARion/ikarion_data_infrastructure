@@ -110,6 +110,7 @@ def get_all_user_times(user, course):
 @user_model_blueprint.route("/active_days/<user>/<course>")
 def get_user_active_days(user, course):
 
+    user = fix_url_chars(user)
     course = fix_url_chars(course)
     return jsonify(data=umd.get_user_active_days(user, course))
 
