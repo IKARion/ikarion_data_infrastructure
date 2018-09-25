@@ -24,20 +24,17 @@ def about():
 @log_receiver_blueprint.route('/log_forwarding', methods=["GET", "POST"])
 def processLog():
     if request.method == "GET":
-        print("processing log")
         statement = request.get_json(force=True)
 
 
     if request.method =="POST":
-        print("processing log Post")
-        print(request.content_type)
         statement = request.get_json(force=True)
+
     statement_string = json.dumps(statement)
     statement_string = statement_string.replace("&46;", ".")
     statement = json.loads(statement_string)
     relevant = sp.statement_relevant(statement)
     if relevant:
-        print("relevant")
         sp.process_statement(statement)
         con.db.xapi_statements.insert_one(statement)
     sys.stdout.flush()

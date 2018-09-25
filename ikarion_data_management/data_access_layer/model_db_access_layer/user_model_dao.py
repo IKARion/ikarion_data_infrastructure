@@ -159,7 +159,6 @@ def get_repo_activities(repo, start_time, *constraints):
     :rtype:
     """
     # TODO Project content especially forum post text
-    print(con.db.name)
     #users = get_all_users_for_group(course, group, *constraints)
     users = get_all_users_for_git_repo(repo, *constraints)
 

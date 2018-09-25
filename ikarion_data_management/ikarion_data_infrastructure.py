@@ -38,8 +38,6 @@ app.config.from_object(config.DevelopmentConfig)
 modelDBConnection.init_app(app)
 ## init background scheduler for sending models
 scheduler.init_app(app)
-print(app.config['RSCRIPT'])
-print(scriptConf['RSCRIPT'])
 scriptConf['RSCRIPT'] = app.config['RSCRIPT']
 scheduler.start()
 

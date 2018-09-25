@@ -43,19 +43,6 @@ def get_all_users():
 
 @user_model_blueprint.route("/<course>")
 def get_all_users_for_course(course):
-    print("***5")
-    # print(request.url)
-    # print(request.query_string)
-    # print("***6")
-    print(course)
-    # print("***7")
-    # print(course)
-    # print(request.query_string)
-    print("***8")
-    s = request.query_string
-    print(course)
-    #print(course + "?" + s.decode("utf-8"))
-    #course = course + "?" + s.decode("utf-8")
 
     course = fix_url_chars(course)
 
@@ -70,9 +57,7 @@ def get_all_courses():
 # test repo2
 @user_model_blueprint.route("/git_users/<repo>")
 def test_for_repo2(repo):
-    print(repo)
     repo = fix_url_chars(repo)
-    print(repo)
     return jsonify(data=umd.get_all_users_for_git_repo(repo))
 
 

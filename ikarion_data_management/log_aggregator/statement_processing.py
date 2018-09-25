@@ -132,7 +132,6 @@ def extract_course_id(statement):
 
 
 def write_new_groups_and_tasks(statement):
-    print("Writing groups and tasks")
     courseid = extract_course_id(statement)
     groups = statement["context"]["groups"]
     statement["relevant_group_task"] = {}
@@ -149,13 +148,9 @@ def write_new_groups_and_tasks(statement):
                 if task_start < statement_time < task_end:
                     statement["relevant_group_task"] = group
                     break
-                else:
-                    print("statement not in task timeframe")
         group["courseid"] = courseid
         umd.update_group(group, courseid)
         umd.update_group_task(task, courseid)
-
-    print("Writing groups and tasks end")
 
 
 def process_statement(statement):
