@@ -10,7 +10,7 @@ task_schema = "relevant_group_task.task.task_id"
 artefact_schema = "object.id"
 artefact_type_schema = "object.definition.type"
 #artefact_
-user_schema = "actor.name"
+user_schema = "actor.account.name"
 time_stamp_schema = "timestamp"
 action_schema = "verb.id"
 verb_schema = "verb.id"

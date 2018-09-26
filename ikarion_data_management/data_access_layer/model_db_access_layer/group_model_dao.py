@@ -107,7 +107,7 @@ def get_group_activities(course, group, *constraints):
     projection = {
         "_id": 0,
         "group_id": group,
-        "user_id": "$actor.name",
+        "user_id": "$" + user_schema,
         "verb_id": "$verb.id",
         "object_id": "$object.id",
         "timestamp": "$timestamp",
@@ -155,7 +155,7 @@ def get_all_task_activities(course, task):
         "$project": {
             "_id": 0,
             "group_id": "relevant_group_task.id",
-            "user_id": "$actor.name",
+            "user_id": "$" + user_schema,
             "verb_id": "$verb.id",
             "object_id": "$object.id",
             "timestamp": "$timestamp",
