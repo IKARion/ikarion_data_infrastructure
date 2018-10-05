@@ -25,7 +25,7 @@ class Config(object):
     SCHEDULER = {
         'timezone': 'UTC'
     }
-    RSCRIPT = "Rscript.exe"
+    RSCRIPT = "Rscript"
 
 class ProductionConfig(Config):
     MONGO_URI = "mongodb://ikarion:ikariondb@cluster0-shard-00-00-n3pml.mongodb.net:27017,cluster0-shard-00-01-n3pml.mongodb.net:27017,cluster0-shard-00-02-n3pml.mongodb.net:27017/db2?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"

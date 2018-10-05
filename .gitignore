@@ -9,3 +9,4 @@
 *.pyc
 venv/
 /**/__pycache__/
+/ikarion_data_management/config.py
