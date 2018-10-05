@@ -36,6 +36,7 @@ app.config.from_object(config.DevelopmentConfig)
 #app.config.from_object(config.ProductionConfig)
 
 
+
 ## init db
 modelDBConnection.init_app(app)
 ## init background scheduler for sending models
