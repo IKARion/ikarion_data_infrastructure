@@ -32,8 +32,8 @@ app.register_blueprint(log_receiver_blueprint, url_prefix='/logs')
 app.register_blueprint(xapi_access_endpoints, url_prefix='/xapi')
 
 # Inititalise components
-#app.config.from_object(config.DevelopmentConfig)
-app.config.from_object(config.ProductionConfig)
+app.config.from_object(config.DevelopmentConfig)
+#app.config.from_object(config.ProductionConfig)
 
 ## init db
 modelDBConnection.init_app(app)
