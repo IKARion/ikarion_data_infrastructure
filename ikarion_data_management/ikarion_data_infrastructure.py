@@ -1,5 +1,7 @@
+import sys
 from flask import Flask
 import flask_pymongo as fp
+
 # Blueprints for the different APIs
 
 app = Flask("db")
@@ -16,7 +18,7 @@ from ikarion_data_management.data_access_layer.management_access_layer import sc
 from ikarion_data_management import config
 import ikarion_data_management.data_access_layer.model_db_access_layer.user_model_dao as umd
 
-#CONFIG = 'conf.ini'
+# CONFIG = 'conf.ini'
 
 # Register API endpoints
 # Data Model API
@@ -32,10 +34,14 @@ app.register_blueprint(log_receiver_blueprint, url_prefix='/logs')
 app.register_blueprint(xapi_access_endpoints, url_prefix='/xapi')
 
 # Inititalise components
-app.config.from_object(config.DevelopmentConfig)
-#app.config.from_object(config.ProductionConfig)
-
-
+# Check for Commandline Options to select Config
+args = sys.argv
+if len(args) > 1 and args[1] == "production":
+    app.config.from_object(config.ProductionConfig)
+    print("Running with Production Config")
+else:
+    app.config.from_object(config.DevelopmentConfig)
+    print("Running with Development Config")
 
 ## init db
 modelDBConnection.init_app(app)
