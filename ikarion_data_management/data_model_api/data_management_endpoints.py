@@ -40,22 +40,22 @@ def getCurrentJobs():
     )
 
 @data_management_blueprint.route('/jobs/remove/<id>')
-def removeJob(jobId):
+def removeJob(id):
     return jsonify(
-        management_dao.removeJob(jobId)
+        management_dao.removeJob(id)
     )
     # TODO: Handle exception
 
 @data_management_blueprint.route('/jobs/pause/<id>')
-def pauseJob(jobId):
+def pauseJob(id):
     return jsonify(
-        management_dao.pauseJob(jobId)
+        management_dao.pauseJob(id)
     )
     # TODO: Handle exception
 
 @data_management_blueprint.route('/jobs/resume/<id>')
-def resumeJob(jobId):
+def resumeJob(id):
     return jsonify(
-        management_dao.resumeJob(jobId)
+        management_dao.resumeJob(id)
     )
     # TODO: Handle exception
