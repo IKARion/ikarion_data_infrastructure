@@ -7,3 +7,4 @@ pytz
 bdateutil
 APScheduler
 flask_apscheduler
+selenium

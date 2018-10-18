@@ -4,6 +4,11 @@ import pytz
 import bdateutil.parser as dp
 import ikarion_data_management.data_access_layer.model_db_access_layer.group_model_dao as umd
 
+RELVANT_MODEL_OBJECT_TYPES = [
+    "wiki",
+    "forum",
+]
+
 
 def convert_timestamp(statement):
     """
@@ -159,3 +164,28 @@ def process_statement(statement):
     convert_timestamp(statement)
     process_groups(statement)
     write_new_groups_and_tasks(statement)
+
+
+def relevant_model_change(statement):
+    object_type = statement["object"]["definition"]["type"]
+    verb_id = statement["verb"]["id"]
+
+    if relevant_object_type(object_type) and relevant_verb(verb_id):
+        return True
+    else:
+        return False
+
+
+def relevant_object_type(type):
+    for relevant_type in RELVANT_MODEL_OBJECT_TYPES:
+        if relevant_type in type:
+            return True
+    return False
+
+
+def relevant_verb(verb_id):
+    if "view" in verb_id:
+        return False
+    else:
+        return True
+

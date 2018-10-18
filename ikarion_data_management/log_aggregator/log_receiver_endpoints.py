@@ -3,12 +3,14 @@ from flask import Blueprint
 from ..data_access_layer.model_db_access_layer import user_model_dao
 #from ..data_access_layer.model_db_access_layer import group_model_dao
 import sys
+import datetime
 from flask import request
 from flask import Response
 from ikarion_data_management.data_access_layer import modelDBConnection as con
 from ikarion_data_management.log_aggregator import statement_processing as sp
 
 from ikarion_data_management.data_access_layer.model_db_access_layer.user_model_dao import course_query
+from ikarion_data_management.data_access_layer.management_access_layer import scheduler
 
 log_receiver_blueprint = Blueprint('log_receiver_blueprint', __name__)
 
@@ -37,7 +39,10 @@ def processLog():
     if relevant:
         sp.process_statement(statement)
         con.db.xapi_statements.insert_one(statement)
-    sys.stdout.flush()
+    if sp.relevant_model_change(statement):
+        for job in scheduler.get_jobs():
+            job.modify(next_run_time=datetime.datetime.now())
+
     return Response(status=200)
 
 
