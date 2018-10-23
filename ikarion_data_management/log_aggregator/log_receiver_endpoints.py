@@ -39,9 +39,9 @@ def processLog():
     if relevant:
         sp.process_statement(statement)
         con.db.xapi_statements.insert_one(statement)
-    if sp.relevant_model_change(statement):
-        for job in scheduler.get_jobs():
-            job.modify(next_run_time=datetime.datetime.now())
+    # if sp.relevant_model_change(statement):
+    #     for job in scheduler.get_jobs():
+    #         job.modify(next_run_time=datetime.datetime.now())
 
     return Response(status=200)
 
