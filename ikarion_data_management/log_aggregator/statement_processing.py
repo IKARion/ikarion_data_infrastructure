@@ -2,7 +2,7 @@ import datetime
 from collections import abc
 import pytz
 import bdateutil.parser as dp
-import ikarion_data_management.data_access_layer.model_db_access_layer.group_model_dao as umd
+import ikarion_data_management.data_access_layer.model_db_access_layer.group_model_dao as gmd
 
 RELVANT_MODEL_OBJECT_TYPES = [
     "wiki",
@@ -154,8 +154,8 @@ def write_new_groups_and_tasks(statement):
                     statement["relevant_group_task"] = group
                     break
         group["courseid"] = courseid
-        umd.update_group(group, courseid)
-        umd.update_group_task(task, courseid)
+        gmd.update_group(group, courseid)
+        gmd.update_group_task(task, courseid)
 
 
 def process_statement(statement):

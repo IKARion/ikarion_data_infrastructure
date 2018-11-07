@@ -191,7 +191,14 @@ def get_all_task_activities(course, task):
 #     return avg_latency
 
 def update_group(group, course):
-    con.db.groups.update({"id": group["id"], "courseid": course}, group, upsert=True)
+    db_group = con.db.groups.find_one({"id": group["id"], "courseid": course})
+    if db_group is None:
+        con.db.groups.update({"id": group["id"], "courseid": course}, group, upsert=True)
+    else:
+        n_members_db = len(db_group["group_members"])
+        n_members = len(group["group_members"])
+        if n_members > n_members_db:
+            con.db.groups.update({"id": group["id"], "courseid": course}, group, upsert=True)
 
 
 def update_group_task(task, course):

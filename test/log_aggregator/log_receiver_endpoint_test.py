@@ -47,6 +47,7 @@ class LogReceiverTestCase(unittest.TestCase):
         print(len(db_statement_list))
         print(db_statement_list[0])
         groups = list(lre.con.db.groups.find({}))
+        print("\n\n\nGroups in Database\n\n\n")
         print(groups)
 
         tasks = list(lre.con.db.grouptasks.find({}))
