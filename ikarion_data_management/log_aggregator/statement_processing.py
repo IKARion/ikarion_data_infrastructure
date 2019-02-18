@@ -130,10 +130,17 @@ def process_groups(statement):
 def extract_course_id(statement):
     groupings = statement["context"]["contextActivities"]["grouping"]
     course_type = "http://lrs.learninglocker.net/define/type/moodle/course"
-    for grouping in groupings:
-        if grouping["definition"]["type"] == course_type:
-            return grouping["id"]
-    return "no course id"
+    # for grouping in groupings:
+    #     if grouping["definition"]["type"] == course_type:
+    #         return grouping["id"]
+    site = groupings[0]["id"]
+    course_extention_url = "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log"
+    course_extension = [item for item in statement["context"]["extensions"]
+                        if item["id"] == course_extention_url][0]
+    courseid = course_extension["courseid"]
+    full_id_template = "{}/course/view.php?id={}"
+
+    return full_id_template.format(site, courseid)
 
 
 def write_new_groups_and_tasks(statement):
