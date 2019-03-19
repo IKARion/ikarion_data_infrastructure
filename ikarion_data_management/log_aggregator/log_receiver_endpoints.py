@@ -25,13 +25,8 @@ def about():
 # (See https://ht2ltd.zendesk.com/hc/en-us/articles/115002026451--NEW-LL-Statement-Forwarding)
 @log_receiver_blueprint.route('/log_forwarding', methods=["GET", "POST"])
 def processLog():
-    if request.method == "GET":
-        statement = request.get_json(force=True)
 
-
-    if request.method =="POST":
-        statement = request.get_json(force=True)
-
+    statement = request.get_json(force=True)
     statement_string = json.dumps(statement)
     statement_string = statement_string.replace("&46;", ".")
     statement = json.loads(statement_string)

@@ -584,6 +584,7 @@ def generate_xapi_statement2(*, user, course, time, verb, artefact, group=None, 
         sp.process_statement(statement)
     return statement
 
+
 def generate_xapi_statement3(*, user, course, time, verb, artefact, group=None, process=True):
     statement = {
         "authority": {
@@ -815,4 +816,218 @@ def generate_xapi_statement3(*, user, course, time, verb, artefact, group=None, 
 
     return statement
 
+
 generate_xapi_statement2 = generate_xapi_statement3
+
+
+
+
+def generate_xapi_self_assessment_statement(*, user, course, time, verb, artefact, group=None, process=True):
+    statement = {
+        "authority": {
+            "objectType": "Agent",
+            "name": "New Client",
+            "mbox": "mailto:hello@learninglocker.net"
+        },
+        "stored": "2019-02-18T08:47:46.111Z",
+        "context": {
+            "extensions": {
+                "http://collide.info/extensions/group": {
+                    group: {
+                        "group_members": [
+                            {
+                                "name": "nlrrOSj7CO4Pk21IIcDnog==",
+                                "fullname": "1KgfBuaHozTVQrBTRvWP4Q==",
+                                "email": "/nIg1zgiveWGp+RDMAwtvQ==",
+                                "username": "n8BzisYpc/UDLu7B8Mkbaw=="
+                            },
+                            {
+                                "name": "tLbffKo5+/MJtqFFCnIWEg==",
+                                "fullname": "enE6kWpAN3/yrrtAsBAaSg==",
+                                "email": "Wro71ckSGFsrQJLxxWAWTA==",
+                                "username": "iFtPkItpO9yq2DeDyGZ28A=="
+                            },
+                            {
+                                "name": "wdqshw4nFEYjiBA+UokJ5w==",
+                                "fullname": "fueZPE9k8NiCAVLYXgaR/A==",
+                                "email": "yyWen1z/5ULLRnyUavzoDA==",
+                                "username": "zXytLGVx49tOZ8sIlRsJXw=="
+                            },
+                            {
+                                "name": "EA12iYsCduiMrz+xSdFQjQ==",
+                                "fullname": "wDzP6tmGLzWycKKwOr3WrA==",
+                                "email": "DTZXo6TQk++n08GnsWFLTg==",
+                                "username": "t9KB3PX9sr3tMcNTUFq/9g=="
+                            }
+                        ],
+                        "task": {
+                            "task_resources": [
+                                "https://moodle.ikarion-projekt.de/mod/forum/view.php?id=1210",
+                                "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=1211"
+                            ],
+                            "task_type": "collaborative wiki writing",
+                            "task_end": "1550651700",
+                            "task_start": "1550478900",
+                            "task_name": "EM_T1",
+                            "task_id": "66"
+                        },
+                        "timemodified": "1550479289",
+                        "timecreated": "1550479289",
+                        "description": "none",
+                        "name": "EM_1",
+                        "id": group
+                    }
+                },
+                "http://lrs.learninglocker.net/define/extensions/info": {
+                    "https://moodle.org/": "3.2.3+ (Build: 20170509)"
+                },
+                "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log": {
+                    "realuserid": "dTuHTrIhox5BeFGLlQ9snQ==",
+                    "eventname": "\\core\\event\\course_viewed",
+                    "userid": "nlrrOSj7CO4Pk21IIcDnog==",
+                    "origin": "web",
+                    "ip": "134.91.34.179",
+                    "contextid": 2295,
+                    "anonymous": 0,
+                    "edulevel": 2,
+                    "objecttable": None,
+                    "other": "N;",
+                    "target": "course",
+                    "relateduserid": None,
+                    "contextlevel": 50,
+                    "action": "viewed",
+                    "courseid": course,
+                    "objectid": None,
+                    "timecreated": 1550479665,
+                    "component": "core",
+                    "crud": "r",
+                    "contextinstanceid": "18"
+                }
+            },
+            "language": "en",
+            "platform": "Moodle",
+            "contextActivities": {
+                "grouping": [
+                    {
+                        "definition": {
+                            "extensions": {
+                                "http://lrs.learninglocker.net/define/extensions/moodle_course": {
+                                    "cacherev": "1550247141",
+                                    "showreports": "0",
+                                    "groupmode": "0",
+                                    "idnumber": "",
+                                    "completionnotify": "0",
+                                    "summary": "",
+                                    "shortname": "IKARion Projekt",
+                                    "maxbytes": "0",
+                                    "theme": "",
+                                    "enddate": "0",
+                                    "groupmodeforce": "0",
+                                    "newsitems": "3",
+                                    "legacyfiles": "0",
+                                    "lang": "",
+                                    "requested": "0",
+                                    "url": "https://moodle.ikarion-projekt.de",
+                                    "sortorder": "1",
+                                    "startdate": "0",
+                                    "visible": "1",
+                                    "visibleold": "1",
+                                    "timemodified": "1524571833",
+                                    "format": "site",
+                                    "calendartype": "",
+                                    "showgrades": "1",
+                                    "marker": "0",
+                                    "fullname": "IKARion Projekt",
+                                    "type": "site",
+                                    "id": course,
+                                    "timecreated": "1500013772",
+                                    "summaryformat": "0",
+                                    "category": "0",
+                                    "enablecompletion": "0",
+                                    "defaultgroupingid": "0"
+                                }
+                            },
+                            "description": {
+                                "en": "IKARion Projekt"
+                            },
+                            "name": {
+                                "en": "IKARion Projekt"
+                            },
+                            "type": "http://id.tincanapi.com/activitytype/site"
+                        },
+                        "id": "https://moodle.ikarion-projekt.de",
+                        "objectType": "Activity"
+                    }
+                ],
+                "category": [
+                    {
+                        "definition": {
+                            "description": {
+                                "en": "Moodle is a open source learning platform designed to provide educators, administrators and learners with a single robust, secure and integrated system to create personalised learning environments."
+                            },
+                            "name": {
+                                "en": "Moodle"
+                            },
+                            "type": "http://id.tincanapi.com/activitytype/source"
+                        },
+                        "id": "http://moodle.org",
+                        "objectType": "Activity"
+                    }
+                ]
+            }
+        },
+        "actor": {
+            "account": {
+                "homePage": "https://moodle.ikarion-projekt.de",
+                "name": user
+            },
+            "name": user,
+            "objectType": "Agent"
+        },
+        "timestamp": time,
+        "version": "1.0.0",
+        "id": "45a0477a-9e94-4732-9b5c-39efb320dfea",
+        "verb": {
+            "display": {
+                "en": "viewed"
+            },
+            "id": verb
+        },
+        "object": {
+            "id": artefact,
+            "definition": {
+                "type": "https://moodle.ikarion-projekt.de/define/type/moodle/block_groupactivity",
+                "name": {
+                    "en": "Groupactivity self assessment"
+                },
+                "description": {
+                    "en": "Groupactivity self assessment completed"
+                },
+                "extensions": {
+                    "http://lrs.learninglocker.net/define/extensions/moodle_block": {
+                        "component": "block_groupactivity",
+                        "contextinstanceid": "573",
+                        "items": [
+                            {
+                                "id": "7",
+                                "value": "0"
+                            },
+                            {
+                                "id": "8",
+                                "value": "3"
+                            },
+                            {
+                                "id": "9",
+                                "value": "2"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+
+    if process:
+        sp.process_statement(statement)
+
+    return statement

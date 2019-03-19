@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from ..data_access_layer.model_db_access_layer import group_model_dao
 from ..data_access_layer.model_db_access_layer import user_model_dao
 from .util import fix_url_chars
@@ -43,6 +43,15 @@ def get_all_groups_for_task(course,task):
     course = fix_url_chars(course)
     return jsonify(data=group_model_dao.get_all_groups_for_task(course, task))
 
+
+@group_model_blueprint.route("/group_self_assessment/<course_id>/<group_id>/<task_id>/", defaults={
+    "timestamp": "2147483648"
+})
+@group_model_blueprint.route("/group_self_assessment/<course_id>/<group_id>/<task_id>/<int:timestamp>")
+def get_group_self_assessment(course_id, group_id, task_id, timestamp):
+    res = group_model_dao.get_group_self_assesment(course_id, group_id, task_id, int(timestamp))
+
+    return jsonify(data=res)
 
 """
     Returns json array of objects with fields [group_id, user_id, verb_id, object_id, timestamp]

@@ -99,8 +99,6 @@ def statement_relevant(statement):
 
 
 def restructure_extensions(statement):
-    # TODO restructure statement so that keys with dots in them become fields instead
-
     extentions_list = nested_json_extensions(statement)
     for extensions_map in extentions_list:
         extensions = extensions_map["extensions"]
@@ -138,31 +136,57 @@ def extract_course_id(statement):
     course_extension = [item for item in statement["context"]["extensions"]
                         if item["id"] == course_extention_url][0]
     courseid = course_extension["courseid"]
-    full_id_template = "{}/course/view.php?id={}"
 
-    return full_id_template.format(site, courseid)
+    # full_id_template = "{}/course/view.php?id={}"
+    # return full_id_template.format(site, courseid)
+    return courseid
 
 
 def write_new_groups_and_tasks(statement):
     courseid = extract_course_id(statement)
     groups = statement["context"]["groups"]
-    statement["relevant_group_task"] = {}
     groupings = statement["context"]["contextActivities"]["grouping"]
     for group in groups:
         task = group["task"]
         task["courseid"] = courseid
-        task_modules = task["task_resources"]
-        for grouping in groupings:
-            if grouping["id"] in task_modules:
-                statement_time = statement["timestamp"]
-                task_start = int(task["task_start"])
-                task_end = int(task["task_end"])
-                if task_start < statement_time < task_end:
-                    statement["relevant_group_task"] = group
-                    break
         group["courseid"] = courseid
         gmd.update_group(group, courseid)
         gmd.update_group_task(task, courseid)
+
+
+def determine_relevant_task(statement):
+    # is it a self assessment statement?
+    self_id = "http://lrs.learninglocker.net/define/extensions/moodle_block"
+    obj_name = "Groupactivity self assessment"
+
+    self_assessment = False
+    obj = statement["object"]
+    if obj["definition"]["name"]["en"] == obj_name:
+        self_assessment = True
+
+    groups = statement["context"]["groups"]
+    statement["relevant_group_task"] = {}
+    groupings = statement["context"]["contextActivities"]["grouping"]
+    statement_time = statement["timestamp"]
+    if self_assessment:
+        for group in groups:
+            task = group["task"]
+            task_start = int(task["task_start"])
+            task_end = int(task["task_end"])
+            if task_start < statement_time < task_end:
+                statement["relevant_group_task"] = group
+    else:
+        for group in groups:
+            task = group["task"]
+            task_modules = task["task_resources"]
+            for grouping in groupings:
+                if grouping["id"] in task_modules:
+
+                    task_start = int(task["task_start"])
+                    task_end = int(task["task_end"])
+                    if task_start < statement_time < task_end:
+                        statement["relevant_group_task"] = group
+                        break
 
 
 def process_statement(statement):
@@ -171,6 +195,7 @@ def process_statement(statement):
     convert_timestamp(statement)
     process_groups(statement)
     write_new_groups_and_tasks(statement)
+    determine_relevant_task(statement)
 
 
 def relevant_model_change(statement):
@@ -195,4 +220,3 @@ def relevant_verb(verb_id):
         return False
     else:
         return True
-

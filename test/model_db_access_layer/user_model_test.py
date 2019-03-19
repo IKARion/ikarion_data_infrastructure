@@ -5,6 +5,7 @@ from test.model_db_access_layer import user_model_test_data as umd
 from test.model_db_access_layer import populate_database_test_data as pdt
 
 from ikarion_data_management.data_access_layer.model_db_access_layer import user_model_dao as um
+from ikarion_data_management.data_access_layer.model_db_access_layer import group_model_dao as gm
 from ikarion_data_management.data_model_api.user_model_endpoints import encode_url_chars
 import ikarion_data_management.ikarion_data_infrastructure as idi
 import json
@@ -74,6 +75,7 @@ class UserModelDAOTestCase(unittest.TestCase):
     def setUpClass(cls):
         mock_con = mongomock.MongoClient()
         um.con = mock_con
+        gm.con = mock_con
         pdt.populate_xapi_model(mock_con)
         cls.con = mock_con
 
@@ -102,11 +104,11 @@ class UserModelDAOTestCase(unittest.TestCase):
         self.assertEqual(len(times), 36)
 
     def test_get_users_for_group(self):
-        users = um.get_all_users_for_group("0", "0")
+        users = gm.get_all_users_for_group("0", "0")
         print(users)
 
     def test_get_groups_for_course(self):
-        groups = um.get_all_groups_for_course("0")
+        groups = gm.get_all_groups_for_course("0")
         print(groups)
         self.assertEqual(len(groups), 4)
 
@@ -124,7 +126,7 @@ class UserModelDAOTestCase(unittest.TestCase):
         print(avg_lat_group_1)
 
     def test_get_group_activities(self):
-        group_activities = um.get_group_activities("0", "0", 0)
+        group_activities = gm.get_group_activities("0", "0", 0)
         print(group_activities)
 
     def test_get_all_courses(self):

@@ -8,12 +8,12 @@ from ikarion_data_management.data_model_api.user_model_endpoints import encode_u
 import ikarion_data_management.ikarion_data_infrastructure as idi
 import json
 
-
 ITEM_NUMBER = 5
 
 UM_PRE = "/user_model"
 GM_PRE = "/groups"
 COURSEID = encode_url_chars("http://localhost/ikarion_moodle/course/view.php?id=3")
+
 
 class GroupModelDAOTestCase(unittest.TestCase):
     pass
@@ -33,7 +33,38 @@ class UserModelEndpointsTestCase(unittest.TestCase):
         pdt.populate_xapi_model(mock_con)
 
     def test_get_group_tasks(self):
-        response = self.app.get(GM_PRE+"/group_tasks/"+COURSEID)
+        response = self.app.get(GM_PRE + "/group_tasks/" + COURSEID)
+        print(COURSEID)
+        print(response)
+        print(response.data)
+        response_str = response.data.decode("utf-8")
+        print(response_str)
+        r_json = json.loads(response_str)
+        print(r_json)
+
+    def tearDown(self):
+        pass
+
+
+class GroupModelSelfAssessmentTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        idi.app.testing = True
+
+    def setUp(self):
+        self.app = idi.app.test_client()
+        # mock_con = mongomock.MongoClient()
+        # um.con = mock_con
+        # gm.con = mock_con
+        # with idi.app.app_context():
+        #     pdt.populate_xapi_model_self_assessment(gm.con)
+
+    def test_get_self_assessment(self):
+        course = encode_url_chars("https://moodle.ikarion-projekt.de/course/view.php?id={}".format(0))
+        url_temp = GM_PRE + "/group_self_assessment/{}/{}/{}/"
+        url = url_temp.format(course, 0, "66")
+        response = self.app.get(url)
         print(COURSEID)
         print(response)
         print(response.data)
