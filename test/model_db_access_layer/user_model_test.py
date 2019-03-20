@@ -67,7 +67,8 @@ ITEM_NUMBER = 5
 # Usermodel Url prefix
 UM_PRE = "/user_model"
 GM_PRE = "/groups"
-COURSEID = encode_url_chars("http://localhost/ikarion_moodle/course/view.php?id=3")
+# COURSEID = encode_url_chars("http://localhost/ikarion_moodle/course/view.php?id=3")
+COURSEID_TEMPLATE = encode_url_chars("https://moodle.ikarion-projekt.de/course/view.php?id=")+"{}"
 
 
 class UserModelDAOTestCase(unittest.TestCase):
@@ -82,56 +83,67 @@ class UserModelDAOTestCase(unittest.TestCase):
     def setUp(self):
         pass
 
+
+    def test_get_all_courses(self):
+        courses = um.get_all_courses()
+        print(courses)
+
     def test_get_user_artefact_types(self):
         print("artefact types")
-        artefact_types = um.get_user_artefact_types("1", "1")
+        courses = um.get_all_courses()
+        artefact_types = um.get_user_artefact_types("1", courses[0])
         print(artefact_types)
 
     def test_get_user_model_for_course(self):
+        courses = um.get_all_courses()
         print("user")
-        user = um.get_user_model_for_course("1", "1")
+        user = um.get_user_model_for_course("1", courses[0])
         print(user)
 
     def test_get_user_active_days(self):
+        courses = um.get_all_courses()
         print("active days")
-        active_days = um.get_user_active_days("1", "1")
+        active_days = um.get_user_active_days("1", courses[0])
         print(active_days)
         self.assertGreater(len(active_days), 0)
 
     def test_get_user_times(self):
-        times = um.get_all_user_times("0", "0")
+        courses = um.get_all_courses()
+        times = um.get_all_user_times("0", courses[0])
         print(times)
         self.assertEqual(len(times), 36)
 
     def test_get_users_for_group(self):
-        users = gm.get_all_users_for_group("0", "0")
+        courses = um.get_all_courses()
+        users = gm.get_all_users_for_group(courses[0], "0")
         print(users)
 
     def test_get_groups_for_course(self):
-        groups = gm.get_all_groups_for_course("0")
+        courses = um.get_all_courses()
+        groups = gm.get_all_groups_for_course(courses[0])
         print(groups)
         self.assertEqual(len(groups), 4)
 
     def test_get_avg_latency(self):
-        avg_lat = um.get_user_average_latency("0", "0")
+        courses = um.get_all_courses()
+        avg_lat = um.get_user_average_latency("0", courses[0])
         print(avg_lat)
 
     def test_get_avg_latency_with_constraints(self):
         constraints = [{
             "verb.id": "http://id.tincanapi.com/verb/replied"
         }]
-        avg_lat_group_0 = um.get_user_average_latency("0", "0", *constraints)
-        avg_lat_group_1 = um.get_user_average_latency("0", "1", *constraints)
-        print(avg_lat_group_0)
-        print(avg_lat_group_1)
+        courses = um.get_all_courses()
+        avg_lat_course_0 = um.get_user_average_latency("0", courses[0], *constraints)
+        avg_lat_course_1 = um.get_user_average_latency("0", courses[1], *constraints)
+        print(avg_lat_course_0)
+        print(avg_lat_course_1)
 
     def test_get_group_activities(self):
-        group_activities = gm.get_group_activities("0", "0", 0)
+        courses = um.get_all_courses()
+        group_activities = gm.get_group_activities(courses[0], "0")
         print(group_activities)
 
-    def test_get_all_courses(self):
-        courses = um.get_all_courses()
-        print(courses)
 
     def test_get_xapi_statements(self):
         statements = list(UserModelDAOTestCase.con.db.xapi_statements.find({}))
@@ -151,6 +163,8 @@ class UserModelEndpointsTestCase(unittest.TestCase):
         mock_con = mongomock.MongoClient()
         um.con = mock_con
         pdt.populate_xapi_model(mock_con)
+        self.courses = um.get_all_courses()
+        self.course = encode_url_chars(self.courses[0])
 
     def test_get_user_model_for_course(self):
         print("user")

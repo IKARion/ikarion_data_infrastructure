@@ -137,15 +137,28 @@ def extract_course_id(statement):
                         if item["id"] == course_extention_url][0]
     courseid = course_extension["courseid"]
 
-    # full_id_template = "{}/course/view.php?id={}"
-    # return full_id_template.format(site, courseid)
-    return courseid
+    full_id_template = "{}/course/view.php?id={}"
+    return full_id_template.format(site, courseid)
+    # return courseid
 
+
+def project_fields(statement):
+    """
+    Make certain data fields of xapi statemements
+    easier to query
+    :param statements:
+    :type statements:
+    :return:
+    :rtype:
+    """
+
+    course_id = extract_course_id(statement)
+    statement["course_id"] = course_id
 
 def write_new_groups_and_tasks(statement):
-    courseid = extract_course_id(statement)
+    # courseid = extract_course_id(statement)
+    courseid = statement["course_id"]
     groups = statement["context"]["groups"]
-    groupings = statement["context"]["contextActivities"]["grouping"]
     for group in groups:
         task = group["task"]
         task["courseid"] = courseid
@@ -193,6 +206,7 @@ def process_statement(statement):
     restructure_extensions(statement)
     replace_dots(statement)
     convert_timestamp(statement)
+    project_fields(statement)
     process_groups(statement)
     write_new_groups_and_tasks(statement)
     determine_relevant_task(statement)

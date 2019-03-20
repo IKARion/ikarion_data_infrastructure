@@ -64,7 +64,8 @@ def get_all_user_times(user, course, *constraints):
 
 
 def get_all_courses():
-    return list(con.db.xapi_statements.aggregate(course_list_query))
+    return list(con.db.xapi_statements.distinct("course_id"))
+    # return list(con.db.xapi_statements.aggregate(course_list_query))
 
 
 def get_all_users():
@@ -201,7 +202,7 @@ def get_repo_activities(repo, start_time, *constraints):
 def get_user_average_latency(user, course, *constraints):
 
     times = get_all_user_times(user, course, *constraints)
-
+    times.sort()
     latencies = []
     for first, second in zip(times[:-1], times[1:]):
         latencies.append(second-first)

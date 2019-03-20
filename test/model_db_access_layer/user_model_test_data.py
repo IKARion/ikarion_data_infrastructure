@@ -742,7 +742,7 @@ def generate_xapi_statement3(*, user, course, time, verb, artefact, group=None, 
         "actor": {
             "account": {
                 "homePage": "https://moodle.ikarion-projekt.de",
-                "name": "nlrrOSj7CO4Pk21IIcDnog=="
+                "name": user
             },
             "name": user,
             "objectType": "Agent"
