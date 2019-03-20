@@ -260,7 +260,7 @@ def generate_xapi_statement(*, user, course, time, verb, artefact, group=None, p
                 "name": {
                     "de": "Beginn Woche 2"
                 },
-                "type": "http://lrs.learninglocker.net/define/type/moodle/forum_discussions"
+                "type": 'http://id.tincanapi.com/activitytype/forum-topic',
             },
             "id": artefact,
             "objectType": "Activity"
@@ -574,7 +574,7 @@ def generate_xapi_statement2(*, user, course, time, verb, artefact, group=None, 
                 "name": {
                     "en": "testsubject_context"
                 },
-                "type": "http://lrs.learninglocker.net/define/type/moodle/forum_discussions"
+                "type": "http://id.tincanapi.com/activitytype/forum-topic"
             },
             "id": artefact,
             "objectType": "Activity"
@@ -801,7 +801,7 @@ def generate_xapi_statement3(*, user, course, time, verb, artefact, group=None, 
                 "name": {
                     "en": "K"
                 },
-                "type": "http://lrs.learninglocker.net/define/type/moodle/course"
+                "type": 'http://id.tincanapi.com/activitytype/forum-topic',
             },
             "id": artefact,
             "objectType": "Activity"
@@ -810,9 +810,9 @@ def generate_xapi_statement3(*, user, course, time, verb, artefact, group=None, 
 
     if process:
         sp.process_statement(statement)
-    json_s = json.dumps(statement)
-    json_s.replace("forum", "blabla")
-    statement = json.loads(json_s)
+    # json_s = json.dumps(statement)
+    # json_s.replace("forum", "blabla")
+    # statement = json.loads(json_s)
 
     return statement
 

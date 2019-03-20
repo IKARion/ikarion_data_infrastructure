@@ -34,6 +34,12 @@ class GroupModelEndpointsTestCase(unittest.TestCase):
         self.courses = [encode_url_chars(item) for item in um.get_all_courses()]
         self.course = self.courses[0]
 
+    def test_get_groups_for_course(self):
+        response = self.app.get(GM_PRE + "/groups_for_course/{}".format(self.course))
+        print(response.data)
+        r_json = json.loads(response.data)
+        print(r_json)
+
     def test_get_group_tasks(self):
         response = self.app.get(GM_PRE + "/group_tasks/" + self.course)
         print(self.course)
@@ -59,8 +65,8 @@ class GroupModelSelfAssessmentTest(unittest.TestCase):
         # mock_con = mongomock.MongoClient()
         # um.con = mock_con
         # gm.con = mock_con
-        with idi.app.app_context():
-            pdt.populate_xapi_model_self_assessment(gm.con)
+        # with idi.app.app_context():
+        #     pdt.populate_xapi_model_self_assessment(gm.con)
 
     def test_get_self_assessment(self):
         course = encode_url_chars("https://moodle.ikarion-projekt.de/course/view.php?id={}".format(0))

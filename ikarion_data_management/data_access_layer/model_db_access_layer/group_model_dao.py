@@ -123,19 +123,20 @@ def get_group_activities(course, group, *constraints):
         "content": "$object.definition.extensions.message"
 
     }
-
+    forum_query = merge_query(course_query(course), group_query(group), forumQuery, *constraints)
     forumPosts = list(
 
         con.db.xapi_statements.aggregate([
-            {"$match": merge_query(course_query(course), group_query(group), forumQuery, *constraints)},
+            {"$match": forum_query},
             {"$unwind": "$object.definition.extensions"},
             {"$project": merge_query(projection, forumContentProjection)}
         ])
     )
 
+    wiki_query = merge_query(course_query(course), group_query(group), wikiQuery, *constraints)
     wikiEdits = list(
         con.db.xapi_statements.aggregate([
-            {"$match": merge_query(course_query(course), group_query(group), wikiQuery, *constraints)},
+            {"$match": wiki_query},
             {"$unwind": "$object.definition.extensions"},
             {"$project": merge_query(projection, wikiContentProjection)}
         ])
