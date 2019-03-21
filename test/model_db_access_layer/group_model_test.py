@@ -31,7 +31,7 @@ class GroupModelEndpointsTestCase(unittest.TestCase):
         um.con = mock_con
         gm.con = mock_con
         pdt.populate_xapi_model(mock_con)
-        self.courses = [encode_url_chars(item) for item in um.get_all_courses()]
+        self.courses = [encode_url_chars(item["courseid"]) for item in um.get_all_courses()]
         self.course = self.courses[0]
 
     def test_get_groups_for_course(self):

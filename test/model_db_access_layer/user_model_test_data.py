@@ -720,6 +720,56 @@ def generate_xapi_statement3(*, user, course, time, verb, artefact, group=None, 
                         },
                         "id": "https://moodle.ikarion-projekt.de",
                         "objectType": "Activity"
+                    },
+                    {
+                        "objectType": "Activity",
+                        "id": "https://moodle.ikarion-projekt.de/course/view.php?id=11",
+                        "definition": {
+                            "type": "http://lrs.learninglocker.net/define/type/moodle/course",
+                            "name": {
+                                "en": "Super Awesome Course {}".format(course)
+                            },
+                            "description": {
+                                "en": "Inhalte\r\nWie verändert sich die Kommunikation, wenn statt face-to-face mit anderen\r\nMenschen computerbasiert, z. B. über das Internet, kommuniziert wird? Welchen\r\nEinfluss hat dies auf das Lernen und Lehren? Im Rahmen der Veranstaltung werden\r\nzunächst klassische Theorien der computervermittelten Kommunikation besprochen,\r\num ein Verständnis der durch die Medienvermittlung auftretenden Veränderungen\r\nzu erreichen. Dann werden die Erkenntnisse spezifischer auf den Bereich des\r\nLehrens und Lernens angewandt und u. a. im Kontext von Web 2.0 Plattformen wie\r\nz. B. Wikis diskutiert, die das Lernen unterstützen können.\r\n\r\nNutzungsbedingungen\r\nIn diesem reinen\r\nOnline-Kurs gibt es keine fixen\r\nPräsenzzeiten. Die aktive ortsunabhängige Mitarbeit wird stattdessen über ein eigens\r\neingerichtetes Moodle-Konto ablaufen. Darüber müssen innerhalb festgelegter Zeiträume\r\nArbeiten geleistet werden, um im Anschluss eine Prüfungsleistung erbringen und Credit Points (CP) erhalten zu können. \r\n\r\nDie aktive\r\nPartizipation und Auseinandersetzung mit den Inhalten und (Gruppen-)Übungen\r\ninnerhalb des Moodles ist dementsprechend die Voraussetzung, um eine Prüfungsleistung erbringen zu können.Im Namen der Wissenschaft - du gestaltest die Online-Kurse der Zukunft mit. Wie? Indem du ein Häkchen setzt, d.h. dich bereit erklärst an der Begleitforschung zu diesem Kurs teilzunehmen, und uns gelegentlich deine Meinung sagst.\r\n\r\nBitte beachte: zur Prüfungsleistung bist du innerhalb des Onlinekurses mit deinem richtigen Namen identifizierbar.\r\n\r\n\r\n\r\nViel Erfolg und gutes Gelingen!\r\n\r\nSebastian Strauß\r\nFilipa Stoyanova\r\n"
+                            },
+                            "extensions": {
+                                "http://lrs.learninglocker.net/define/extensions/moodle_course": {
+                                    "cacherev": "1552995989",
+                                    "showreports": "0",
+                                    "groupmode": "1",
+                                    "idnumber": "",
+                                    "completionnotify": "0",
+                                    "summary": "<p><b>Inhalte</b><br>\r\nWie verändert sich die Kommunikation, wenn statt face-to-face mit anderen\r\nMenschen computerbasiert, z. B. über das Internet, kommuniziert wird? Welchen\r\nEinfluss hat dies auf das Lernen und Lehren? Im Rahmen der Veranstaltung werden\r\nzunächst klassische Theorien der computervermittelten Kommunikation besprochen,\r\num ein Verständnis der durch die Medienvermittlung auftretenden Veränderungen\r\nzu erreichen. Dann werden die Erkenntnisse spezifischer auf den Bereich des\r\nLehrens und Lernens angewandt und u. a. im Kontext von Web 2.0 Plattformen wie\r\nz. B. Wikis diskutiert, die das Lernen unterstützen können.</p>\r\n\r\n<p><b>Nutzungsbedingungen</b><br>\r\n</p><p>In diesem<span lang=\"DE\"> reinen\r\nOnline-Kurs gibt es <b>keine fixen\r\nPräsenzzeiten</b>. Die aktive <b>ortsunabhängige</b> Mitarbeit wird stattdessen über ein eigens\r\neingerichtetes Moodle-Konto ablaufen. Darüber müssen innerhalb festgelegter Zeiträume\r\nArbeiten geleistet werden, um im Anschluss eine Prüfungsleistung erbringen und Credit Points (CP) erhalten zu können. <br></span></p><p><span lang=\"DE\"></span>\r\n\r\n<span lang=\"DE\">Die <b>aktive\r\nPartizipation und Auseinandersetzung</b> mit den Inhalten und (Gruppen-)Übungen\r\ninnerhalb des Moodles ist dementsprechend die Voraussetzung, um eine Prüfungsleistung erbringen zu können.</span></p><p><span lang=\"DE\"><b>Im Namen der Wissenschaft</b> - du gestaltest die Online-Kurse der Zukunft mit. Wie? Indem du ein Häkchen setzt, d.h. dich bereit erklärst an der <a href=\"https://moodle.ikarion-projekt.de/pluginfile.php/1340/mod_label/intro/Begleitforschung%20Details%20%281%29.pdf\"><b>Begleitforschung</b></a> zu diesem Kurs teilzunehmen, und uns gelegentlich <span lang=\"DE\"></span>deine Meinung sagst.<br></span></p><p>\r\n\r\n</p><span lang=\"DE\"></span><p></p><p><b>Bitte beachte: zur Prüfungsleistung bist du innerhalb des Onlinekurses mit deinem richtigen Namen identifizierbar.</b><br>\r\n<!--[if !supportLineBreakNewLine]--><br>\r\n<!--[endif]--></p>\r\n\r\n<p>Viel Erfolg und gutes Gelingen!<br>\r\n<br>\r\nSebastian Strauß<br>\r\nFilipa Stoyanova<br>\r\n<!--[endif]--></p>",
+                                    "shortname": "CvK WS 2018/2019",
+                                    "maxbytes": "0",
+                                    "theme": "",
+                                    "enddate": "1553986800",
+                                    "groupmodeforce": "0",
+                                    "newsitems": "5",
+                                    "legacyfiles": "0",
+                                    "lang": "",
+                                    "requested": "0",
+                                    "url": "https://moodle.ikarion-projekt.de/course/view.php?id=11",
+                                    "sortorder": "10008",
+                                    "startdate": "1538949600",
+                                    "visible": "1",
+                                    "visibleold": "1",
+                                    "timemodified": "1539075016",
+                                    "format": "topics",
+                                    "calendartype": "",
+                                    "showgrades": "1",
+                                    "marker": "11",
+                                    "fullname": "Psychologische Grundlagen computervermittelter Kommunikation: Lernen und Lehren",
+                                    "type": "course",
+                                    "id": "11",
+                                    "timecreated": "1531922700",
+                                    "summaryformat": "1",
+                                    "category": "1",
+                                    "enablecompletion": "1",
+                                    "defaultgroupingid": "0"
+                                }
+                            }
+                        }
                     }
                 ],
                 "category": [

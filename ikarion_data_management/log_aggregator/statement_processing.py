@@ -141,6 +141,19 @@ def extract_course_id(statement):
     return full_id_template.format(site, courseid)
     # return courseid
 
+def extract_course_name(statement):
+    groupings = statement["context"]["contextActivities"]["grouping"]
+    course_type = "http://lrs.learninglocker.net/define/type/moodle/course"
+    course_name = ""
+    for grouping in groupings:
+        if grouping["definition"]["type"] == course_type:
+            course_name = list(grouping["definition"]["name"].values())[0]
+
+    object = statement["object"]
+    if object["definition"]["type"] == course_type:
+        course_name = list(object["definition"]["name"].values())[0]
+    return course_name
+
 
 def project_fields(statement):
     """
@@ -153,7 +166,9 @@ def project_fields(statement):
     """
 
     course_id = extract_course_id(statement)
+    course_name = extract_course_name(statement)
     statement["course_id"] = course_id
+    statement["course_name"] = course_name
 
 def write_new_groups_and_tasks(statement):
     # courseid = extract_course_id(statement)
@@ -174,7 +189,7 @@ def determine_relevant_task(statement):
 
     self_assessment = False
     obj = statement["object"]
-    if obj["definition"]["name"]["en"] == obj_name:
+    if list(obj["definition"]["name"].values())[0] == obj_name:
         self_assessment = True
 
     groups = statement["context"]["groups"]
