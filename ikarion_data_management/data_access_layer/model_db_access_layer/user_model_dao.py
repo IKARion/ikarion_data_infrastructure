@@ -67,19 +67,19 @@ def get_all_user_times(user, course, *constraints):
 
 
 def get_all_courses():
-    course_ids = list(con.db.xapi_statements.distinct("course_id"))
-    course_data = []
-    for c_id in course_ids:
-        c_query = {"course_id": c_id}
-        c_name = list(con.db.xapi_statements.distinct("course_name", c_query))[0]
-        c_dat = {
-            "courseid": c_id,
-            "name": c_name
-        }
-        course_data.append(c_dat)
-
-    return course_data
-    # return list(con.db.xapi_statements.aggregate(course_list_query))
+    # course_ids = list(con.db.xapi_statements.distinct("course_id"))
+    # course_data = []
+    # for c_id in course_ids:
+    #     c_query = {"course_id": c_id}
+    #     c_name = list(con.db.xapi_statements.distinct("course_name", c_query))[0]
+    #     c_dat = {
+    #         "courseid": c_id,
+    #         "name": c_name
+    #     }
+    #     course_data.append(c_dat)
+    #
+    # return course_data
+    return list(con.db.xapi_statements.aggregate(course_list_query))
 
 
 def get_all_users():

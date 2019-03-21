@@ -39,5 +39,18 @@ def course_query(course):
     #             }
     #         }
     #     }
-    query = {"course_id": course}
+    if course is None:
+        return {}
+    else:
+        query = {
+            "context.contextActivities.grouping" : {
+                "$elemMatch" : {
+                    "definition.type" : "http://lrs.learninglocker.net/define/type/moodle/course",
+                    "definition.extensions" : {
+                        "$elemMatch" : {"url" : course}
+                    }
+                }
+            }
+        }
+    # query = {"course_id": course}
     return query

@@ -162,12 +162,13 @@ class UserModelEndpointsTestCase(unittest.TestCase):
 
     def setUp(self):
         self.app = idi.app.test_client()
-        mock_con = mongomock.MongoClient()
-        um.con = mock_con
-        gm.con = mock_con
-        pdt.populate_xapi_model(mock_con)
-        self.courses = [encode_url_chars(item["courseid"]) for item in um.get_all_courses()]
-        self.course = self.courses[0]
+        # mock_con = mongomock.MongoClient()
+        # um.con = mock_con
+        # gm.con = mock_con
+        with idi.app.app_context():
+            pdt.populate_xapi_model_self_assessment(gm.con)
+            self.courses = [encode_url_chars(item["courseid"]) for item in um.get_all_courses()]
+            self.course = self.courses[0]
 
     def test_get_user_model_for_course(self):
         print("user")
