@@ -244,11 +244,14 @@ def get_group_self_assesment(course, group_id, task_id, timestamp):
         extensions = user_assesment_statement["object"]["definition"]["extensions"]
         for ext in extensions:
             if ext["id"] == "http://lrs.learninglocker.net/define/extensions/moodle_block":
-                user_assessments.append({
-                    "user_name": g_member["name"],
-                    "items": ext["items"],
+                data = {
+                    "group_id": group_id,
+                    "user_id": g_member["name"],
                     "timestamp": user_assesment_statement["timestamp"]
-                })
+                }
+                for i, item in enumerate(ext["items"]):
+                    data["item{}".format(i + 1)] = item["value"]
+                user_assessments.append(data)
 
     return user_assessments
 
