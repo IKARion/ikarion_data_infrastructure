@@ -223,7 +223,7 @@ def get_group_self_assesment(course, group_id, task_id, timestamp):
                 "object_id": "$object.id",
                 "timestamp": "$timestamp",
                 "object_type": "$object.definition.type",
-                "object_name": "$object.definition.name.en",
+                "object_name": "$object.definition.name",
                 "object": "$object",
             }
         }
@@ -252,7 +252,9 @@ def get_group_self_assesment(course, group_id, task_id, timestamp):
                 for i, item in enumerate(ext["items"]):
                     data["item{}".format(i + 1)] = item["value"]
                 user_assessments.append(data)
-
+    for item in user_assessments:
+        o_n = item["object_name"]
+        item["object_name"] = list(o_n.values())[0]
     return user_assessments
 
 
