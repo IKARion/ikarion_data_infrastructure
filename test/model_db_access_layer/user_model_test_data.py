@@ -873,6 +873,7 @@ generate_xapi_statement2 = generate_xapi_statement3
 
 
 def generate_xapi_self_assessment_statement(*, user, course, time, verb, artefact, group=None, process=True):
+    course_full = "https://moodle.ikarion-projekt.de/course/view.php?id={}".format(course)
     statement = {
         "authority": {
             "objectType": "Agent",
@@ -977,7 +978,7 @@ def generate_xapi_self_assessment_statement(*, user, course, time, verb, artefac
                                     "legacyfiles": "0",
                                     "lang": "",
                                     "requested": "0",
-                                    "url": "https://moodle.ikarion-projekt.de",
+                                    "url": course_full,
                                     "sortorder": "1",
                                     "startdate": "0",
                                     "visible": "1",

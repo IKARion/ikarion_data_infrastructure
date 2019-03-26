@@ -190,15 +190,29 @@ def write_new_groups_and_tasks(statement):
             print(message, file=sys.stderr)
 
 
+def is_self_assessment(statement):
+    self_type = "https://moodle.ikarion-projekt.de/define/type/moodle/block_groupactivity"
+    obj_name = "Groupactivity self assessment"
+    obj = statement["object"]
+    name_is_self = False
+    type_is_self = False
+    try:
+        if list(obj["definition"]["name"].values())[0] == obj_name:
+            name_is_self = True
+    except:
+        pass
+    try:
+        if obj["definition"]["type"] == self_type:
+            type_is_self = True
+    except:
+        pass
+
+    return name_is_self or type_is_self
+
+
 def determine_relevant_task(statement):
     # is it a self assessment statement?
-    self_id = "http://lrs.learninglocker.net/define/extensions/moodle_block"
-    obj_name = "Groupactivity self assessment"
-
-    self_assessment = False
-    obj = statement["object"]
-    if list(obj["definition"]["name"].values())[0] == obj_name:
-        self_assessment = True
+    self_assessment = is_self_assessment(statement)
 
     groups = statement["context"]["groups"]
     statement["relevant_group_task"] = {}
@@ -240,6 +254,8 @@ def relevant_model_change(statement):
     verb_id = statement["verb"]["id"]
 
     if relevant_object_type(object_type) and relevant_verb(verb_id):
+        return True
+    elif is_self_assessment(statement):
         return True
     else:
         return False

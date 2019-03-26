@@ -51,7 +51,7 @@ def generate_xapi_model_self_assessment(process=True):
                 base_time = 1550478910.0 + course_offset*course
                 for i in range(10):
                     time = base_time + (i*3600*2*group_latency_factor) + course_offset + user_offest
-                    course_str = "https://moodle.ikarion-projekt.de/course/view.php?id={}".format(course)
+                    course_str = str(course)
                     group_str = str(group)
                     statement = umd.generate_xapi_self_assessment_statement(user=user_str,
                                                             course=course_str,
