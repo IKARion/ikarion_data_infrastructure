@@ -1,5 +1,6 @@
 import datetime
 from collections import abc
+import sys
 import pytz
 import bdateutil.parser as dp
 import ikarion_data_management.data_access_layer.model_db_access_layer.group_model_dao as gmd
@@ -141,6 +142,7 @@ def extract_course_id(statement):
     return full_id_template.format(site, courseid)
     # return courseid
 
+
 def extract_course_name(statement):
     groupings = statement["context"]["contextActivities"]["grouping"]
     course_type = "http://lrs.learninglocker.net/define/type/moodle/course"
@@ -170,16 +172,20 @@ def project_fields(statement):
     statement["course_id"] = course_id
     statement["course_name"] = course_name
 
+
 def write_new_groups_and_tasks(statement):
     # courseid = extract_course_id(statement)
     courseid = statement["course_id"]
     groups = statement["context"]["groups"]
     for group in groups:
-        task = group["task"]
-        task["courseid"] = courseid
-        group["courseid"] = courseid
-        gmd.update_group(group, courseid)
-        gmd.update_group_task(task, courseid)
+        try:
+            task = group["task"]
+            task["courseid"] = courseid
+            group["courseid"] = courseid
+            gmd.update_group(group, courseid)
+            gmd.update_group_task(task, courseid)
+        except Exception  as e:
+            print("Could not write group task mapping", file=sys.stderr)
 
 
 def determine_relevant_task(statement):
