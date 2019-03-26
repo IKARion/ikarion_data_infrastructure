@@ -185,7 +185,9 @@ def write_new_groups_and_tasks(statement):
             gmd.update_group(group, courseid)
             gmd.update_group_task(task, courseid)
         except Exception  as e:
-            print("Could not write group task mapping", file=sys.stderr)
+            message = "Could not write group task mapping for \n Group: {}\n Course: {}\n"
+            message = message.format(group, courseid)
+            print(message, file=sys.stderr)
 
 
 def determine_relevant_task(statement):
