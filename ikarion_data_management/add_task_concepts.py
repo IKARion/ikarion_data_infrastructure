@@ -9,6 +9,7 @@ from ikarion_data_management.config import ProductionConfig
 def write_concepts(task_prefix, concept_list):
     client = pymongo.MongoClient(ProductionConfig.MONGO_URI)
     db = client.ikarion
+    db.delete_many({})
     task_concepts = {
         "task_prefix": task_prefix,
         "concepts": concept_list,
