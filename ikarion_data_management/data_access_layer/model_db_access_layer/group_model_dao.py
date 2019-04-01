@@ -1,7 +1,9 @@
 from .. import modelDBConnection as con
 from .util import *
 from .queries import course_list_query, course_query
+from .nlp import concept_match
 import json
+from collections import defaultdict
 
 assessment_type_id = "https://moodle.ikarion-projekt.de/define/type/moodle/block_groupactivity"
 
@@ -201,6 +203,89 @@ def get_all_task_activities(course, task):
 #
 #     return avg_latency
 
+def get_group_weighted_wiki_count_for_task(course, group, task_id, timestamp, *constraints):
+    return get_group_weighted_wiki_word_count(course, group, timestamp, group_task_query(task_id))
+
+
+def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints):
+    group = con.db.groups.find_one({"id": group_id, "courseid": course})
+    user_names = []
+    for g_member in group["group_members"]:
+        user_name = g_member["name"]
+        user_names.append(user_name)
+
+    # wiki edits
+    wikiQuery = {
+        "verb.id": "http://id.tincanapi.com/verb/updated",
+        "object.definition.type": "http://collide.info/moodle_wiki_page"
+    }
+    wikiContentProjection = {"content": "$object.definition.extensions.content_clean"}
+
+    projection = {
+        "_id": 0,
+        "user_id": "$" + user_schema,
+        "verb_id": "$verb.id",
+        "object_id": "$object.id",
+        "timestamp": "$timestamp",
+        "object_type": "$object.definition.type",
+        "object_name": "$object.definition.name",
+        "content": "$object.definition.extensions.message",
+        "wiki_concepts": "$wiki_concepts",
+
+    }
+
+    wiki_query = merge_query(course_query(course), group_query(group_id), wikiQuery, *constraints)
+    wiki_edits = list(
+        con.db.xapi_statements.aggregate([
+            {"$match": wiki_query},
+            {"$unwind": "$object.definition.extensions"},
+            {"$project": merge_query(projection, wikiContentProjection)}
+        ])
+    )
+    wiki_edits = [item for item in wiki_edits if item["timestamp"] < timestamp]
+    wiki_edits.sort(key=lambda x: x["timestamp"])
+    wiki_start = {
+        "user_id": "wiki_start",
+        "wiki_concepts": [],
+    }
+    wiki_edits.insert(0, wiki_start)
+    user_concept_additions = {user_name: [] for user_name in user_names}
+    for item_1, item_2 in zip(wiki_edits[:-1], wiki_edits[1:]):
+        # user_before = item_1["user_id"]
+        concepts_before = item_1["wiki_concepts"]
+        c_count_before = sum([cc["score"] * cc["count"] for cc in concepts_before])
+        user_after = item_2["user_id"]
+        concepts_after = item_2["wiki_concepts"]
+        c_count_after = sum([cc["score"] * cc["count"] for cc in concepts_after])
+
+        if c_count_after > c_count_before:
+            added_concept_count = c_count_after - c_count_before
+        else:
+            added_concept_count = 0
+        user_concept_additions[user_after].append(added_concept_count)
+
+    user_concept_counts = {user_id: sum(concept_additions)
+                           for user_id, concept_additions in user_concept_additions.items()}
+
+    concept_sum = sum([item for item in user_concept_counts.values()])
+    if concept_sum == 0:
+        user_concept_counts_norm = [{
+            "user": user_id,
+            "weighted_wiki_wordcount": 1 / len(user_names),
+            "group_id": group_id,
+        }
+            for user_id, concept_count in user_concept_counts.items()]
+    else:
+        user_concept_counts_norm = [{
+            "user": user_id,
+            "weighted_wiki_wordcount": concept_count / concept_sum,
+            "group_id": group_id,
+        }
+            for user_id, concept_count in user_concept_counts.items()]
+
+    return user_concept_counts_norm
+
+
 def get_group_self_assesment(course, group_id, task_id, timestamp):
     group = con.db.groups.find_one({"id": group_id})
     user_assessments = []
@@ -256,6 +341,20 @@ def get_group_self_assesment(course, group_id, task_id, timestamp):
                     data["item{}".format(i + 1)] = item["value"]
                 user_assessments.append(data)
     return user_assessments
+
+
+def calc_wiki_concepts(wiki_text, task_name):
+    split_name = task_name.split("_")
+    task_prefix = "_".join(split_name[:2])
+    task_concepts_list = list(con.db.task_concepts.find({"task_prefix": task_prefix}))
+    if task_concepts_list:
+        task_concepts = task_concepts_list[0]
+        concept_list = task_concepts["concepts"]
+    else:
+        concept_list = []
+
+    matched_concepts = concept_match(concept_list, wiki_text)
+    return matched_concepts
 
 
 def update_group(group, course):

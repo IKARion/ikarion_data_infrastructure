@@ -25,3 +25,4 @@ def merge_query(*args):
         merged_query.update(arg)
 
     return merged_query
+

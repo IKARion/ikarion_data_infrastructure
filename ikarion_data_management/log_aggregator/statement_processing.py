@@ -1,5 +1,6 @@
 import datetime
-from collections import abc
+import traceback
+from collections import abc, Counter
 import sys
 import pytz
 import bdateutil.parser as dp
@@ -239,6 +240,43 @@ def determine_relevant_task(statement):
                         break
 
 
+def is_wiki_update(statement):
+    wiki_verb = "http://id.tincanapi.com/verb/updated"
+    wiki_object_type = "http://collide.info/moodle_wiki_page"
+    verb = statement["verb"]["id"]
+    type = statement["object"]["definition"]["type"]
+    right_verb = wiki_verb == verb
+    right_type = wiki_object_type == type
+    if right_verb and right_type:
+        return True
+    else:
+        return False
+
+
+def add_wiki_concepts(statement):
+    group_task = statement["relevant_group_task"]
+    task = group_task["task"]
+    task_name = task["task_name"]
+    object_extensions = statement["object"]["definition"]["extensions"]
+    wiki_content_clean = ""
+    extraced_concepts = []
+    for ext in object_extensions:
+        if ext["id"] == "http://collide.info/moodle_wiki_update":
+            wiki_content_clean = ext["content_clean"]
+    try:
+        extraced_concepts = gmd.calc_wiki_concepts(wiki_content_clean, task_name)
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
+    counted_concepts = Counter(extraced_concepts)
+    wiki_concepts = [{
+        "word": k[0],
+        "score": k[1],
+        "count": v
+    } for k, v in counted_concepts.items()]
+    statement["wiki_concepts"] = wiki_concepts
+
+
 def process_statement(statement):
     restructure_extensions(statement)
     replace_dots(statement)
@@ -247,6 +285,8 @@ def process_statement(statement):
     process_groups(statement)
     write_new_groups_and_tasks(statement)
     determine_relevant_task(statement)
+    if is_wiki_update(statement):
+        add_wiki_concepts(statement)
 
 
 def relevant_model_change(statement):
