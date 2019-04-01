@@ -5,11 +5,13 @@ import json
 
 from ikarion_data_management.config import ProductionConfig
 
+client = pymongo.MongoClient(ProductionConfig.MONGO_URI)
+db = client.ikarion
+db.task_concepts.delete_many({})
 
 def write_concepts(task_prefix, concept_list):
-    client = pymongo.MongoClient(ProductionConfig.MONGO_URI)
-    db = client.ikarion
-    db.task_concepts.delete_many({})
+
+
     task_concepts = {
         "task_prefix": task_prefix,
         "concepts": concept_list,
