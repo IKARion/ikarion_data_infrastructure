@@ -21,7 +21,8 @@ def main():
     concept_files = list(concept_folder.glob("**/*.json"))
     for c_file in concept_files:
         task_prefix = c_file.stem
-        concept_list = json.load(str(c_file))
+        with c_file.open("r") as c_f:
+            concept_list = json.load(c_f)
         write_concepts(task_prefix, concept_list)
 
 
