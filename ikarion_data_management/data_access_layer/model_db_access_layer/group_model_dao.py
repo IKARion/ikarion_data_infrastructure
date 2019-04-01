@@ -272,7 +272,7 @@ def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints
     if concept_sum == 0:
         user_concept_counts_norm = [{
             "user": user_id,
-            "weighted_wiki_wordcount": 1 / len(user_names),
+            "weighted_wiki_wordcount": 0,
             "group_id": group_id,
         }
             for user_id, concept_count in user_concept_counts.items()]
