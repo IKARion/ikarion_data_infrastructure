@@ -18,7 +18,7 @@ def write_concepts(task_prefix, concept_list):
 
 def main():
     folder_path = sys.argv[1]
-    concept_folder = pl.Path(folder_path)
+    concept_folder = pl.Path(folder_path).expanduser()
     concept_files = list(concept_folder.glob("**/*.json"))
     for c_file in concept_files:
         task_prefix = c_file.stem
