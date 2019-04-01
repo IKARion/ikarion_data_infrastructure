@@ -8,3 +8,5 @@ bdateutil
 APScheduler
 flask_apscheduler
 selenium
+nltk
+fuzzyset

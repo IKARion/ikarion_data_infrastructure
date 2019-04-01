@@ -33,6 +33,11 @@ def populate_xapi_model_self_assessment(client):
     for statement in statement_list:
         client.db.xapi_statements.insert_one(statement)
 
+def populate_xapi_model_wiki_mod(client):
+    statement_list = generate_xapi_model_wiki_concepts()
+    for statement in statement_list:
+        client.db.xapi_statements.insert_one(statement)
+
 def generate_xapi_model_self_assessment(process=True):
     name_list = [
         "nlrrOSj7CO4Pk21IIcDnog==",
@@ -89,6 +94,69 @@ def generate_xapi_model(process=True):
                     statement_list.append(statement)
     return statement_list
 
+
+def generate_xapi_model_self_assessment(process=True):
+    name_list = [
+        "nlrrOSj7CO4Pk21IIcDnog==",
+        "tLbffKo5+/MJtqFFCnIWEg==",
+        "wdqshw4nFEYjiBA+UokJ5w==",
+    ]
+    verb = "http://id.tincanapi.com/verb/replied"
+    artefact = "http://localhost:5555/moodle32/moodle/mod/forum/discuss.php?d=1#12"
+    statement_list = []
+    for course in range(1):
+        for group in range(2):
+            for user_i, user_str in enumerate(name_list):
+                course_offset = course*3600*24*7
+                user_offest = user_i*3600*3
+                group_latency_factor = 1 + 0.1*group
+                base_time = 1550478910.0 + course_offset*course
+                for i in range(10):
+                    time = base_time + (i*3600*2*group_latency_factor) + course_offset + user_offest
+                    course_str = str(course)
+                    group_str = str(group)
+                    statement = umd.generate_xapi_self_assessment_statement(user=user_str,
+                                                            course=course_str,
+                                                            group=group_str,
+                                                            time=time,
+                                                            verb=verb,
+                                                            artefact=artefact,
+                                                            process=process)
+                    statement_list.append(statement)
+    return statement_list
+
+
+def generate_xapi_model_wiki_concepts(process=True):
+    name_list = [
+        "YAjW/wX68/Gmk+QtjpzCWg==",
+        "oxP3yJF/mny+oup/jprHJA==",
+        "h0sSOJhMJsrbKuSRR3qlsA==",
+    ]
+    verb = "http://id.tincanapi.com/verb/replied"
+    artefact = "http://localhost:5555/moodle32/moodle/mod/forum/discuss.php?d=1#12"
+    statement_list = []
+    for course in range(1):
+        for group in range(1):
+            for user_i, user_str in enumerate(name_list):
+                course_offset = course*3600*24*7
+                user_offest = user_i*3600*3
+                group_latency_factor = 1 + 0.1*group
+                base_time = 1550478910.0 + course_offset*course
+                for i in range(1):
+                    time = base_time + (i*3600*2*group_latency_factor) + course_offset + user_offest
+                    course_str = str(course)
+                    group_str = str(group)
+                    statement = umd.generate_xapi_statement_wiki_mod(user=user_str,
+                                                            course=course_str,
+                                                            group=group_str,
+                                                            time=time,
+                                                            verb=verb,
+                                                            artefact=artefact,
+                                                            process=process,
+                                                                     user_i=user_i,
+                                                                     statement_i=i)
+                    statement_list.append(statement)
+    return statement_list
 
 def clear_xap_statements():
     with pymongo.MongoClient(database_url) as client:

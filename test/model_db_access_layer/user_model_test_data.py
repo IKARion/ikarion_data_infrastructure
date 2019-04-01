@@ -870,8 +870,6 @@ def generate_xapi_statement3(*, user, course, time, verb, artefact, group=None, 
 generate_xapi_statement2 = generate_xapi_statement3
 
 
-
-
 def generate_xapi_self_assessment_statement(*, user, course, time, verb, artefact, group=None, process=True):
     course_full = "https://moodle.ikarion-projekt.de/course/view.php?id={}".format(course)
     statement = {
@@ -1082,3 +1080,330 @@ def generate_xapi_self_assessment_statement(*, user, course, time, verb, artefac
         sp.process_statement(statement)
 
     return statement
+
+
+def generate_xapi_statement_wiki_mod(*, user, user_i, statement_i, course, time, verb, artefact, group=None, process=True):
+    task_name = "Test_Wiki_Bla"
+    course_full = "https://moodle.ikarion-projekt.de/course/view.php?id={}".format(course)
+    content_clean = "Inhaltsübersicht1. Hinweise zur gemeinsamen Arbeit im Wiki [Bearbeiten]2. Frage 1 & 2 - Kognitive Entwicklung nach Piaget "
+    content_clean_user = content_clean * (user_i + 1)**2
+    statement = {
+        "authority": {
+            "objectType": "Agent",
+            "name": "New Client",
+            "mbox": "mailto:hello@learninglocker.net"
+        },
+        "stored": "2019-03-12T13:21:38.227Z",
+        "context": {
+            "extensions": {
+                "http://collide.info/extensions/group": {
+                    "311": {
+                        "group_members": [
+                            {
+                                "name": "YAjW/wX68/Gmk+QtjpzCWg==",
+                                "fullname": "cP4ZrroHA4OC7OLBPO1IChBPE9plkknnLOnqpKcD86g=",
+                                "email": "P43D/ObyLlfj6bIYlyXXhvhBJiQDx4r8UWsWony3QincX/tdU/qtECWyvsksHioj",
+                                "username": "+wRs4ylcVy2CaGbnAMs4NA=="
+                            },
+                            {
+                                "name": "GA32Uf83DXlTfuu1FSeMFg==",
+                                "fullname": "rJkxGM9yVOIpAjVoXJ1ZhA==",
+                                "email": "1HGFKeWcPwguIY/Gbs23w9xf+11T+q0QJbK+ySweKiM=",
+                                "username": "aROGBNUR1kyIIlRppuoF7w=="
+                            },
+                            {
+                                "name": "1w21eIbpkSXstgIbXjb5MQ==",
+                                "fullname": "lfy4EcVwvwQ5U5MODdRx/hBPE9plkknnLOnqpKcD86g=",
+                                "email": "DD942q+B5EQJzH9XbE8GWApV/gzOdER6YUQhgms4zWw=",
+                                "username": "kAGQl/YDZZJ/TagPxQmkaQ=="
+                            },
+                            {
+                                "name": "h0sSOJhMJsrbKuSRR3qlsA==",
+                                "fullname": "Nia47n6HXjJRb+KHo4yKWQ==",
+                                "email": "v7a1dQ33BJ96n5Rl1gLsowta1hfiAs+An/K03OI8+Gc=",
+                                "username": "WP/hHPNTh0zJeTwtDwQRUQ=="
+                            }
+                        ],
+                        "task": {
+                            "task_resources": [
+                                "https://moodle.ikarion-projekt.de/mod/forum/view.php?id=1228",
+                                "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=1229"
+                            ],
+                            "task_type": "collaborative wiki writing",
+                            "task_end": "1551654300",
+                            "task_start": "1551092400",
+                            "task_name": "Woche 1 Mirroring",
+                            "task_id": "71"
+                        },
+                        "timemodified": "1550828859",
+                        "timecreated": "1550828859",
+                        "description": "none",
+                        "name": "W1Gruppe-1",
+                        "id": "311"
+                    },
+                    group: {
+                        "group_members": [
+                            {
+                                "name": "YAjW/wX68/Gmk+QtjpzCWg==",
+                                "fullname": "cP4ZrroHA4OC7OLBPO1IChBPE9plkknnLOnqpKcD86g=",
+                                "email": "P43D/ObyLlfj6bIYlyXXhvhBJiQDx4r8UWsWony3QincX/tdU/qtECWyvsksHioj",
+                                "username": "+wRs4ylcVy2CaGbnAMs4NA=="
+                            },
+                            {
+                                "name": "oxP3yJF/mny+oup/jprHJA==",
+                                "fullname": "u4KufSmYeAF6O/EoY8OSlA==",
+                                "email": "Uzw5Tt5eRMx503wEsCAy760fSrEyVN1nAKbVT1zoSjM=",
+                                "username": "rxaXTX6920qtC2UwOhLhZw=="
+                            },
+                            {
+                                "name": "h0sSOJhMJsrbKuSRR3qlsA==",
+                                "fullname": "Nia47n6HXjJRb+KHo4yKWQ==",
+                                "email": "v7a1dQ33BJ96n5Rl1gLsowta1hfiAs+An/K03OI8+Gc=",
+                                "username": "WP/hHPNTh0zJeTwtDwQRUQ=="
+                            }
+                        ],
+                        "task": {
+                            "task_resources": [
+                                "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=1202",
+                                "https://moodle.ikarion-projekt.de/mod/forum/view.php?id=1261"
+                            ],
+                            "task_type": "Test_Wiki_Le",
+                            "task_end": "1552259100",
+                            "task_start": "1551697200",
+                            "task_name": task_name,
+                            "task_id": "78"
+                        },
+                        "timemodified": "1551690322",
+                        "timecreated": "1551690322",
+                        "description": "none",
+                        "name": "W2 Gruppe-1",
+                        "id": group
+                    }
+                },
+                "http://lrs.learninglocker.net/define/extensions/info": {
+                    "https://moodle.org/": "3.2.3+ (Build: 20170509)"
+                },
+                "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log": {
+                    "realuserid": None,
+                    "eventname": "\\mod_wiki\\event\\page_updated",
+                    "userid": "h0sSOJhMJsrbKuSRR3qlsA==",
+                    "origin": "web",
+                    "ip": "178.8.234.87",
+                    "contextid": "2647",
+                    "anonymous": "0",
+                    "edulevel": "2",
+                    "objecttable": "wiki_pages",
+                    "other": "a:1:{s:10:\"newcontent\";s:14932:\"<h3><span xml:lang=\"de\" lang=\"de\">Hinweise zur gemeinsamen Arbeit im Wiki</span></h3>\n\n<p align=\"justify\">Bitte beachten Sie folgende Hinweise zur gemeinsamen Arbeit mit Wiki.<br>\nWikis sind asynchron, es kann also nur unter bestimmten Umständen gleichzeitig daran gearbeitet werden. Um zu vermeiden, dass eine parallele Bearbeitung der Wikis gestört wird, achten Sie bitte dringend darauf, dass Sie die einzelnen Wikis <u>nicht auf der obersten Ebene bearbeiten</u> (s. oben: Anzeige –Bearbeiten – Kommentare usw.), sondern in den einzelnen Kapiteln (siehe [Bearbeiten] rechts neben den Kapiteln).</p>\n\n<p align=\"justify\">Zur Information: Die Überschriften der Wikis (z.B. Frage 1 – Kognitive Entwicklung nach Piaget) wurden von uns als „Überschrift groß“ formatiert.\nBitte ändern Sie diese Überschrift nicht. Der Fließtext für die Fragen (z.B. Fragetext für die erste Frage: „…“) wurde als „Absatz“ formatiert.</p>\n\n<p><span xml:lang=\"de\" lang=\"de\">&nbsp;</span></p>\n\n<h3><span xml:lang=\"de\" lang=\"de\">Frage 1 &amp; 2 - Kognitive Entwicklung nach Piaget</span></h3>_________________________________________________________<p></p>\n\n<p align=\"justify\"><i>Welche der folgenden Aussagen <u>treffen zu</u> und welche <u>treffen nicht zu</u>?</i></p>\n\n<p><b><span xml:lang=\"de\" lang=\"de\">1.</span></b></p><p align=\"justify\"> Die nächste Aufgabe der Mathearbeit sieht wirklich schwierig aus. Gar nicht so, wie die anderen Aufgaben, die sie im Unterricht geübt haben! Lars probiert eine Weile an der Aufgabe herum. Kurz darauf merkt er, dass er diese Aufgabe doch mit der Lösung aus dem Unterricht lösen kann. Er fragt sich, wie er das nur übersehen könnte. Die Aufgabe kann Lars zügig lösen.</p>\n\n<p><span xml:lang=\"de\" lang=\"de\">Diese Situation zeigt das Fehlschlagen der Assimilation.</span></p>\n\n<p><span xml:lang=\"de\" lang=\"de\">&nbsp;</span></p>\n\n<p><b><span xml:lang=\"de\" lang=\"de\">2.</span></b></p>\n<p align=\"justify\"> Herr M. war bereits in vielen teuren Restaurants.\nZum ersten Mal besucht er nun ein McBurger. Wie gewohnt setzt er sich auf einen der freien Plätze und wartet darauf, dass die Bedienung die Speisekarte bringt. Er wartet vergeblich - es kommt keine Bedienung an den Tisch. Als Antwort auf einen verwirrten Blick und den Ruf der Bedienung kommt vom Tresen: \"Wir bedienen Sie nicht am Tisch. Kommen Sie her.\"</p>\n\n<p><span xml:lang=\"de\" lang=\"de\">Die Erfahrung führt zu einer Akkomodation.</span></p>\n\n<p><span xml:lang=\"de\" lang=\"de\">_________________________________________________________<br>\n*Bitte schreiben Sie ab hier Ihren Erläuterungstext</span></p><p>Unter <b>Assimilation</b> versteht man, dass die Umwelt anhand schon vorhandener Denkmuster interpretiert und erfasst wird. Bekannt dazu ist das wau-wau Schemata; ein kleines Kind nennt einen Hund wau-wau. Nun sieht es eine Katze, die ebenso wie der Hund, Fell besitzt, einen Schwanz hat, auf vier Beinen läuft, und nennt jene Katze auch wau-wau.</p><p>Ein&nbsp;<b>Fehlschlagen der Assimilation</b>&nbsp;bedeutet, dass neu erfahrene Vorkommnisse in der Umwelt nicht den eigenen Denkstrukturen zugeordnet werden können. In dem Fallbeispiel scheitert Lars zwar im ersten Moment daran, jedoch benötigt er nur einige Zeit bis die Assimilation stattfindet, und ähnliche Matheaufgaben ins Gedächtnis gerufen werden.<br></p><p><b>Akkomodation</b> beschreibt nun den Prozess, dass das eigene Denkmuster der Umwelt angepasst wird. Das heißt, in diesem Fall z.B. lernt das Kind, dass die Katze zwar ähnliche Eigenschaften wie der Hund (wauwau) besitzt, jedoch ein anderen Tiergattung angehört. Sie macht nicht wauwau, sie miaut.</p><p>In dem Fallbeispiel findet eine Akkomodation statt, indem Herr M. herausfindet, dass die Bedienung in jenem Restaurant anders gehandhabt wird, als in ihm schon bekannten Restaurants.</p><p><span xml:lang=\"de\" lang=\"de\"><br></span></p><h3><span xml:lang=\"de\" lang=\"de\">Frage 3 - Kognitive Entwicklung nach Wygotski</span></h3>_________________________________________________________<p></p>\n\n<p><i><span xml:lang=\"de\" lang=\"de\">Trifft die Aussage zu</span></i><span xml:lang=\"de\" lang=\"de\">?</span></p>\n\n<p align=\"justify\">Mithilfe einer Lern-App schafft es Markus, sich Spanisch beizubringen und in einem Kurs die Sprachstufe A1/A2 zertifiziert zu bekommen. </p>\n\n<p align=\"justify\">Die Lern-App war demnach ein Werkzeug, welches Markus dabei unterstützt hat, in die Zone der proximalen Entwicklung zu kommen.</p>\n\n<p><span xml:lang=\"de\" lang=\"de\">_________________________________________________________<br>\n*Bitte schreiben Sie ab hier Ihren Erläuterungstext</span></p>\n\n<p><span xml:lang=\"de\" lang=\"de\">&nbsp;</span></p><h3><span lang=\"de\" lang=\"de\" xml:lang=\"de\">Frage 4 - Wissensarten</span></h3>_________________________________________________________<p></p>\r\n\r\n<p align=\"justify\"><i>Bitte ordnen Sie jede der folgenden drei Szenen\r\njeweils einer Wissensart zu. Jede Wissensart wird genau einmal benötigt.\r\nBeachten Sie, dass nicht alle der aufgeführten Wissensarten benötigt werden.</i></p><i>\r\n\r\n</i><p><b><span lang=\"de\" lang=\"de\" xml:lang=\"de\">1.</span></b></p><p align=\"justify\"> Ein fünfjähriges Mädchen bekommt von seiner Großmutter ein Fahrrad geschenkt. Als die Großmutter nach einiger Zeit zu Besuch kommt, fährt das Mädchen ihr im Garten auf dem Fahrrad entgegen und ruft: „Schau, ich kann schon Rad fahren.“</p>\r\n\r\n<p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">&nbsp;</span></p>\r\n\r\n<p><b><span lang=\"de\" lang=\"de\" xml:lang=\"de\">2.</span></b></p><p align=\"justify\"> Nina hat ihre Hausarbeit bereits zu lange aufgeschoben. Heute muss sie wirklich anfangen. Aber in der WG ist es einfach immer zu laut. Daher entscheidet sie sich dazu, zur Uni zu fahren und die Hausarbeit in der Bibliothek zu schreiben.</p>\r\n\r\n<p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">&nbsp;</span></p>\r\n\r\n<p><b><span lang=\"de\" lang=\"de\" xml:lang=\"de\">3.</span></b></p><p align=\"justify\"> In der Nachhilfestunde soll Max eine Aufgabe lösen, die der Lehrer im Unterricht vorgestellt hat. Bevor Max jedoch die Aufgabe löst, soll er erklären, warum die Formel zur Lösung eingesetzt wird.</p>\r\n\r\n<p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">&nbsp;</span></p>\r\n\r\n<p><b></b></p><p align=\"justify\"><b>Prozedurales Wissen - Selbstregulationswissen - Konzeptuelles Wissen - Situationales Wissen</b></p>\r\n\r\n<p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">_________________________________________________________<br>\r\n*Bitte schreiben Sie ab hier Ihren Erläuterungstext</span></p>\r\n\r\n<p><span lang=\"de\" lang=\"de\" xml:lang=\"de\"><b>Prozedurales Wissen</b>, auch Handlungswissen genannt beschreibt, dass Handlungen und/oder auch Lösungsstrategien sich anhand schon erfahrener Strategien und vollendeten Handlungen orientieren. D.h. man führt eine Handlung nach schon bekanntem Prozedere aus ?</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\"><b>Selbstregulationswissen</b> beschreibt den regulierten Vorgang seine eigenen Empfindungen, und Emotionen zu bändigen, bzw. der Situation anzupassen. Eventuell auch eigene Lernstrategien zu überdenken, und zu reflektieren. Im Fallbeispiel 2 kann man so eventuell von Selbstregulationswissen sprechen, da Nina sich dessen bewusst ist, wie sie ihre Aufmerksamkeit am besten auf die Fertigstellung ihrer Hausarbeit lenkt.</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\"><b>Konzeptuelles Wissen </b>beschreibt hierbei, dass Wissen anhand von Konzepten, eventuell Formeln, Kategorien, und Oberbegriffen gebündelt und angewandt wird. Im Fallbeispiel 3 kann man von konzeptuellen Wissen sprechen, da Max seine Matheaufgabe nach ihm schon bekannten (und auch allgemeinen) Lösungswegen (einem Konzept) löst.</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\"><b>Situationales Wissen</b> beschreibt Wissen, das innerhalb einer sozialen Situation erworben, angewandt, und/oder gefestigt wird. Das kann durch soziale Interaktion und Kommunikation an sich passieren. Dabei kann ebenso die Motivation aus dem sozialen Umfeld, als auch Hilfestellung, Unterstützung und soziale Anerkennung dazu beitragen. Im ersten Fallbeispiel kann man somit von situationalem Wissen sprechen, da die Kleine Fahrrad fahren lernt, während ihre Großmutter ihr dabei über die Schultern schaut, und ihr Anerkennung dafür zeigt.</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">1) Bei diesem Fall handelt es sich um das situationale Wissen. Das situationale Wissen beschreibt das Wissen über Anforderungen und Merkmale von Problemen in bestimmten Situationen. Anhand dieses Wissens kann anschließend die Aufmerksamkeit auf die Aspekte gelenkt werden, die relevant für die Problemlösung sind. Dabei wird oft auf Erfahrungen oder Erinnerungen zurückgegriffen. Wenn dem Individuum noch keine Lösung für die Situation bekannt ist, greift es oft auf ähnliche Situationen mittels seiner Erinnerung zurück, und nutzt die Problemlösung der damaligen Situation für die der jetzigen.</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">2) Bei diesem Fall handelt es sich um das Selbstregulationswissen. Beim Selbstregulationswissen ergreift der/die Lernende Selbststeuerungsmaßnahmen und überwacht somit selbstständig seinen Lernprozess. Da Nina in der vorliegenden Situation eigenständig die Entscheidung trifft zur Uni zu fahren und somit über ihren Lernprozess bestimmt, kann man hier von Selbstregulationswissen sprechen.&nbsp;</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">3) Bei diesem Fall kann man vom konzeptuellem Wissen sprechen. Das konzeptuelle Wissen wird auch als \"semantisches Wissen\" bezeichnet und bezeichnet das Wissen über Fakten, Begriffe, Schemata und Prinzipien. Das konzeptuelle Wissen ermöglicht dem Individuum Beziehungen zwischen dem bereits vorhandenen und dem neuen Wissen herzustellen. In der vorliegenden Situation soll Max auf sein Wissen über ein bestimmtes Schemata (die Formel) zurückgreifen. Unteranderem stellt er mit der Erklärung, warum die Formel benötigt wird, eine Beziehung zwischen der Formel (vorhandenes Wissen) und der Lösung der Aufgabe (neues Wissen) her.&nbsp;</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\"><br></span></p><h3><span xml:lang=\"de\" lang=\"de\">Frage 5 - Konstruktivismus &amp; Situiertes Lernen</span></h3>_________________________________________________________<p></p><p align=\"justify\"><i>Lesen Sie die folgende Kursbeschreibung und entscheiden Sie, welche der aufgeführten Gestaltungsmerkmalen verschiedener situierter Lernarrangements in diesem Kurs vorhanden sind.</i></p>\n\n<p align=\"justify\">SchülerInnen nehmen an einem Workshop teil, in dem das Konzept „Graphentheorien“ (Informatik) vermittelt werden soll. Dieser findet in einem außerschulischen Lernlabor statt.</p>\n\n<p align=\"justify\">Die Teilnehmenden des Workshops sollen die Organisatoren eines Jahrmarkts – einen Juristen, einen Schatzmeister und einen Magier – bei der Planung des Jahrmarkts unterstützen. Jeder der Organisatoren ist für einen bestimmten Bereich der Planung verantwortlich. Aufgabe für die Teilnehmenden ist es, die Organisation des Jahrmarkts als ExpertInnen zu unterstützen, indem sie deren spezifischen Probleme lösen. Diese Geschichte wird in einem animierten Film\npräsentiert.</p>\n\n<p align=\"justify\">Die Teilnehmenden werden auf drei Gruppen aufgeteilt, die jeweils einem Betreuer, der einen Organisator spielt, zugeteilt sind. Die Teilnehmenden sollen die Aufgabe jeweils in ihrer Gruppe lösen und sich dort gegenseitig bei der Arbeit unterstützen, laut denken, wie sie gerade vorgehen.</p>\n\n<p align=\"justify\">Eine Gruppe steht beispielsweise vor dem Problem, dass innerhalb der Geisterbahn alle Attraktionen mit Kabeln verbunden werden, wobei zur Einsparung von Geld möglichst wenig Kabel-Material verwendet werden sollen. Dieses Problem lässt sich mit <b>Algorithmen zur Suche des minimalen Spannbaums</b> lösen. Die Organisatoren geben jedoch<b> nur wenig Unterstützung</b> bei der Bearbeitung der Probleme, da etwa ein Jurist nicht mit Prinzipien der Informatik vertraut ist. Zur Unterstützung sind allerdings <i>in einem Kiosk verschiedene relevante und nicht relevante Zeitschriften ausgelegt</i>, die mögliche Lösungsansätze für die verschiedenen Probleme der Szenarien schülergerecht vorstellen. Zusätzlich dienen die Zeitschriften dazu, einen <b>Alltagsbezug der verwendeten informatischen Strategien vorzustellen</b>.</p>\n\n<p align=\"justify\">Haben die Teilnehmenden die Planung erfolgreich abgeschlossen, wird ihnen ein Abschlussfilm vorgespielt, der das erfolgreiche Stadtfest zeigt.</p>\n\n<p><b></b></p><p align=\"justify\"><b>Articulation – Scaffolding – Eingebettete Daten – Paar verwandter Aufgaben</b></p>\n\n<p><span xml:lang=\"de\" lang=\"de\">_________________________________________________________<br>\n*Bitte schreiben Sie ab hier Ihren Erläuterungstext</span></p><p>In der <b>konstruktivistischen Lerntheorie</b> geht es darum, dem Lernenden die Freiheit zu erschaffen, dass er sich sein eigenes Wissen konstruieren kann. Dem liegt die erkenntnistheoretische Auffassung zugrunde, dass Wissen nunmal subjektiv und individuell konstruiert wird.</p><p><br>Dazu gibt es diverse Modelle, anhand das Lernen und Lehren stattfindet, bzw. stattfinden sollte.</p><p>Zum einen gibt es den <b>Cognitive Apprenticeship </b>werden verschiedene Stufen beim Lernprozess dargestellt, und berücksichtigt. Zum einen gehört hierzu&nbsp;&nbsp;<b>Scaffolding, Coaching, und Articulation.</b>&nbsp;</p><p><b>Coaching</b> beschreibt, dass dem Lernenden z.B. vor dem Beginn der eigenen Projektarbeit Aufgaben vorgeführt werden, Modellvorlagen eines Protokolls, etc. zur Verfügung stehen. Dazu können auch verwandte Aufgaben zählen, nach deren Schemata die vorliegende Aufgabe gelöst werden kann.</p><p>Das Coaching, in diesem fall die verwandten Aufgaben sind indirekt in dem Lernprozess eingebettet. <b>Verwandte Aufgaben</b>, und somit Modelle von Lösungstrategien, die eventuell angewandt werden können, sind zugriffsbereit, werden jedoch nicht direkt vorgeführt. Also sind verwandte Aufgaben vorhanden, jedoch befinden sich die Schüler eher im Fading (Lehrpersonen verschwinden aus dem Lernprozess.)</p><p><b>Scaffolding </b>bedeutet, dass eine Lehrperson (oder ein Experte) im Hintergrund präsent ist, und als Ansprechperson bereit steht, um weitere Fragen zu beantworten.&nbsp;</p><p>Ein Scaffolding findet in dem Fallbeispiel nicht statt, da die Lehrpersonen keine Unterstützung leisten, sondern sich zurückhalten (Fading).</p><p><b>Articulation </b>beschreibt, dass der Lernende nach erfolgreicher Beendigung der Aufgabe seinen eigenen Lösungsweg reflektieren, und darstellen kann (bzw. ausformuliert).</p><p>Die Stufe der Articulation findet ebenfalls nicht in dem Fallbeispiel statt, da die Lernenden gar nicht an dem Punkt ankommen ihre Lösungen zusammenzutragen, und zu reflektieren.</p><p>Eingebettete Daten ?&nbsp;</p>\n\n\";}",
+                    "target": "page",
+                    "relateduserid": "h0sSOJhMJsrbKuSRR3qlsA==",
+                    "contextlevel": "70",
+                    "action": "updated",
+                    "courseid": course,
+                    "objectid": "274",
+                    "id": "1711",
+                    "timecreated": "1552222184",
+                    "component": "mod_wiki",
+                    "crud": "u",
+                    "contextinstanceid": "1202"
+                }
+            },
+            "language": "de",
+            "platform": "Moodle",
+            "contextActivities": {
+                "grouping": [
+                    {
+                        "definition": {
+                            "extensions": {
+                                "http://lrs.learninglocker.net/define/extensions/moodle_course": {
+                                    "cacherev": "1552313136",
+                                    "showreports": "0",
+                                    "groupmode": "0",
+                                    "idnumber": "",
+                                    "completionnotify": "0",
+                                    "summary": "",
+                                    "shortname": "IKARion Projekt",
+                                    "maxbytes": "0",
+                                    "theme": "",
+                                    "enddate": "0",
+                                    "groupmodeforce": "0",
+                                    "newsitems": "3",
+                                    "legacyfiles": "0",
+                                    "lang": "",
+                                    "requested": "0",
+                                    "url": "https://moodle.ikarion-projekt.de",
+                                    "sortorder": "1",
+                                    "startdate": "0",
+                                    "visible": "1",
+                                    "visibleold": "1",
+                                    "timemodified": "1524571833",
+                                    "format": "site",
+                                    "calendartype": "",
+                                    "showgrades": "1",
+                                    "marker": "0",
+                                    "fullname": "IKARion Projekt",
+                                    "type": "site",
+                                    "id": "1",
+                                    "timecreated": "1500013772",
+                                    "summaryformat": "0",
+                                    "category": "0",
+                                    "enablecompletion": "0",
+                                    "defaultgroupingid": "0"
+                                }
+                            },
+                            "description": {
+                                "de": "IKARion Projekt"
+                            },
+                            "name": {
+                                "de": "IKARion Projekt"
+                            },
+                            "type": "http://id.tincanapi.com/activitytype/site"
+                        },
+                        "id": "https://moodle.ikarion-projekt.de",
+                        "objectType": "Activity"
+                    },
+                    {
+                        "definition": {
+                            "extensions": {
+                                "http://lrs.learninglocker.net/define/extensions/moodle_course": {
+                                    "cacherev": "1552319780",
+                                    "showreports": "0",
+                                    "groupmode": "1",
+                                    "idnumber": "",
+                                    "completionnotify": "0",
+                                    "summary": "",
+                                    "shortname": "MAP Vorbereitung (Bochum)",
+                                    "maxbytes": "0",
+                                    "theme": "",
+                                    "enddate": "0",
+                                    "groupmodeforce": "0",
+                                    "newsitems": "5",
+                                    "legacyfiles": "0",
+                                    "lang": "de",
+                                    "requested": "0",
+                                    "url": course_full,
+                                    "sortorder": "10010",
+                                    "startdate": "1549839600",
+                                    "visible": "1",
+                                    "visibleold": "1",
+                                    "timemodified": "1551692549",
+                                    "format": "topics",
+                                    "calendartype": "",
+                                    "showgrades": "0",
+                                    "marker": "8",
+                                    "fullname": "MAP Vorbereitungskurs GM2",
+                                    "type": "course",
+                                    "id": course,
+                                    "timecreated": "1526989731",
+                                    "summaryformat": "1",
+                                    "category": "1",
+                                    "enablecompletion": "1",
+                                    "defaultgroupingid": "0"
+                                }
+                            },
+                            "description": {
+                                "de": "A Moodle course"
+                            },
+                            "name": {
+                                "de": "MAP Vorbereitungskurs GM2"
+                            },
+                            "type": "http://lrs.learninglocker.net/define/type/moodle/course"
+                        },
+                        "id": course_full,
+                        "objectType": "Activity"
+                    },
+                    {
+                        "definition": {
+                            "extensions": {
+                                "http://lrs.learninglocker.net/define/extensions/moodle_module": {
+                                    "forceformat": "0",
+                                    "introformat": "1",
+                                    "name": "Wiki - Woche 2",
+                                    "intro": "<p>In diesem Wiki können Sie die Erläuterungstexte gemeinsam verfassen.<br>Bitte beachten Sie die Hinweise auf der erste Seite im Wiki.<br><br>Die <b>Einreichung </b>der gemeinsam erstellen Erläuterungstexte geschieht am Sonntag, <b>10.03.2019, 23:59 Uhr</b> automatisch. Danach wird das Wiki geschlossen und Sie können keine Änderungen mehr vornehmen.<br></p>",
+                                    "url": "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=1202",
+                                    "editend": "0",
+                                    "wikimode": "collaborative",
+                                    "timemodified": "1550051204",
+                                    "defaultformat": "html",
+                                    "firstpagetitle": "Wiki zur Erstellung der Erläuterungstexte",
+                                    "type": "wiki",
+                                    "course": "9",
+                                    "id": "60",
+                                    "timecreated": "0",
+                                    "editbegin": "0"
+                                }
+                            },
+                            "description": {
+                                "de": "<p>In diesem Wiki können Sie die Erläuterungstexte gemeinsam verfassen.<br>Bitte beachten Sie die Hinweise auf der erste Seite im Wiki.<br><br>Die <b>Einreichung </b>der gemeinsam erstellen Erläuterungstexte geschieht am Sonntag, <b>10.03.2019, 23:59 Uhr</b> automatisch. Danach wird das Wiki geschlossen und Sie können keine Änderungen mehr vornehmen.<br></p>"
+                            },
+                            "name": {
+                                "de": "Wiki - Woche 2"
+                            },
+                            "type": "http://lrs.learninglocker.net/define/type/moodle/wiki"
+                        },
+                        "id": "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=1202",
+                        "objectType": "Activity"
+                    }
+                ],
+                "category": [
+                    {
+                        "definition": {
+                            "description": {
+                                "de": "Moodle is a open source learning platform designed to provide educators, administrators and learners with a single robust, secure and integrated system to create personalised learning environments."
+                            },
+                            "name": {
+                                "de": "Moodle"
+                            },
+                            "type": "http://id.tincanapi.com/activitytype/source"
+                        },
+                        "id": "http://moodle.org",
+                        "objectType": "Activity"
+                    }
+                ]
+            }
+        },
+        "actor": {
+            "account": {
+                "homePage": "https://moodle.ikarion-projekt.de",
+                "name": user
+            },
+            "name": user,
+            "objectType": "Agent"
+        },
+        "timestamp": "2019-03-10T13:49:44+01:00",
+        "version": "1.0.0",
+        "id": "c16d4842-2daa-48fb-b93f-b82430cac195",
+        "verb": {
+            "display": {
+                "en": "update"
+            },
+            "id": "http://id.tincanapi.com/verb/updated"
+        },
+        "object": {
+            "definition": {
+                "extensions": {
+                    "http://collide.info/moodle_wiki_update": {
+                        "content_clean":  content_clean_user,
+                        "content_raw": "<div class=\"wiki-toc\"><p class=\"wiki-toc-title\">Inhaltsübersicht</p><p class=\"wiki-toc-section-1 wiki-toc-section\">1. <a href=\"#toc-1\"><span xml:lang=\"de\" lang=\"de\">Hinweise zur gemeinsamen Arbeit im Wiki</span> <a href=\"edit.php?pageid=274&amp;section=%3Cspan+xml%3Alang%3D%22de%22+lang%3D%22de%22%3EHinweise+zur+gemeinsamen+Arbeit+im+Wiki%3C%2Fspan%3E\" class=\"wiki_edit_section\">[Bearbeiten]</a></a></p><p class=\"wiki-toc-section-1 wiki-toc-section\">2. <a href=\"#toc-2\"><span xml:lang=\"de\" lang=\"de\">Frage 1 &amp; 2 - Kognitive Entwicklung nach Piaget</span> <a href=\"edit.php?pageid=274&amp;section=%3Cspan+xml%3Alang%3D%22de%22+lang%3D%22de%22%3EFrage+1+%26amp%3B+2+-+Kognitive+Entwicklung+nach+Piaget%3C%2Fspan%3E\" class=\"wiki_edit_section\">[Bearbeiten]</a></a></p><p class=\"wiki-toc-section-1 wiki-toc-section\">3. <a href=\"#toc-3\"><span xml:lang=\"de\" lang=\"de\">Frage 3 - Kognitive Entwicklung nach Wygotski</span> <a href=\"edit.php?pageid=274&amp;section=%3Cspan+xml%3Alang%3D%22de%22+lang%3D%22de%22%3EFrage+3+-+Kognitive+Entwicklung+nach+Wygotski%3C%2Fspan%3E\" class=\"wiki_edit_section\">[Bearbeiten]</a></a></p><p class=\"wiki-toc-section-1 wiki-toc-section\">4. <a href=\"#toc-4\"><span lang=\"de\" lang=\"de\" xml:lang=\"de\">Frage 4 - Wissensarten</span> <a href=\"edit.php?pageid=274&amp;section=%3Cspan+lang%3D%22de%22+lang%3D%22de%22+xml%3Alang%3D%22de%22%3EFrage+4+-+Wissensarten%3C%2Fspan%3E\" class=\"wiki_edit_section\">[Bearbeiten]</a></a></p><p class=\"wiki-toc-section-1 wiki-toc-section\">5. <a href=\"#toc-5\"><span xml:lang=\"de\" lang=\"de\">Frage 5 - Konstruktivismus &amp; Situiertes Lernen</span> <a href=\"edit.php?pageid=274&amp;section=%3Cspan+xml%3Alang%3D%22de%22+lang%3D%22de%22%3EFrage+5+-+Konstruktivismus+%26amp%3B+Situiertes+Lernen%3C%2Fspan%3E\" class=\"wiki_edit_section\">[Bearbeiten]</a></a></p></div><h3><a name=\"toc-1\"></a><span xml:lang=\"de\" lang=\"de\">Hinweise zur gemeinsamen Arbeit im Wiki</span> <a href=\"edit.php?pageid=274&amp;section=%3Cspan+xml%3Alang%3D%22de%22+lang%3D%22de%22%3EHinweise+zur+gemeinsamen+Arbeit+im+Wiki%3C%2Fspan%3E\" class=\"wiki_edit_section\">[Bearbeiten]</a></h3>\n<p align=\"justify\">Bitte beachten Sie folgende Hinweise zur gemeinsamen Arbeit mit Wiki.<br>\nWikis sind asynchron, es kann also nur unter bestimmten Umständen gleichzeitig daran gearbeitet werden. Um zu vermeiden, dass eine parallele Bearbeitung der Wikis gestört wird, achten Sie bitte dringend darauf, dass Sie die einzelnen Wikis <u>nicht auf der obersten Ebene bearbeiten</u> (s. oben: Anzeige –Bearbeiten – Kommentare usw.), sondern in den einzelnen Kapiteln (siehe [Bearbeiten] rechts neben den Kapiteln).</p>\n<p align=\"justify\">Zur Information: Die Überschriften der Wikis (z.B. Frage 1 – Kognitive Entwicklung nach Piaget) wurden von uns als „Überschrift groß“ formatiert.\nBitte ändern Sie diese Überschrift nicht. Der Fließtext für die Fragen (z.B. Fragetext für die erste Frage: „…“) wurde als „Absatz“ formatiert.</p>\n<p><span xml:lang=\"de\" lang=\"de\">&nbsp;</span></p>\n<h3><a name=\"toc-2\"></a><span xml:lang=\"de\" lang=\"de\">Frage 1 &amp; 2 - Kognitive Entwicklung nach Piaget</span> <a href=\"edit.php?pageid=274&amp;section=%3Cspan+xml%3Alang%3D%22de%22+lang%3D%22de%22%3EFrage+1+%26amp%3B+2+-+Kognitive+Entwicklung+nach+Piaget%3C%2Fspan%3E\" class=\"wiki_edit_section\">[Bearbeiten]</a></h3>\n_________________________________________________________<p></p>\n<p align=\"justify\"><i>Welche der folgenden Aussagen <u>treffen zu</u> und welche <u>treffen nicht zu</u>?</i></p>\n<p><b><span xml:lang=\"de\" lang=\"de\">1.</span></b></p><p align=\"justify\"> Die nächste Aufgabe der Mathearbeit sieht wirklich schwierig aus. Gar nicht so, wie die anderen Aufgaben, die sie im Unterricht geübt haben! Lars probiert eine Weile an der Aufgabe herum. Kurz darauf merkt er, dass er diese Aufgabe doch mit der Lösung aus dem Unterricht lösen kann. Er fragt sich, wie er das nur übersehen könnte. Die Aufgabe kann Lars zügig lösen.</p>\n<p><span xml:lang=\"de\" lang=\"de\">Diese Situation zeigt das Fehlschlagen der Assimilation.</span></p>\n<p><span xml:lang=\"de\" lang=\"de\">&nbsp;</span></p>\n<p><b><span xml:lang=\"de\" lang=\"de\">2.</span></b></p>\n<p align=\"justify\"> Herr M. war bereits in vielen teuren Restaurants.\nZum ersten Mal besucht er nun ein McBurger. Wie gewohnt setzt er sich auf einen der freien Plätze und wartet darauf, dass die Bedienung die Speisekarte bringt. Er wartet vergeblich - es kommt keine Bedienung an den Tisch. Als Antwort auf einen verwirrten Blick und den Ruf der Bedienung kommt vom Tresen: \"Wir bedienen Sie nicht am Tisch. Kommen Sie her.\"</p>\n<p><span xml:lang=\"de\" lang=\"de\">Die Erfahrung führt zu einer Akkomodation.</span></p>\n<p><span xml:lang=\"de\" lang=\"de\">_________________________________________________________<br>\n*Bitte schreiben Sie ab hier Ihren Erläuterungstext</span></p><p>Unter <b>Assimilation</b> versteht man, dass die Umwelt anhand schon vorhandener Denkmuster interpretiert und erfasst wird. Bekannt dazu ist das wau-wau Schemata; ein kleines Kind nennt einen Hund wau-wau. Nun sieht es eine Katze, die ebenso wie der Hund, Fell besitzt, einen Schwanz hat, auf vier Beinen läuft, und nennt jene Katze auch wau-wau.</p><p>Ein&nbsp;<b>Fehlschlagen der Assimilation</b>&nbsp;bedeutet, dass neu erfahrene Vorkommnisse in der Umwelt nicht den eigenen Denkstrukturen zugeordnet werden können. In dem Fallbeispiel scheitert Lars zwar im ersten Moment daran, jedoch benötigt er nur einige Zeit bis die Assimilation stattfindet, und ähnliche Matheaufgaben ins Gedächtnis gerufen werden.<br></p><p><b>Akkomodation</b> beschreibt nun den Prozess, dass das eigene Denkmuster der Umwelt angepasst wird. Das heißt, in diesem Fall z.B. lernt das Kind, dass die Katze zwar ähnliche Eigenschaften wie der Hund (wauwau) besitzt, jedoch ein anderen Tiergattung angehört. Sie macht nicht wauwau, sie miaut.</p><p>In dem Fallbeispiel findet eine Akkomodation statt, indem Herr M. herausfindet, dass die Bedienung in jenem Restaurant anders gehandhabt wird, als in ihm schon bekannten Restaurants.</p><p><span xml:lang=\"de\" lang=\"de\"><br></span></p><h3><a name=\"toc-3\"></a><span xml:lang=\"de\" lang=\"de\">Frage 3 - Kognitive Entwicklung nach Wygotski</span> <a href=\"edit.php?pageid=274&amp;section=%3Cspan+xml%3Alang%3D%22de%22+lang%3D%22de%22%3EFrage+3+-+Kognitive+Entwicklung+nach+Wygotski%3C%2Fspan%3E\" class=\"wiki_edit_section\">[Bearbeiten]</a></h3>\n_________________________________________________________<p></p>\n<p><i><span xml:lang=\"de\" lang=\"de\">Trifft die Aussage zu</span></i><span xml:lang=\"de\" lang=\"de\">?</span></p>\n<p align=\"justify\">Mithilfe einer Lern-App schafft es Markus, sich Spanisch beizubringen und in einem Kurs die Sprachstufe A1/A2 zertifiziert zu bekommen. </p>\n<p align=\"justify\">Die Lern-App war demnach ein Werkzeug, welches Markus dabei unterstützt hat, in die Zone der proximalen Entwicklung zu kommen.</p>\n<p><span xml:lang=\"de\" lang=\"de\">_________________________________________________________<br>\n*Bitte schreiben Sie ab hier Ihren Erläuterungstext</span></p>\n<p><span xml:lang=\"de\" lang=\"de\">&nbsp;</span></p><h3><a name=\"toc-4\"></a><span lang=\"de\" lang=\"de\" xml:lang=\"de\">Frage 4 - Wissensarten</span> <a href=\"edit.php?pageid=274&amp;section=%3Cspan+lang%3D%22de%22+lang%3D%22de%22+xml%3Alang%3D%22de%22%3EFrage+4+-+Wissensarten%3C%2Fspan%3E\" class=\"wiki_edit_section\">[Bearbeiten]</a></h3>\n_________________________________________________________<p></p>\n<p align=\"justify\"><i>Bitte ordnen Sie jede der folgenden drei Szenen\njeweils einer Wissensart zu. Jede Wissensart wird genau einmal benötigt.\nBeachten Sie, dass nicht alle der aufgeführten Wissensarten benötigt werden.</i></p><i>\n</i><p><b><span lang=\"de\" lang=\"de\" xml:lang=\"de\">1.</span></b></p><p align=\"justify\"> Ein fünfjähriges Mädchen bekommt von seiner Großmutter ein Fahrrad geschenkt. Als die Großmutter nach einiger Zeit zu Besuch kommt, fährt das Mädchen ihr im Garten auf dem Fahrrad entgegen und ruft: „Schau, ich kann schon Rad fahren.“</p>\n<p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">&nbsp;</span></p>\n<p><b><span lang=\"de\" lang=\"de\" xml:lang=\"de\">2.</span></b></p><p align=\"justify\"> Nina hat ihre Hausarbeit bereits zu lange aufgeschoben. Heute muss sie wirklich anfangen. Aber in der WG ist es einfach immer zu laut. Daher entscheidet sie sich dazu, zur Uni zu fahren und die Hausarbeit in der Bibliothek zu schreiben.</p>\n<p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">&nbsp;</span></p>\n<p><b><span lang=\"de\" lang=\"de\" xml:lang=\"de\">3.</span></b></p><p align=\"justify\"> In der Nachhilfestunde soll Max eine Aufgabe lösen, die der Lehrer im Unterricht vorgestellt hat. Bevor Max jedoch die Aufgabe löst, soll er erklären, warum die Formel zur Lösung eingesetzt wird.</p>\n<p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">&nbsp;</span></p>\n<p><b></b></p><p align=\"justify\"><b>Prozedurales Wissen - Selbstregulationswissen - Konzeptuelles Wissen - Situationales Wissen</b></p>\n<p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">_________________________________________________________<br>\n*Bitte schreiben Sie ab hier Ihren Erläuterungstext</span></p>\n<p><span lang=\"de\" lang=\"de\" xml:lang=\"de\"><b>Prozedurales Wissen</b>, auch Handlungswissen genannt beschreibt, dass Handlungen und/oder auch Lösungsstrategien sich anhand schon erfahrener Strategien und vollendeten Handlungen orientieren. D.h. man führt eine Handlung nach schon bekanntem Prozedere aus ?</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\"><b>Selbstregulationswissen</b> beschreibt den regulierten Vorgang seine eigenen Empfindungen, und Emotionen zu bändigen, bzw. der Situation anzupassen. Eventuell auch eigene Lernstrategien zu überdenken, und zu reflektieren. Im Fallbeispiel 2 kann man so eventuell von Selbstregulationswissen sprechen, da Nina sich dessen bewusst ist, wie sie ihre Aufmerksamkeit am besten auf die Fertigstellung ihrer Hausarbeit lenkt.</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\"><b>Konzeptuelles Wissen </b>beschreibt hierbei, dass Wissen anhand von Konzepten, eventuell Formeln, Kategorien, und Oberbegriffen gebündelt und angewandt wird. Im Fallbeispiel 3 kann man von konzeptuellen Wissen sprechen, da Max seine Matheaufgabe nach ihm schon bekannten (und auch allgemeinen) Lösungswegen (einem Konzept) löst.</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\"><b>Situationales Wissen</b> beschreibt Wissen, das innerhalb einer sozialen Situation erworben, angewandt, und/oder gefestigt wird. Das kann durch soziale Interaktion und Kommunikation an sich passieren. Dabei kann ebenso die Motivation aus dem sozialen Umfeld, als auch Hilfestellung, Unterstützung und soziale Anerkennung dazu beitragen. Im ersten Fallbeispiel kann man somit von situationalem Wissen sprechen, da die Kleine Fahrrad fahren lernt, während ihre Großmutter ihr dabei über die Schultern schaut, und ihr Anerkennung dafür zeigt.</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">1) Bei diesem Fall handelt es sich um das situationale Wissen. Das situationale Wissen beschreibt das Wissen über Anforderungen und Merkmale von Problemen in bestimmten Situationen. Anhand dieses Wissens kann anschließend die Aufmerksamkeit auf die Aspekte gelenkt werden, die relevant für die Problemlösung sind. Dabei wird oft auf Erfahrungen oder Erinnerungen zurückgegriffen. Wenn dem Individuum noch keine Lösung für die Situation bekannt ist, greift es oft auf ähnliche Situationen mittels seiner Erinnerung zurück, und nutzt die Problemlösung der damaligen Situation für die der jetzigen.</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">2) Bei diesem Fall handelt es sich um das Selbstregulationswissen. Beim Selbstregulationswissen ergreift der/die Lernende Selbststeuerungsmaßnahmen und überwacht somit selbstständig seinen Lernprozess. Da Nina in der vorliegenden Situation eigenständig die Entscheidung trifft zur Uni zu fahren und somit über ihren Lernprozess bestimmt, kann man hier von Selbstregulationswissen sprechen.&nbsp;</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\">3) Bei diesem Fall kann man vom konzeptuellem Wissen sprechen. Das konzeptuelle Wissen wird auch als \"semantisches Wissen\" bezeichnet und bezeichnet das Wissen über Fakten, Begriffe, Schemata und Prinzipien. Das konzeptuelle Wissen ermöglicht dem Individuum Beziehungen zwischen dem bereits vorhandenen und dem neuen Wissen herzustellen. In der vorliegenden Situation soll Max auf sein Wissen über ein bestimmtes Schemata (die Formel) zurückgreifen. Unteranderem stellt er mit der Erklärung, warum die Formel benötigt wird, eine Beziehung zwischen der Formel (vorhandenes Wissen) und der Lösung der Aufgabe (neues Wissen) her.&nbsp;</span></p><p><span lang=\"de\" lang=\"de\" xml:lang=\"de\"><br></span></p><h3><a name=\"toc-5\"></a><span xml:lang=\"de\" lang=\"de\">Frage 5 - Konstruktivismus &amp; Situiertes Lernen</span> <a href=\"edit.php?pageid=274&amp;section=%3Cspan+xml%3Alang%3D%22de%22+lang%3D%22de%22%3EFrage+5+-+Konstruktivismus+%26amp%3B+Situiertes+Lernen%3C%2Fspan%3E\" class=\"wiki_edit_section\">[Bearbeiten]</a></h3>\n_________________________________________________________<p></p><p align=\"justify\"><i>Lesen Sie die folgende Kursbeschreibung und entscheiden Sie, welche der aufgeführten Gestaltungsmerkmalen verschiedener situierter Lernarrangements in diesem Kurs vorhanden sind.</i></p>\n<p align=\"justify\">SchülerInnen nehmen an einem Workshop teil, in dem das Konzept „Graphentheorien“ (Informatik) vermittelt werden soll. Dieser findet in einem außerschulischen Lernlabor statt.</p>\n<p align=\"justify\">Die Teilnehmenden des Workshops sollen die Organisatoren eines Jahrmarkts – einen Juristen, einen Schatzmeister und einen Magier – bei der Planung des Jahrmarkts unterstützen. Jeder der Organisatoren ist für einen bestimmten Bereich der Planung verantwortlich. Aufgabe für die Teilnehmenden ist es, die Organisation des Jahrmarkts als ExpertInnen zu unterstützen, indem sie deren spezifischen Probleme lösen. Diese Geschichte wird in einem animierten Film\npräsentiert.</p>\n<p align=\"justify\">Die Teilnehmenden werden auf drei Gruppen aufgeteilt, die jeweils einem Betreuer, der einen Organisator spielt, zugeteilt sind. Die Teilnehmenden sollen die Aufgabe jeweils in ihrer Gruppe lösen und sich dort gegenseitig bei der Arbeit unterstützen, laut denken, wie sie gerade vorgehen.</p>\n<p align=\"justify\">Eine Gruppe steht beispielsweise vor dem Problem, dass innerhalb der Geisterbahn alle Attraktionen mit Kabeln verbunden werden, wobei zur Einsparung von Geld möglichst wenig Kabel-Material verwendet werden sollen. Dieses Problem lässt sich mit <b>Algorithmen zur Suche des minimalen Spannbaums</b> lösen. Die Organisatoren geben jedoch<b> nur wenig Unterstützung</b> bei der Bearbeitung der Probleme, da etwa ein Jurist nicht mit Prinzipien der Informatik vertraut ist. Zur Unterstützung sind allerdings <i>in einem Kiosk verschiedene relevante und nicht relevante Zeitschriften ausgelegt</i>, die mögliche Lösungsansätze für die verschiedenen Probleme der Szenarien schülergerecht vorstellen. Zusätzlich dienen die Zeitschriften dazu, einen <b>Alltagsbezug der verwendeten informatischen Strategien vorzustellen</b>.</p>\n<p align=\"justify\">Haben die Teilnehmenden die Planung erfolgreich abgeschlossen, wird ihnen ein Abschlussfilm vorgespielt, der das erfolgreiche Stadtfest zeigt.</p>\n<p><b></b></p><p align=\"justify\"><b>Articulation – Scaffolding – Eingebettete Daten – Paar verwandter Aufgaben</b></p>\n<p><span xml:lang=\"de\" lang=\"de\">_________________________________________________________<br>\n*Bitte schreiben Sie ab hier Ihren Erläuterungstext</span></p><p>In der <b>konstruktivistischen Lerntheorie</b> geht es darum, dem Lernenden die Freiheit zu erschaffen, dass er sich sein eigenes Wissen konstruieren kann. Dem liegt die erkenntnistheoretische Auffassung zugrunde, dass Wissen nunmal subjektiv und individuell konstruiert wird.</p><p><br>Dazu gibt es diverse Modelle, anhand das Lernen und Lehren stattfindet, bzw. stattfinden sollte.</p><p>Zum einen gibt es den <b>Cognitive Apprenticeship </b>werden verschiedene Stufen beim Lernprozess dargestellt, und berücksichtigt. Zum einen gehört hierzu&nbsp;&nbsp;<b>Scaffolding, Coaching, und Articulation.</b>&nbsp;</p><p><b>Coaching</b> beschreibt, dass dem Lernenden z.B. vor dem Beginn der eigenen Projektarbeit Aufgaben vorgeführt werden, Modellvorlagen eines Protokolls, etc. zur Verfügung stehen. Dazu können auch verwandte Aufgaben zählen, nach deren Schemata die vorliegende Aufgabe gelöst werden kann.</p><p>Das Coaching, in diesem fall die verwandten Aufgaben sind indirekt in dem Lernprozess eingebettet. <b>Verwandte Aufgaben</b>, und somit Modelle von Lösungstrategien, die eventuell angewandt werden können, sind zugriffsbereit, werden jedoch nicht direkt vorgeführt. Also sind verwandte Aufgaben vorhanden, jedoch befinden sich die Schüler eher im Fading (Lehrpersonen verschwinden aus dem Lernprozess.)</p><p><b>Scaffolding </b>bedeutet, dass eine Lehrperson (oder ein Experte) im Hintergrund präsent ist, und als Ansprechperson bereit steht, um weitere Fragen zu beantworten.&nbsp;</p><p>Ein Scaffolding findet in dem Fallbeispiel nicht statt, da die Lehrpersonen keine Unterstützung leisten, sondern sich zurückhalten (Fading).</p><p><b>Articulation </b>beschreibt, dass der Lernende nach erfolgreicher Beendigung der Aufgabe seinen eigenen Lösungsweg reflektieren, und darstellen kann (bzw. ausformuliert).</p><p>Die Stufe der Articulation findet ebenfalls nicht in dem Fallbeispiel statt, da die Lernenden gar nicht an dem Punkt ankommen ihre Lösungen zusammenzutragen, und zu reflektieren.</p><p>Eingebettete Daten ?&nbsp;</p>\n"
+                    }
+                },
+                "description": {
+                    "de": "Test description"
+                },
+                "name": {
+                    "de": "Wiki zur Erstellung der Erläuterungstexte"
+                },
+                "type": "http://collide.info/moodle_wiki_page"
+            },
+            "id": "https://moodle.ikarion-projekt.de/mod/wiki/view.php?pageid=274",
+            "objectType": "Activity"
+        }
+    }
+
+    if process:
+        sp.process_statement(statement)
+    # json_s = json.dumps(statement)
+    # json_s.replace("forum", "blabla")
+    # statement = json.loads(json_s)
+
+    return statement
+
