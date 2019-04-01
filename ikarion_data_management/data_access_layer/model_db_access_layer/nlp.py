@@ -13,7 +13,7 @@ def concept_match(concept_list, text, sim_thresh=0.8):
 
     while i < len(token_text):
         # check for composites of largest size first then smaller up to single words
-        for l in reversed(range(3)):
+        for l in reversed(range(4)):
             token_slice = token_text[i:i + 1 + l]
             word_composition = " ".join(token_slice)
             sim, matched_word = f_s.get(word_composition, [(0.0, "")])[0]
