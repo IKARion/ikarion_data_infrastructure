@@ -250,6 +250,7 @@ def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints
     }
     wiki_edits.insert(0, wiki_start)
     user_concept_additions = {user_name: [] for user_name in user_names}
+    wiki_concepts_per_user = []
     for item_1, item_2 in zip(wiki_edits[:-1], wiki_edits[1:]):
         # user_before = item_1["user_id"]
         concepts_before = item_1["wiki_concepts"]
@@ -257,7 +258,7 @@ def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints
         user_after = item_2["user_id"]
         concepts_after = item_2["wiki_concepts"]
         c_count_after = sum([cc["score"] * cc["count"] for cc in concepts_after])
-
+        wiki_concepts_per_user.append[{"user_id": user_after, "concepts": concepts_after}]
         if c_count_after > c_count_before:
             added_concept_count = c_count_after - c_count_before
         else:
@@ -283,7 +284,7 @@ def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints
         }
             for user_id, concept_count in user_concept_counts.items()]
 
-    return user_concept_counts_norm
+    return user_concept_counts_norm, wiki_concepts_per_user
 
 
 def get_group_self_assesment(course, group_id, task_id, timestamp):

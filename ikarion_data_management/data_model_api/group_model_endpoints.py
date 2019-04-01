@@ -58,9 +58,9 @@ def get_group_self_assessment(course_id, group_id, task_id, timestamp):
 })
 @group_model_blueprint.route("/weighted_wiki_wordcount/<course_id>/<group_id>/<task_id>/<int:timestamp>")
 def get_group_weighted_wiki_word_count(course_id, group_id, task_id, timestamp):
-    res = group_model_dao.get_group_weighted_wiki_count_for_task(course_id, group_id, task_id, int(timestamp))
+    res, wiki_concepts_per_user = group_model_dao.get_group_weighted_wiki_count_for_task(course_id, group_id, task_id, int(timestamp))
 
-    return jsonify(data=res)
+    return jsonify(data=res, wiki_concepts_per_user=wiki_concepts_per_user)
 
 """
     Returns json array of objects with fields [group_id, user_id, verb_id, object_id, timestamp]
