@@ -258,7 +258,7 @@ def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints
         user_after = item_2["user_id"]
         concepts_after = item_2["wiki_concepts"]
         c_count_after = sum([cc["score"] * cc["count"] for cc in concepts_after])
-        wiki_concepts_per_user.append[{"user_id": user_after, "concepts": concepts_after}]
+        wiki_concepts_per_user.append({"user_id": user_after, "concepts": concepts_after})
         if c_count_after > c_count_before:
             added_concept_count = c_count_after - c_count_before
         else:
