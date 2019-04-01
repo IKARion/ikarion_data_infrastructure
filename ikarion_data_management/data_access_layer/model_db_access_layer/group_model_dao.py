@@ -214,75 +214,84 @@ def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints
         user_name = g_member["name"]
         user_names.append(user_name)
 
-    # wiki edits
-    wikiQuery = {
-        "verb.id": "http://id.tincanapi.com/verb/updated",
-        "object.definition.type": "http://collide.info/moodle_wiki_page"
-    }
-    wikiContentProjection = {"content": "$object.definition.extensions.content_clean"}
+    try:
+        # wiki edits
+        wikiQuery = {
+            "verb.id": "http://id.tincanapi.com/verb/updated",
+            "object.definition.type": "http://collide.info/moodle_wiki_page"
+        }
+        wikiContentProjection = {"content": "$object.definition.extensions.content_clean"}
 
-    projection = {
-        "_id": 0,
-        "user_id": "$" + user_schema,
-        "verb_id": "$verb.id",
-        "object_id": "$object.id",
-        "timestamp": "$timestamp",
-        "object_type": "$object.definition.type",
-        "object_name": "$object.definition.name",
-        "content": "$object.definition.extensions.message",
-        "wiki_concepts": "$wiki_concepts",
+        projection = {
+            "_id": 0,
+            "user_id": "$" + user_schema,
+            "verb_id": "$verb.id",
+            "object_id": "$object.id",
+            "timestamp": "$timestamp",
+            "object_type": "$object.definition.type",
+            "object_name": "$object.definition.name",
+            "content": "$object.definition.extensions.message",
+            "wiki_concepts": "$wiki_concepts",
 
-    }
+        }
 
-    wiki_query = merge_query(course_query(course), group_query(group_id), wikiQuery, *constraints)
-    wiki_edits = list(
-        con.db.xapi_statements.aggregate([
-            {"$match": wiki_query},
-            {"$unwind": "$object.definition.extensions"},
-            {"$project": merge_query(projection, wikiContentProjection)}
-        ])
-    )
-    wiki_edits = [item for item in wiki_edits if item["timestamp"] < timestamp]
-    wiki_edits.sort(key=lambda x: x["timestamp"])
-    wiki_start = {
-        "user_id": "wiki_start",
-        "wiki_concepts": [],
-    }
-    wiki_edits.insert(0, wiki_start)
-    user_concept_additions = {user_name: [] for user_name in user_names}
-    wiki_concepts_per_user = []
-    for item_1, item_2 in zip(wiki_edits[:-1], wiki_edits[1:]):
-        # user_before = item_1["user_id"]
-        concepts_before = item_1["wiki_concepts"]
-        c_count_before = sum([cc["score"] * cc["count"] for cc in concepts_before])
-        user_after = item_2["user_id"]
-        concepts_after = item_2["wiki_concepts"]
-        c_count_after = sum([cc["score"] * cc["count"] for cc in concepts_after])
-        wiki_concepts_per_user.append({"user_id": user_after, "concepts": concepts_after})
-        if c_count_after > c_count_before:
-            added_concept_count = c_count_after - c_count_before
+        wiki_query = merge_query(course_query(course), group_query(group_id), wikiQuery, *constraints)
+        wiki_edits = list(
+            con.db.xapi_statements.aggregate([
+                {"$match": wiki_query},
+                {"$unwind": "$object.definition.extensions"},
+                {"$project": merge_query(projection, wikiContentProjection)}
+            ])
+        )
+        wiki_edits = [item for item in wiki_edits if item["timestamp"] < timestamp]
+        wiki_edits.sort(key=lambda x: x["timestamp"])
+        wiki_start = {
+            "user_id": "wiki_start",
+            "wiki_concepts": [],
+        }
+        wiki_edits.insert(0, wiki_start)
+        user_concept_additions = {user_name: [] for user_name in user_names}
+        wiki_concepts_per_user = []
+        for item_1, item_2 in zip(wiki_edits[:-1], wiki_edits[1:]):
+            # user_before = item_1["user_id"]
+            concepts_before = item_1["wiki_concepts"]
+            c_count_before = sum([cc["score"] * cc["count"] for cc in concepts_before])
+            user_after = item_2["user_id"]
+            concepts_after = item_2["wiki_concepts"]
+            c_count_after = sum([cc["score"] * cc["count"] for cc in concepts_after])
+            wiki_concepts_per_user.append({"user_id": user_after, "concepts": concepts_after})
+            if c_count_after > c_count_before:
+                added_concept_count = c_count_after - c_count_before
+            else:
+                added_concept_count = 0
+            user_concept_additions[user_after].append(added_concept_count)
+
+        user_concept_counts = {user_id: sum(concept_additions)
+                               for user_id, concept_additions in user_concept_additions.items()}
+
+        concept_sum = sum([item for item in user_concept_counts.values()])
+        if concept_sum == 0:
+            user_concept_counts_norm = [{
+                "user": user_id,
+                "weighted_wiki_wordcount": 0,
+                "group_id": group_id,
+            }
+                for user_id, concept_count in user_concept_counts.items()]
         else:
-            added_concept_count = 0
-        user_concept_additions[user_after].append(added_concept_count)
-
-    user_concept_counts = {user_id: sum(concept_additions)
-                           for user_id, concept_additions in user_concept_additions.items()}
-
-    concept_sum = sum([item for item in user_concept_counts.values()])
-    if concept_sum == 0:
+            user_concept_counts_norm = [{
+                "user": user_id,
+                "weighted_wiki_wordcount": concept_count / concept_sum,
+                "group_id": group_id,
+            }
+                for user_id, concept_count in user_concept_counts.items()]
+    except:
+        wiki_concepts_per_user = []
         user_concept_counts_norm = [{
             "user": user_id,
             "weighted_wiki_wordcount": 0,
             "group_id": group_id,
         }
-            for user_id, concept_count in user_concept_counts.items()]
-    else:
-        user_concept_counts_norm = [{
-            "user": user_id,
-            "weighted_wiki_wordcount": concept_count / concept_sum,
-            "group_id": group_id,
-        }
-            for user_id, concept_count in user_concept_counts.items()]
+            for user_id in user_names]
 
     return user_concept_counts_norm, wiki_concepts_per_user
 
