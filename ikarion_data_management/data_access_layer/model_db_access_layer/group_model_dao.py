@@ -245,6 +245,7 @@ def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints
         )
         wiki_edits = [item for item in wiki_edits if item["timestamp"] < timestamp]
         wiki_edits.sort(key=lambda x: x["timestamp"])
+        wiki_edits = [item for item in wiki_edits if "wiki_concepts" in item]
         wiki_start = {
             "user_id": "wiki_start",
             "wiki_concepts": [],
