@@ -3,7 +3,7 @@ import nltk
 from nltk.corpus import stopwords
 
 
-def concept_match(concept_list, text, sim_thresh=0.8):
+def concept_match(concept_list, text, sim_thresh=0.7):
     f_s = FuzzySet(concept_list)
     token_text = nltk.word_tokenize(text)
     # stop_w = set(stopwords.words("de"))
