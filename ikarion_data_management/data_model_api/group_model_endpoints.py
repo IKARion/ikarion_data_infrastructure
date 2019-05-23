@@ -73,7 +73,7 @@ def get_group_weighted_wiki_word_count(course_id, group_id, task_id, timestamp):
     "timestamp": "2147483648"
 })
 @group_model_blueprint.route("/group_interventions/<course_id>/<group_id>/<task_id>/<int:timestamp>")
-def get_group_weighted_wiki_word_count(course_id, group_id, task_id, timestamp):
+def get_group_interventions(course_id, group_id, task_id, timestamp):
     res = group_model_dao.get_group_interventions_for_task(course_id, group_id, task_id, int(timestamp))
     return jsonify(data=res)
 
