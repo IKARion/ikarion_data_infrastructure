@@ -207,6 +207,65 @@ def get_group_weighted_wiki_count_for_task(course, group, task_id, timestamp, *c
     return get_group_weighted_wiki_word_count(course, group, timestamp, group_task_query(task_id))
 
 
+def get_group_interventions_for_task(course, group_id, task_id, timestamp):
+    return get_group_interventions(course, group_id, timestamp, group_task_query(task_id))
+
+
+def get_group_interventions(course, group_id, timestamp, *constraints):
+    intervention_latency_query = {
+        "verb.id": "http://id.tincanapi.com/verb/viewed",
+        "object.definition.type": "https://moodle.ikarion-projekt.de/define/type/moodle/block_grouplatency"
+    }
+
+    intervention_activity_query = {
+        "verb.id": "http://id.tincanapi.com/verb/viewed",
+        "object.definition.type": "https://moodle.ikarion-projekt.de/define/type/moodle/block_groupactivity"
+    }
+
+    projection = {
+        "_id": 0,
+        "user_id": "$" + user_schema,
+        "verb_id": "$verb.id",
+        "object_id": "$object.id",
+        "timestamp": "$timestamp",
+        "object_type": "$object.definition.type",
+        "object_name": "$object.definition.name",
+        "content": "$object.definition.extensions.promptmessage",
+    }
+
+    latency_query = merge_query(course_query(course), group_query(group_id),
+                                intervention_latency_query, *constraints)
+
+    activity_query = merge_query(course_query(course), group_query(group_id),
+                                 intervention_activity_query, *constraints)
+
+    latency_prompts = list(
+        con.db.xapi_statements.aggregate([
+            {"$match": latency_query},
+            {"$unwind": "$object.definition.extensions"},
+            {"$project": projection}
+        ])
+    )
+    latency_prompts = [item for item in latency_prompts if item["timestamp"] < timestamp]
+
+    activity_prompts = list(
+        con.db.xapi_statements.aggregate([
+            {"$match": activity_query},
+            {"$unwind": "$object.definition.extensions"},
+            {"$project": projection}
+        ])
+    )
+    activity_prompts = [item for item in activity_prompts if item["timestamp"] < timestamp]
+
+    combList = (latency_prompts + activity_prompts)
+    combList.sort(key=lambda x: x["timestamp"], reverse=True)
+    for item in combList:
+        o_n = item["object_name"]
+        item["object_name"] = list(o_n.values())[0]
+
+    return combList
+
+
 def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints):
     group = con.db.groups.find_one({"id": group_id, "courseid": course})
     user_names = []
