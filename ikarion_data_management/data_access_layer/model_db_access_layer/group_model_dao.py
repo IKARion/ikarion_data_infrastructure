@@ -212,7 +212,6 @@ def get_group_interventions_for_task(course, group_id, task_id, timestamp, *cons
 
     task_query = {
         "task_id": task_id,
-        "courseid": course,
     }
     task = con.db.grouptasks.find_one(task_query)
     task_start = int(task["task_start"])

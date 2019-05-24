@@ -57,7 +57,7 @@ class GroupModelDAOInterventionTestCase(unittest.TestCase):
         with idi.app.app_context():
             print("lol")
             # gm.con.db.task_concepts.insert_one(task_concepts)
-            pdt.populate_xapi_model_intervention(gm.con)
+            # pdt.populate_xapi_model_intervention(gm.con)
 
     def setUp(self):
         self.app = idi.app.test_client()
@@ -78,6 +78,8 @@ class GroupModelDAOInterventionTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.ctx.__exit__(None, None, None)
+
+
 
 class GroupModelEndpointsTestCase(unittest.TestCase):
 
@@ -111,6 +113,8 @@ class GroupModelEndpointsTestCase(unittest.TestCase):
         r_json = json.loads(response_str)
         print(r_json)
 
+
+
     def tearDown(self):
         pass
 
@@ -135,6 +139,36 @@ class GroupModelSelfAssessmentTest(unittest.TestCase):
         url = url_temp.format(course, 0, "66")
         response = self.app.get(url)
         print(COURSEID)
+        print(response)
+        print(response.data)
+        response_str = response.data.decode("utf-8")
+        print(response_str)
+        r_json = json.loads(response_str)
+        print(r_json)
+
+    def tearDown(self):
+        pass
+
+class GroupModelInterventionTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        idi.app.testing = True
+
+    def setUp(self):
+        self.app = idi.app.test_client()
+        # mock_con = mongomock.MongoClient()
+        # um.con = mock_con
+        # gm.con = mock_con
+        # with idi.app.app_context():
+        #     pdt.populate_xapi_model_self_assessment(gm.con)
+
+    def test_get_group_interventions(self):
+        course = encode_url_chars("https://moodle.ikarion-projekt.de/course/view.php?id={}".format(0))
+        url_temp = GM_PRE + "/group_interventions/{}/{}/{}/"
+        url = url_temp.format(course, 275, 65)
+        response = self.app.get(url)
+        print()
         print(response)
         print(response.data)
         response_str = response.data.decode("utf-8")

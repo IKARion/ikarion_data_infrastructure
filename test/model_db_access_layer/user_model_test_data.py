@@ -1735,3 +1735,422 @@ def generate_xapi_statement_inter(*, user, course, time, verb, artefact, group=N
 
     return statement
 
+
+def generate_xapi_statement_inter_2(*, user, course, time, verb, artefact, group=None,
+                                    process=True):
+    task_name = "Test_Wiki_Bla"
+    course_full = "https://moodle.ikarion-projekt.de/course/view.php?id={}".format(course)
+    statement = {
+        "authority": {
+            "objectType": "Agent",
+            "name": "New Client",
+            "mbox": "mailto:hello@learninglocker.net"
+        },
+        "stored": "2019-01-19T21:39:08.040Z",
+        "context": {
+            "extensions": {
+                "http://collide.info/extensions/group": {
+                    "158": {
+                        "group_members": [
+                            {
+                                "name": "/SYh8zWao54Hly6FA/eTgA==",
+                                "fullname": "ETq6BCkNj1rCxwHjkT0fmhBPE9plkknnLOnqpKcD86g=",
+                                "email": "motVyU7Anh5Cmjv+kKJWxJOd38GOxy251sx0ttKkVuwQTxPaZZJJ5yzp6qSnA/Oo",
+                                "username": "EhSRnE8BeW4nvtHsp1xNbA=="
+                            },
+                            {
+                                "name": "t/lZTuN8H58qZRrmIDuDUQ==",
+                                "fullname": "Pk5pPWxgWDI7i1z4TV4QTw==",
+                                "email": "d59Odj2FtAHY3fVi2QY+51ymKX7bEmpVVTT+Ldk2jRU=",
+                                "username": "+XihLFceGG5dVMIZMq1jAA=="
+                            },
+                            {
+                                "name": "8Ue2wJvcAxsrfcVNbYL0pA==",
+                                "fullname": "+50DtA9Ifil86m+MjsQwLhBPE9plkknnLOnqpKcD86g=",
+                                "email": "Y2aIO+VFMOA1adYz5KdjTJOd38GOxy251sx0ttKkVuwQTxPaZZJJ5yzp6qSnA/Oo",
+                                "username": "sd1acpD4IbRsI1cHbAsi7g=="
+                            },
+                            {
+                                "name": "cD/hMMcE+SOKDje6nNcUxw==",
+                                "fullname": "BacSZULRJ/UK09Ok4cVUNA==",
+                                "email": "m9ctUIyrKOtvPkFgEGb2Y20RQoohsdxyABWei6/Tni4=",
+                                "username": "BK17xiRQ1shtdcmZ3B5ulQ=="
+                            }
+                        ],
+                        "task": {
+                            "task_resources": [
+                                "https://moodle.ikarion-projekt.de/mod/forum/view.php?id=994",
+                                "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=995"
+                            ],
+                            "task_type": "collaborative wiki writing",
+                            "task_end": "1540767600",
+                            "task_start": "1539597600",
+                            "task_name": "Task1_IntModelle_Ko",
+                            "task_id": "37"
+                        },
+                        "timemodified": "1539592607",
+                        "timecreated": "1539592598",
+                        "description": "none",
+                        "name": "Gruppe Integrationsmodelle G5",
+                        "id": "158"
+                    },
+                    "191": {
+                        "group_members": [
+                            {
+                                "name": "vvwWX4aNx8IEA9/k7yt/hw==",
+                                "fullname": "7XlnwDVMLLEaZvVwFEchQw==",
+                                "email": "gtMrffWUEMhLCgxOcUGIiy66V94wTnvQeF7zcpnB1I0=",
+                                "username": "nvniOoHCyR2lIxnWnDWOzQ=="
+                            },
+                            {
+                                "name": "t/lZTuN8H58qZRrmIDuDUQ==",
+                                "fullname": "Pk5pPWxgWDI7i1z4TV4QTw==",
+                                "email": "d59Odj2FtAHY3fVi2QY+51ymKX7bEmpVVTT+Ldk2jRU=",
+                                "username": "+XihLFceGG5dVMIZMq1jAA=="
+                            },
+                            {
+                                "name": "8Ue2wJvcAxsrfcVNbYL0pA==",
+                                "fullname": "+50DtA9Ifil86m+MjsQwLhBPE9plkknnLOnqpKcD86g=",
+                                "email": "Y2aIO+VFMOA1adYz5KdjTJOd38GOxy251sx0ttKkVuwQTxPaZZJJ5yzp6qSnA/Oo",
+                                "username": "sd1acpD4IbRsI1cHbAsi7g=="
+                            }
+                        ],
+                        "task": {
+                            "task_resources": [
+                                "https://moodle.ikarion-projekt.de/mod/forum/view.php?id=1031",
+                                "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=1032"
+                            ],
+                            "task_type": "collaborative wiki writing",
+                            "task_end": "1541977200",
+                            "task_start": "1540810800",
+                            "task_name": "Task2_SozPraes_Ko",
+                            "task_id": "47"
+                        },
+                        "timemodified": "1543222553",
+                        "timecreated": "1540806725",
+                        "description": "none",
+                        "name": "Gruppe Soziale_Praesenz G5",
+                        "id": "191"
+                    },
+                    "214": {
+                        "group_members": [
+                            {
+                                "name": "/SYh8zWao54Hly6FA/eTgA==",
+                                "fullname": "ETq6BCkNj1rCxwHjkT0fmhBPE9plkknnLOnqpKcD86g=",
+                                "email": "motVyU7Anh5Cmjv+kKJWxJOd38GOxy251sx0ttKkVuwQTxPaZZJJ5yzp6qSnA/Oo",
+                                "username": "EhSRnE8BeW4nvtHsp1xNbA=="
+                            },
+                            {
+                                "name": "t/lZTuN8H58qZRrmIDuDUQ==",
+                                "fullname": "Pk5pPWxgWDI7i1z4TV4QTw==",
+                                "email": "d59Odj2FtAHY3fVi2QY+51ymKX7bEmpVVTT+Ldk2jRU=",
+                                "username": "+XihLFceGG5dVMIZMq1jAA=="
+                            },
+                            {
+                                "name": "2JU9E9oUbIh4dtQ/JpiujQ==",
+                                "fullname": "tD0NrPrgcIX6oTeIeq3t3Q==",
+                                "email": "EMhj25NyoJfOW7nJ/ARBK3rjW8RjNmVLqnLc70+IkRHVkTR2RsyDBwQIK8DRm3pc",
+                                "username": "apyUyu0ZuGwqFLWH6JLMyA=="
+                            },
+                            {
+                                "name": "8Ue2wJvcAxsrfcVNbYL0pA==",
+                                "fullname": "+50DtA9Ifil86m+MjsQwLhBPE9plkknnLOnqpKcD86g=",
+                                "email": "Y2aIO+VFMOA1adYz5KdjTJOd38GOxy251sx0ttKkVuwQTxPaZZJJ5yzp6qSnA/Oo",
+                                "username": "sd1acpD4IbRsI1cHbAsi7g=="
+                            }
+                        ],
+                        "task": {
+                            "task_resources": [
+                                "https://moodle.ikarion-projekt.de/mod/forum/view.php?id=1045",
+                                "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=1046"
+                            ],
+                            "task_type": "collaborative wiki writing",
+                            "task_end": "1543186800",
+                            "task_start": "1542020400",
+                            "task_name": "Task3_Brainstorming_Ko",
+                            "task_id": "54"
+                        },
+                        "timemodified": "1542012510",
+                        "timecreated": "1542012510",
+                        "description": "none",
+                        "name": "Gruppe Brainstorming G4",
+                        "id": "214"
+                    },
+                    "242": {
+                        "group_members": [
+                            {
+                                "name": "dkiFJIzVaf/TqPN+LQ7fLg==",
+                                "fullname": "D8IfbkBPL25Z5F8Go8+y/VUGFXHaGOaEnIk+Fc/zWMI=",
+                                "email": "nUDBKcpV4tEfBVUnq0Rth6v9jpd0EiijUMn1L775fm0=",
+                                "username": "uJYjRankpq6p5eZGrO0Luw=="
+                            },
+                            {
+                                "name": "fQ2Z3nMPn9K0nSA75zNs2Q==",
+                                "fullname": "X43K59mVgEbEs7d7MbiCbQ==",
+                                "email": "0W1VIu7Jly8+aTJZJ2qlyfnqp3Yfm54ZYbyfz1qIZ5c=",
+                                "username": "y69ohF7TqT8hp7oOp328gw=="
+                            },
+                            {
+                                "name": "8Ue2wJvcAxsrfcVNbYL0pA==",
+                                "fullname": "+50DtA9Ifil86m+MjsQwLhBPE9plkknnLOnqpKcD86g=",
+                                "email": "Y2aIO+VFMOA1adYz5KdjTJOd38GOxy251sx0ttKkVuwQTxPaZZJJ5yzp6qSnA/Oo",
+                                "username": "sd1acpD4IbRsI1cHbAsi7g=="
+                            },
+                            {
+                                "name": "Re3Mce6Yjm8KF4ZcEkD9Rg==",
+                                "fullname": "3F8TPx44gWR+yUedKy6r0Q==",
+                                "email": "IFiGdJMzpa210FDa1l8Poav9jpd0EiijUMn1L775fm0=",
+                                "username": "9Fn+66a45+n2ihacGWgo0g=="
+                            }
+                        ],
+                        "task": {
+                            "task_resources": [
+                                "https://moodle.ikarion-projekt.de/mod/forum/view.php?id=1050",
+                                "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=1051"
+                            ],
+                            "task_type": "collaborative wiki writing",
+                            "task_end": "1544396700",
+                            "task_start": "1543230000",
+                            "task_name": "Task4_Common_Ground_WA",
+                            "task_id": "59"
+                        },
+                        "timemodified": "1543223768",
+                        "timecreated": "1543223768",
+                        "description": "none",
+                        "name": "Gruppe Common_Ground G-6",
+                        "id": "242"
+                    },
+                    "255": {
+                        "group_members": [
+                            {
+                                "name": "8shCFjo+boJIroJYjEVG3w==",
+                                "fullname": "dI/dmJzGBzx1S+Y2CtLCJRBPE9plkknnLOnqpKcD86g=",
+                                "email": "TnixfLVVU9XVg9tMGSO8ZZOd38GOxy251sx0ttKkVuwQTxPaZZJJ5yzp6qSnA/Oo",
+                                "username": "E652Rn4KB0UwR70bpYga5g=="
+                            },
+                            {
+                                "name": "ouFVSEQq09GEg6Z/713Cdw==",
+                                "fullname": "i3fNrt2xnWcWA95s/ZKugA==",
+                                "email": "PTaQkEi45WFuQG65zOg69Pnqp3Yfm54ZYbyfz1qIZ5c=",
+                                "username": "5rfrzlUoncZcmIlb5wrmBQ=="
+                            },
+                            {
+                                "name": "Aes4XtX8DFbi7Kn00GWVug==",
+                                "fullname": "Jkl7ecCobjJ2SzVyCdHz5/g3MBUKdpF4CFhL1J7YQfI=",
+                                "email": "Sl8kPk1TEKz2pGPy67BcLmgMePYQ4ERvVCXcotYAyB4kSpAhzoNzjgx7JuM/Ka0e",
+                                "username": "vPLlG0ZKNQPgyaquBnPF2Q=="
+                            },
+                            {
+                                "name": "CN48GSRnSHlK/aUd3u5eHQ==",
+                                "fullname": "y/HEWxSTB9kQYad1w3/wdQ==",
+                                "email": "FLGj4PYFORA5AG/SkU4REPnqp3Yfm54ZYbyfz1qIZ5c=",
+                                "username": "rVjS5oMX0p49fXnwHoPXDg=="
+                            },
+                            {
+                                "name": "8Ue2wJvcAxsrfcVNbYL0pA==",
+                                "fullname": "+50DtA9Ifil86m+MjsQwLhBPE9plkknnLOnqpKcD86g=",
+                                "email": "Y2aIO+VFMOA1adYz5KdjTJOd38GOxy251sx0ttKkVuwQTxPaZZJJ5yzp6qSnA/Oo",
+                                "username": "sd1acpD4IbRsI1cHbAsi7g=="
+                            }
+                        ],
+                        "task": {
+                            "task_resources": [
+                                "https://moodle.ikarion-projekt.de/mod/forum/view.php?id=1065",
+                                "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=1067"
+                            ],
+                            "task_type": "collaborative wiki writing",
+                            "task_end": "1545606300",
+                            "task_start": "1544439600",
+                            "task_name": "Task5_Informationsaustausch_WA",
+                            "task_id": "62"
+                        },
+                        "timemodified": "1544430844",
+                        "timecreated": "1544430591",
+                        "description": "none",
+                        "name": "Gruppe Informationsaustausch G-2",
+                        "id": "255"
+                    },
+                    "275": {
+                        "group_members": [
+                            {
+                                "name": "sD63w9Czm87Aj4+hNvtf6w==",
+                                "fullname": "h9tZd4kNVUEKSRW3WYJJvg==",
+                                "email": "BOfkpMOWDmBQu/w53687wPnqp3Yfm54ZYbyfz1qIZ5c=",
+                                "username": "p6cRMaLBhxn0zaHf0W36RA=="
+                            },
+                            {
+                                "name": "o1v6f/6FhE1Y3sIa9mPzmg==",
+                                "fullname": "4eJO2Vlz1TC6TyZu7Tn1a8+HhtqiFLWE0mXKGWJTcg4=",
+                                "email": "QOpazbMsjmbNDIviB3TAvoDOchwrtjbOXVtM1lKsp4T+LIGzcr3LT2VKGZEQhh9E",
+                                "username": "ZlyD6qrMY4CVuymfMa8vTQ=="
+                            },
+                            {
+                                "name": "8Ue2wJvcAxsrfcVNbYL0pA==",
+                                "fullname": "+50DtA9Ifil86m+MjsQwLhBPE9plkknnLOnqpKcD86g=",
+                                "email": "Y2aIO+VFMOA1adYz5KdjTJOd38GOxy251sx0ttKkVuwQTxPaZZJJ5yzp6qSnA/Oo",
+                                "username": "sd1acpD4IbRsI1cHbAsi7g=="
+                            }
+                        ],
+                        "task": {
+                            "task_resources": [
+                                "https://moodle.ikarion-projekt.de/mod/forum/view.php?id=1074",
+                                "https://moodle.ikarion-projekt.de/mod/wiki/view.php?id=1075"
+                            ],
+                            "task_type": "collaborative wiki writing",
+                            "task_end": "1548025500",
+                            "task_start": "1546858800",
+                            "task_name": "Task6_Soz_Int_WA",
+                            "task_id": "65"
+                        },
+                        "timemodified": "1546854117",
+                        "timecreated": "1546853798",
+                        "description": "none",
+                        "name": "Gruppe Soz_Int G-4",
+                        "id": "275"
+                    }
+                },
+                "http://lrs.learninglocker.net/define/extensions/info": {
+                    "https://moodle.org/": "3.2.3+ (Build: 20170509)"
+                },
+                "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log": {
+                    "realuserid": None,
+                    "eventname": "\\block_grouplatency\\event\\grouplatency_prompt_viewed",
+                    "userid": "8Ue2wJvcAxsrfcVNbYL0pA==",
+                    "origin": "web",
+                    "ip": "87.123.197.34",
+                    "contextid": 1705,
+                    "anonymous": 0,
+                    "edulevel": 0,
+                    "objecttable": None,
+                    "other": "a:2:{s:4:\"type\";s:4:\"note\";s:7:\"message\";s:228:\"<strong>Aufgrund der Datenlage gibt es den folgenden Hinweis für euch</strong>\r\n<br><br>\r\nWerft regelmäßig einen Blick ins Gruppenforum und gebt euch zeitnah Rückmeldungen, damit sich eure Gruppenmitglieder beachtet fühlen.\";}",
+                    "target": "grouplatency_prompt",
+                    "relateduserid": None,
+                    "contextlevel": 80,
+                    "action": "viewed",
+                    "courseid": course,
+                    "objectid": None,
+                    "timecreated": 1547933946,
+                    "component": "block_grouplatency",
+                    "crud": "r",
+                    "contextinstanceid": "605"
+                }
+            },
+            "language": "en",
+            "platform": "Moodle",
+            "contextActivities": {
+                "grouping": [
+                    {
+                        "definition": {
+                            "extensions": {
+                                "http://lrs.learninglocker.net/define/extensions/moodle_course": {
+                                    "cacherev": "1552319780",
+                                    "showreports": "0",
+                                    "groupmode": "1",
+                                    "idnumber": "",
+                                    "completionnotify": "0",
+                                    "summary": "",
+                                    "shortname": "MAP Vorbereitung (Bochum)",
+                                    "maxbytes": "0",
+                                    "theme": "",
+                                    "enddate": "0",
+                                    "groupmodeforce": "0",
+                                    "newsitems": "5",
+                                    "legacyfiles": "0",
+                                    "lang": "de",
+                                    "requested": "0",
+                                    "url": course_full,
+                                    "sortorder": "10010",
+                                    "startdate": "1549839600",
+                                    "visible": "1",
+                                    "visibleold": "1",
+                                    "timemodified": "1551692549",
+                                    "format": "topics",
+                                    "calendartype": "",
+                                    "showgrades": "0",
+                                    "marker": "8",
+                                    "fullname": "MAP Vorbereitungskurs GM2",
+                                    "type": "course",
+                                    "id": course,
+                                    "timecreated": "1526989731",
+                                    "summaryformat": "1",
+                                    "category": "1",
+                                    "enablecompletion": "1",
+                                    "defaultgroupingid": "0"
+                                }
+                            },
+                            "description": {
+                                "de": "A Moodle course"
+                            },
+                            "name": {
+                                "de": "MAP Vorbereitungskurs GM2"
+                            },
+                            "type": "http://lrs.learninglocker.net/define/type/moodle/course"
+                        },
+                        "id": course_full,
+                        "objectType": "Activity"
+                    }
+                ],
+                "category": [
+                    {
+                        "definition": {
+                            "description": {
+                                "en": "Moodle is a open source learning platform designed to provide educators, administrators and learners with a single robust, secure and integrated system to create personalised learning environments."
+                            },
+                            "name": {
+                                "en": "Moodle"
+                            },
+                            "type": "http://id.tincanapi.com/activitytype/source"
+                        },
+                        "id": "http://moodle.org",
+                        "objectType": "Activity"
+                    }
+                ]
+            }
+        },
+        "actor": {
+            "account": {
+                "homePage": "https://moodle.ikarion-projekt.de",
+                "name": "8Ue2wJvcAxsrfcVNbYL0pA=="
+            },
+            "name": "+50DtA9Ifil86m+MjsQwLhBPE9plkknnLOnqpKcD86g=",
+            "objectType": "Agent"
+        },
+        "timestamp": 1547933946,
+        "version": "1.0.0",
+        "id": "af50c9d6-a52a-4be9-bda1-5d60aeed8cb0",
+        "verb": {
+            "display": {
+                "en": "viewed"
+            },
+            "id": "http://id.tincanapi.com/verb/viewed"
+        },
+        "object": {
+            "definition": {
+                "extensions": {
+                    "http://lrs.learninglocker.net/define/extensions/moodle_block": {
+                        "promptmessage": "<strong>Aufgrund der Datenlage gibt es den folgenden Hinweis für euch</strong>\r\n<br><br>\r\nWerft regelmäßig einen Blick ins Gruppenforum und gebt euch zeitnah Rückmeldungen, damit sich eure Gruppenmitglieder beachtet fühlen.",
+                        "prompttype": "note",
+                        "contextinstanceid": "605",
+                        "component": "block_grouplatency"
+                    }
+                },
+                "description": {
+                    "en": "Grouplatency prompt viewed"
+                },
+                "name": {
+                    "en": "Grouplatency"
+                },
+                "type": "https://moodle.ikarion-projekt.de/define/type/moodle/block_grouplatency"
+            },
+            "id": "https://moodle.ikarion-projekt.de/course/view.php?id=11",
+            "objectType": "Activity"
+        }
+    }
+
+    if process:
+        sp.process_statement(statement)
+    # json_s = json.dumps(statement)
+    # json_s.replace("forum", "blabla")
+    # statement = json.loads(json_s)
+
+    return statement
