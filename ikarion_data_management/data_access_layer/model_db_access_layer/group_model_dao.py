@@ -207,11 +207,17 @@ def get_group_weighted_wiki_count_for_task(course, group, task_id, timestamp, *c
     return get_group_weighted_wiki_word_count(course, group, timestamp, group_task_query(task_id))
 
 
-def get_group_interventions_for_task(course, group_id, task_id, timestamp):
-    return get_group_interventions(course, group_id, timestamp, group_task_query(task_id))
+def get_group_interventions_for_task(course, group_id, task_id, timestamp, *constraints):
 
 
-def get_group_interventions(course, group_id, timestamp, *constraints):
+    task_query = {
+        "task_id": task_id,
+        "courseid": course,
+    }
+    task = con.db.grouptasks.find_one(task_query)
+    task_start = int(task["task_start"])
+    task_end = int(task["task_end"])
+
     intervention_latency_query = {
         "verb.id": "http://id.tincanapi.com/verb/viewed",
         "object.definition.type": "https://moodle.ikarion-projekt.de/define/type/moodle/block_grouplatency"
@@ -246,7 +252,7 @@ def get_group_interventions(course, group_id, timestamp, *constraints):
             {"$project": projection}
         ])
     )
-    latency_prompts = [item for item in latency_prompts if item["timestamp"] < timestamp]
+    latency_prompts = [item for item in latency_prompts if item["timestamp"] <= timestamp]
 
     activity_prompts = list(
         con.db.xapi_statements.aggregate([
@@ -255,9 +261,10 @@ def get_group_interventions(course, group_id, timestamp, *constraints):
             {"$project": projection}
         ])
     )
-    activity_prompts = [item for item in activity_prompts if item["timestamp"] < timestamp]
+    activity_prompts = [item for item in activity_prompts if item["timestamp"] <= timestamp]
 
     combList = (latency_prompts + activity_prompts)
+    combList = [item for item in combList if task_start <= item["timestamp"] <= task_end]
     combList.sort(key=lambda x: x["timestamp"], reverse=True)
     for item in combList:
         o_n = item["object_name"]

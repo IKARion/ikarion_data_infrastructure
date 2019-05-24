@@ -49,6 +49,36 @@ class GroupModelDAOWikiTestCase(unittest.TestCase):
     def tearDown(self):
         self.ctx.__exit__(None, None, None)
 
+
+class GroupModelDAOInterventionTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        idi.app.testing = True
+        with idi.app.app_context():
+            print("lol")
+            # gm.con.db.task_concepts.insert_one(task_concepts)
+            pdt.populate_xapi_model_intervention(gm.con)
+
+    def setUp(self):
+        self.app = idi.app.test_client()
+        self.app = idi.app.test_client()
+        self.ctx = idi.app.app_context()
+        self.ctx.__enter__()
+        # mock_con = mongomock.MongoClient()
+        # um.con = mock_con
+        # gm.con = mock_con
+        # pdt.populate_xapi_model(mock_con)
+        self.courses = [encode_url_chars(item["courseid"]) for item in um.get_all_courses()]
+        self.course = "https://moodle.ikarion-projekt.de/course/view.php?id=0"
+
+
+    def test_get_intervention_statements_with_task(self):
+        res = gm.get_group_interventions_for_task(self.course, "0", "71", 1901225046)
+        print(res)
+
+    def tearDown(self):
+        self.ctx.__exit__(None, None, None)
+
 class GroupModelEndpointsTestCase(unittest.TestCase):
 
     @classmethod
