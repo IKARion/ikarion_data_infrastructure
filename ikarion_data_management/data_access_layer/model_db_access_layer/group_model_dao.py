@@ -210,66 +210,69 @@ def get_group_weighted_wiki_count_for_task(course, group, task_id, timestamp, *c
 def get_group_interventions_for_task(course, group_id, task_id, timestamp, *constraints):
 
 
-    task_query = {
-        "task_id": task_id,
-    }
-    task = con.db.grouptasks.find_one(task_query)
-    task_start = int(task["task_start"])
-    task_end = int(task["task_end"])
+    # task_query = {
+    #     "task_id": task_id,
+    # }
+    # task = con.db.grouptasks.find_one(task_query)
+    # task_start = int(task["task_start"])
+    # task_end = int(task["task_end"])
+    #
+    # intervention_latency_query = {
+    #     "verb.id": "http://id.tincanapi.com/verb/viewed",
+    #     "object.definition.type": "https://moodle.ikarion-projekt.de/define/type/moodle/block_grouplatency"
+    # }
+    #
+    # intervention_activity_query = {
+    #     "verb.id": "http://id.tincanapi.com/verb/viewed",
+    #     "object.definition.type": "https://moodle.ikarion-projekt.de/define/type/moodle/block_groupactivity"
+    # }
+    #
+    # projection = {
+    #     "_id": 0,
+    #     "user_id": "$" + user_schema,
+    #     "verb_id": "$verb.id",
+    #     "object_id": "$object.id",
+    #     "timestamp": "$timestamp",
+    #     "object_type": "$object.definition.type",
+    #     "object_name": "$object.definition.name",
+    #     "content": "$object.definition.extensions.promptmessage",
+    # }
+    #
+    # latency_query = merge_query(course_query(course), group_query(group_id),
+    #                             intervention_latency_query, *constraints)
+    #
+    # activity_query = merge_query(course_query(course), group_query(group_id),
+    #                              intervention_activity_query, *constraints)
+    #
+    # latency_prompts = list(
+    #     con.db.xapi_statements.aggregate([
+    #         {"$match": latency_query},
+    #         {"$unwind": "$object.definition.extensions"},
+    #         {"$project": projection}
+    #     ])
+    # )
+    # latency_prompts = [item for item in latency_prompts if item["timestamp"] <= timestamp]
+    #
+    # activity_prompts = list(
+    #     con.db.xapi_statements.aggregate([
+    #         {"$match": activity_query},
+    #         {"$unwind": "$object.definition.extensions"},
+    #         {"$project": projection}
+    #     ])
+    # )
+    # activity_prompts = [item for item in activity_prompts if item["timestamp"] <= timestamp]
+    #
+    # combList = (latency_prompts + activity_prompts)
+    # combList = [item for item in combList if task_start <= item["timestamp"] <= task_end]
+    # combList.sort(key=lambda x: x["timestamp"], reverse=True)
+    # for item in combList:
+    #     o_n = item["object_name"]
+    #     item["object_name"] = list(o_n.values())[0]
+    #
+    # return combList
 
-    intervention_latency_query = {
-        "verb.id": "http://id.tincanapi.com/verb/viewed",
-        "object.definition.type": "https://moodle.ikarion-projekt.de/define/type/moodle/block_grouplatency"
-    }
-
-    intervention_activity_query = {
-        "verb.id": "http://id.tincanapi.com/verb/viewed",
-        "object.definition.type": "https://moodle.ikarion-projekt.de/define/type/moodle/block_groupactivity"
-    }
-
-    projection = {
-        "_id": 0,
-        "user_id": "$" + user_schema,
-        "verb_id": "$verb.id",
-        "object_id": "$object.id",
-        "timestamp": "$timestamp",
-        "object_type": "$object.definition.type",
-        "object_name": "$object.definition.name",
-        "content": "$object.definition.extensions.promptmessage",
-    }
-
-    latency_query = merge_query(course_query(course), group_query(group_id),
-                                intervention_latency_query, *constraints)
-
-    activity_query = merge_query(course_query(course), group_query(group_id),
-                                 intervention_activity_query, *constraints)
-
-    latency_prompts = list(
-        con.db.xapi_statements.aggregate([
-            {"$match": latency_query},
-            {"$unwind": "$object.definition.extensions"},
-            {"$project": projection}
-        ])
-    )
-    latency_prompts = [item for item in latency_prompts if item["timestamp"] <= timestamp]
-
-    activity_prompts = list(
-        con.db.xapi_statements.aggregate([
-            {"$match": activity_query},
-            {"$unwind": "$object.definition.extensions"},
-            {"$project": projection}
-        ])
-    )
-    activity_prompts = [item for item in activity_prompts if item["timestamp"] <= timestamp]
-
-    combList = (latency_prompts + activity_prompts)
-    combList = [item for item in combList if task_start <= item["timestamp"] <= task_end]
-    combList.sort(key=lambda x: x["timestamp"], reverse=True)
-    for item in combList:
-        o_n = item["object_name"]
-        item["object_name"] = list(o_n.values())[0]
-
-    return combList
+    res = con.db.xapi_statements.find({"id": "af50c9d6-a52a-4be9-bda1-5d60aeed8cb0"})
+    return res
 
 
 def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints):
