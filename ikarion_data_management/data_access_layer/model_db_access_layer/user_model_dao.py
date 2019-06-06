@@ -66,6 +66,32 @@ def get_all_user_times(user, course, *constraints):
     return result
 
 
+def get_user_actions_by_type(courseid, userid, action_type):
+    # query = merge_query(user_query(userid), course_query(courseid))
+    query = merge_query(user_query(userid))
+
+    projection = {
+        "_id": 0,
+        "user_id": "$" + user_schema,
+        "verb_id": "$verb.id",
+        "object_id": "$object.id",
+        "timestamp": "$timestamp",
+        "object_type": "$object.definition.action_type",
+        "object_name": "$object.definition.name",
+    }
+
+    user_actions = list(
+        con.db.xapi_statements.aggregate([
+            {"$match": query},
+            {"$project": projection}
+        ])
+    )
+
+    user_actions = [item for item in user_actions if action_type in item["verb_id"]]
+
+    return user_actions
+
+
 def get_all_courses():
     # course_ids = list(con.db.xapi_statements.distinct("course_id"))
     # course_data = []
