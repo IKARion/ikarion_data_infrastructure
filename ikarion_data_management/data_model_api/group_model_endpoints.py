@@ -12,7 +12,8 @@ group_model_blueprint = Blueprint('group_model_blueprint', __name__)
 @group_model_blueprint.url_value_preprocessor
 def fix_url_encoding(endpoint, values):
     for k, v in values.items():
-        values[k] = fix_url_chars(v)
+        if isinstance(v, str):
+            values[k] = fix_url_chars(v)
 
 
 @group_model_blueprint.route('/about')
@@ -51,7 +52,7 @@ def get_all_groups_for_task(course, task):
 @group_model_blueprint.route("/group_self_assessment/<course_id>/<group_id>/<task_id>/", defaults={
     "timestamp": "2147483648"
 })
-@group_model_blueprint.route("/group_self_assessment/<course_id>/<group_id>/<task_id>/<int:timestamp>")
+@group_model_blueprint.route("/group_self_assessment/<course_id>/<group_id>/<task_id>/<timestamp>")
 def get_group_self_assessment(course_id, group_id, task_id, timestamp):
     res = group_model_dao.get_group_self_assesment(course_id, group_id, task_id, int(timestamp))
 
