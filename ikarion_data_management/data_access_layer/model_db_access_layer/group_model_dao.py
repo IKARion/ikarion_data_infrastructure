@@ -7,6 +7,7 @@ from collections import defaultdict
 
 assessment_type_id = "https://moodle.ikarion-projekt.de/define/type/moodle/block_groupactivity"
 
+
 def group_query(group):
     if group is None:
         return {}
@@ -155,6 +156,55 @@ def get_group_activities_for_task(course, group, task, *constraints):
     return get_group_activities(course, group, group_task_query(task))
 
 
+def get_all_group_activities(course, group, *constraints):
+    """
+    Returns json array of objects with fields [group_id, user_id, verb_id, object_id, timestamp]
+    :param group:
+    :type group:
+    :return:
+    :rtype:
+    """
+
+    # forum posts
+    forumQuery = {
+        "verb.id": "http://id.tincanapi.com/verb/replied",
+        "object.definition.type": "http://id.tincanapi.com/activitytype/forum-topic"
+    }
+    forumContentProjection = {"content": "$object.definition.extensions.message"}
+
+    # wiki edits
+    wikiQuery = {
+        "verb.id": "http://id.tincanapi.com/verb/updated",
+        "object.definition.type": "http://collide.info/moodle_wiki_page"
+    }
+    wikiContentProjection = {"content": "$object.definition.extensions.content_clean"}
+
+    # git commits
+    # TODO: Query Git commits.
+
+    projection = {
+        "_id": 0,
+        "group_id": group,
+        "user_id": "$" + user_schema,
+        "verb_id": "$verb.id",
+        "object_id": "$object.id",
+        "timestamp": "$timestamp",
+        "object_type": "$object.definition.type",
+        "object_name": "$object.definition.name",
+    }
+    forum_query = merge_query(group_query(group))
+    activities = list(
+
+        con.db.xapi_statements.aggregate([
+            {"$match": forum_query},
+            {"$unwind": "$object.definition.extensions"},
+            {"$project": merge_query(projection, forumContentProjection)}
+        ])
+    )
+
+    return activities
+
+
 def get_all_task_activities(course, task):
     # TODO: Make sure that task id is a url (course_id + task_id). In this case the course query is not necessary.
     # TODO: Reuse get_group_activities
@@ -207,8 +257,6 @@ def get_group_weighted_wiki_count_for_task(course, group, task_id, timestamp, *c
 
 
 def get_group_interventions_for_task(course, group_id, task_id, timestamp, *constraints):
-
-
     task_query = {
         "task_id": task_id,
     }
@@ -237,10 +285,10 @@ def get_group_interventions_for_task(course, group_id, task_id, timestamp, *cons
         "content": "$object.definition.extensions.promptmessage",
     }
 
-    latency_query = merge_query( group_query(group_id),
+    latency_query = merge_query(group_query(group_id),
                                 intervention_latency_query, *constraints)
 
-    activity_query = merge_query( group_query(group_id),
+    activity_query = merge_query(group_query(group_id),
                                  intervention_activity_query, *constraints)
 
     latency_prompts = list(
