@@ -1,12 +1,22 @@
 from collections import OrderedDict
 
-statement_insert_query = """
-MERGE (moodle:Moodle{name: $moodle.url}) 
+base_statement_insert_query = """
+MERGE (moodle:Moodle{name: $moodle.url})
+ON CREATE SET moodle = $moodle
+ON MATCH SET moodle = $moodle 
 MERGE (course:Course{id: $course.id})[:PART_OF]->(moodle)
+ON CREATE SET course = $course
+ON MATCH SET course = $course
 MERGE (user:User{id: $user.id})-[:HAS_ACCOUNT]->(moodle)
+ON CREATE SET user = $user
+ON MATCH SET user = $user
 MERGE (user)-[:ENROLLED_IN]->(course)
 MERGE (object:Object{id: $object.id)-[:PART_OF]->(course)
+ON CREATE SET object = $object
+ON MATCH SET object = $object
 MERGE (action:ACTION{id: $action.id)-[:TAKEN_BY]->(user)
+ON CREATE SET action = $action
+ON MATCH SET action = $action
 MERGE (action)-[:TAKEN_IN]->(course)
 MERGE (action)-[:TAKEN_ON]->(object)
 """
@@ -18,13 +28,21 @@ object_task_query_template = "MERGE (object:OBJECT{{id: ${}}})-[:RELEVANT_TO]->(
 content_query = "MERGE (content:Content)-[:ADDED_BY]->(action)"
 
 group_course_query_template = """MERGE (group{}:Group{{id: ${}}})-[:PART_OF]->(course)\n
-ON CREATE SET group = ${}
-ON MATCH SET group = ${}
+ON CREATE SET group{} = ${}
+ON MATCH SET group{} = ${}
 """
-# group_task_query_template = "MERGE (group:Group{{id: ${}}})-[:HAS_TASK]-(task)"
-group_task_query_template = "MERGE (group{})-[:HAS_TASK]-(task)"
 
-action_extra_template = "CREATE (action)-[:CONTAINS]->({}) SET {} = ${}"
+task_course_query_template = """MERGE (course)-[:IN]-(task{}:TASK{{id: ${}}})
+ON CREATE SET task{} = ${}
+ON MATCH SET task{} = ${}
+"""
+
+# group_task_query_template = "MERGE (group:Group{{id: ${}}})-[:HAS_TASK]-(task)"
+group_task_query_template = "MERGE (group{})-[:HAS_TASK]-(task{})"
+
+
+
+action_extra_template = "CREATE (action)-[:CONTAINS]->({}:{}) SET {} = ${}"
 
 
 
@@ -34,6 +52,6 @@ key_mapping = OrderedDict([
     ("user", "id"),
     ("task", "id"),
     ("group", "id"),
-    ("obect", "id"),
+    ("object", "id"),
     ("action", "verbid"),
 ])

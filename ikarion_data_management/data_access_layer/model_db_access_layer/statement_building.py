@@ -1,5 +1,4 @@
 from itertools import permutations
-from collections import OrderedDict
 from .query_util import *
 
 
@@ -168,19 +167,24 @@ def build_action_insert_statement(properties,
     # add the properties which containt all the key/value pairs
     # for the base insert statement
     parameters.update(properties)
-    for k, v in properties:
+
+    # Add key parameters for base insert statement
+    for k, v in properties.items():
         # Get the field that is the identifying key for the entity. Ex. id for course
         key = key_mapping[k]
         # parameter name for insertion into cypher statement. Ex. "course.id"
         p_name = k + "." + key
 
-        p_value = properties[key]
+        p_value = v[key]
         parameters[p_name] = p_value
 
     # Connections from the groups to their course and tasks need to be established
     group_course_queries = []
+    task_course_queries = []
     group_task_queries = []
+
     group_key = key_mapping["group"]
+    task_key = key_mapping["task"]
     for i, (group, task) in enumerate(group_tasks):
         # create unique identifiers for statement parameters for each group
         group_name = str(i)
@@ -192,31 +196,49 @@ def build_action_insert_statement(properties,
         group_course_query = group_course_query_template.format(
             group_name,
             group_key_prop_name,
+            group_name,
             group_properties_name,
-            group_properties_name)
+            group_name,
+            group_properties_name,
+        )
         group_course_queries.append(group_course_query)
         properties[group_key_prop_name] = group_key_value
         properties[group_properties_name] = group
 
-
         # Create group to task sub statement
-        group_task_query = group_task_query_template.format(group_name)
+        task_name = str(i)
+        task_key_prop_name = "task_id_" + str(i)
+        task_properties_name = "task_properties_" + str(i)
+        task_key_value = task[task_key]
+        task_course_query = task_course_query_template.format(
+            task_name,
+            task_key_prop_name,
+            task_name,
+            task_properties_name,
+            task_name,
+            task_properties_name,
+        )
+        properties[task_key_prop_name] = task_key_value
+        properties[task_properties_name] = task
+        task_course_queries.append(task_course_query)
+
+        group_task_query = group_task_query_template.format(group_name, task_name)
         group_task_queries.append(group_task_query)
 
     # Add extra nodes connected to action
     # Used to model special things about an action like wiki content or selfassesment
     action_extra_statements = []
     for e_k, e_v in action_extras.items():
-        action_extra_statement = action_extra_template.format(e_k, e_k)
+        action_extra_statement = action_extra_template.format(e_k, e_k.upper(), e_k, e_k)
         action_extra_statements.append(action_extra_statement)
         parameters[e_k] = e_v
 
     query_statement_list = [
-        statement_insert_query,
-        *group_course_queries,
-        *group_task_queries,
-        *action_extra_statements,
+        [base_statement_insert_query],
+        group_course_queries,
+        task_course_queries,
+        group_task_queries,
+        action_extra_statements,
     ]
-
 
     return query_statement_list, parameters
