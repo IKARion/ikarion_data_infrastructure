@@ -1,4 +1,5 @@
 import datetime
+from bs4 import BeautifulSoup
 import traceback
 from collections import abc, Counter
 import sys
@@ -10,6 +11,183 @@ RELVANT_MODEL_OBJECT_TYPES = [
     "wiki",
     "forum",
 ]
+
+context = ["context"]
+context_logstore_extensions = ["http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log"]
+# Get "courseid" out of this
+logstore_full_path = context + ["extensions"] + context_logstore_extensions
+# List of groupings first one being moodle data
+# gouping[0] get id (moodleurl) and name[countrycode](moodle name)
+context_grouping_data = ["contextActivities", "grouping"]
+
+log_store_ext = "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log"
+log_store_keys = ["context", "extensions", log_store_ext]
+
+timestamp = "timestamp"
+verb = "verb"
+object = "object"
+actor = "actor"
+
+
+def get_nested_value(dictionary, keys):
+    current_val = dictionary
+    for key in keys:
+        current_val = current_val[key]
+    return current_val
+
+
+def get_moodle_data(statement):
+    keys = context_grouping_data + [0]
+    moodle_grouping = get_nested_value(statement, keys)
+    moodle_url = moodle_grouping["id"]
+    moodle_name = list(moodle_grouping["definition"]["name"].values())[0]
+    return {"url": moodle_url, "name": moodle_name}
+
+
+def get_course_data(statement):
+    obj_type = statement["object"]["definition"]["type"]
+    course_type = "http://lrs.learninglocker.net/define/type/moodle/course"
+    course_is_object = obj_type == course_type
+    if course_is_object:
+        keys = ["object", "definition"]
+        obj_def = get_nested_value(statement, keys)
+        name = list(obj_def["name"].values())[0]
+        description = list(obj_def["description"].values())[0]
+        id = statement["object"]["id"]
+    else:
+        keys = log_store_keys + [1]
+        course_grouping = get_nested_value(statement, keys)
+        obj_def = course_grouping["definition"]
+        name = list(obj_def["name"].values())[0]
+        description = list(obj_def["description"].values())[0]
+        id = course_grouping["id"]
+
+    res = {
+        "name": name,
+        "id": id,
+        "description": description
+    }
+
+    return res
+
+
+def get_group_task_data(statement):
+    group_extension = "http://collide.info/extensions/group"
+    keys = ["context", "extensions", group_extension]
+    group_task_data = get_nested_value(statement, keys)
+    res_list = []
+    for k, v in group_task_data.items():
+        group_id = k
+        task = v["task"]
+        group_members = v["group_members"]
+        group_members = [item["name"] for item in group_members]
+        res = ({"id": group_id}, task, group_members)
+        res_list.append(res)
+
+    return res_list
+
+
+def get_user_data(statement):
+    keys = ["actor", "account", "name"]
+    user_name = get_nested_value(statement, keys)
+    return {"name": user_name}
+
+
+def get_object_data(statement):
+    obj = statement["object"]
+    o_id = obj["id"]
+    o_def = obj["definition"]
+    o_type = o_def["type"]
+    o_name = list(o_def["name"].values())[0]
+    res = {
+        "id": o_id,
+        "type": o_type,
+        "name": o_name,
+    }
+    return res
+
+
+def get_action_data(statement):
+    act = statement["verb"]
+    v_id = act["id"]
+    verb = v_id.split("/")[-1]
+    res = {
+        "id": v_id,
+        "verb": verb,
+    }
+    return res
+
+
+def get_content_data(statement):
+    # forum posts
+    f_o_type = "http://id.tincanapi.com/activitytype/forum-topic"
+    f_v_id = "http://id.tincanapi.com/verb/replied"
+    f_content_keys = [
+        "extensions",
+        "http://inf.uni-due.de/define/extensions/moodle_forum_post",
+        "message"
+    ]
+    forumContentProjection = {"content": "$object.definition.extensions.message"}
+    # wiki update
+    w_o_type = "http://collide.info/moodle_wiki_page"
+    w_v_id = "http://id.tincanapi.com/verb/updated"
+    w_content_keys = [
+        "extensions",
+        "http://collide.info/moodle_wiki_update",
+        "content_clean"
+    ]
+    wikiContentProjection = {"content": "$object.definition.extensions.content_clean"}
+
+    is_wiki_update = False
+    is_forum_update = False
+
+    obj = statement["object"]
+    v = statement["verb"]
+
+    v_id = v["id"]
+    obj_type = obj["definition"]["type"]
+
+    if v_id == f_v_id and obj_type == f_o_type:
+        text = get_nested_value(obj, f_content_keys)
+        text = BeautifulSoup(text, "lxml").get_text()
+        type = "forum_post"
+    elif v_id == w_v_id and obj_type == w_o_type:
+        text = get_nested_value(obj, w_content_keys)
+        type = "wiki_entry"
+    else:
+        return None
+
+    res = {
+        "text": text,
+        "type": type,
+    }
+    return res
+
+
+def extract_data(statement):
+    moodle_data = get_moodle_data(statement)
+    course_data = get_course_data(statement)
+    group_task_data = get_group_task_data(statement)
+    user_data = get_user_data(statement)
+    # object id
+    object_data = get_object_data(statement)
+    # action id
+    action_data = get_action_data(statement)
+    content = get_content_data(statement)
+
+    properties = {
+        "moodle": moodle_data,
+        "course": course_data,
+        "user": user_data,
+        "object": object_data,
+        "action": action_data,
+    }
+
+    return {
+        "properties": properties,
+        "group_tasks": group_task_data,
+        "action_extras": {"content": content},
+    }
 
 
 def convert_timestamp(statement):

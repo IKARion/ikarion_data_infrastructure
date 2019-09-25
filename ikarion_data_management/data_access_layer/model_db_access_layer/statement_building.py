@@ -153,7 +153,7 @@ def build_action_insert_statement(properties,
     Contains tuples of groups and tasks
     these need to be handled extra.
     :type group_tasks: list
-    :param action_extras: Extra Nodes attached to action like content or selfasessment data.
+    :param action_extras: Extra Nodes attached to action like content or selfassessment data.
     :type action_extras:
     :param key_mapping: dict that gives back the identifying key property of each entity.
     Ex.: "course" -> "id", "moodle" -> "url.
@@ -174,7 +174,8 @@ def build_action_insert_statement(properties,
         key = key_mapping[k]
         # parameter name for insertion into cypher statement. Ex. "course.id"
         p_name = k + "." + key
-
+        print(k)
+        print(v)
         p_value = v[key]
         parameters[p_name] = p_value
 
@@ -182,10 +183,14 @@ def build_action_insert_statement(properties,
     group_course_queries = []
     task_course_queries = []
     group_task_queries = []
+    group_member_queries = []
 
     group_key = key_mapping["group"]
     task_key = key_mapping["task"]
-    for i, (group, task) in enumerate(group_tasks):
+
+    # tuple format = ({"id": group_id}, task, group_members)
+
+    for i, (group, task, group_members) in enumerate(group_tasks):
         # create unique identifiers for statement parameters for each group
         group_name = str(i)
         group_properties_name = "group_properties_" + str(i)
@@ -202,8 +207,8 @@ def build_action_insert_statement(properties,
             group_properties_name,
         )
         group_course_queries.append(group_course_query)
-        properties[group_key_prop_name] = group_key_value
-        properties[group_properties_name] = group
+        parameters[group_key_prop_name] = group_key_value
+        parameters[group_properties_name] = group
 
         # Create group to task sub statement
         task_name = str(i)
@@ -218,12 +223,19 @@ def build_action_insert_statement(properties,
             task_name,
             task_properties_name,
         )
-        properties[task_key_prop_name] = task_key_value
-        properties[task_properties_name] = task
+        parameters[task_key_prop_name] = task_key_value
+        parameters[task_properties_name] = task
         task_course_queries.append(task_course_query)
 
         group_task_query = group_task_query_template.format(group_name, task_name)
         group_task_queries.append(group_task_query)
+        group_member_queries = []
+        for im, member in enumerate(group_members):
+            member_key_prop_name = "member_name_" + str(im) + "_group" + group_name
+            g_m_q = group_member_template.format(im, member_key_prop_name, group_name)
+            parameters[member_key_prop_name] = member
+            group_member_queries.append(g_m_q)
+
 
     # Add extra nodes connected to action
     # Used to model special things about an action like wiki content or selfassesment
@@ -238,7 +250,11 @@ def build_action_insert_statement(properties,
         group_course_queries,
         task_course_queries,
         group_task_queries,
+        group_member_queries,
         action_extra_statements,
     ]
 
-    return query_statement_list, parameters
+    flat_list = [item for sub_l in query_statement_list for item in sub_l]
+    query_string = "\n".join(flat_list)
+
+    return query_statement_list, query_string, parameters

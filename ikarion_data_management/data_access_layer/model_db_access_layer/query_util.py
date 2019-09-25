@@ -41,15 +41,18 @@ ON MATCH SET task{} = ${}
 group_task_query_template = "MERGE (group{})-[:HAS_TASK]-(task{})"
 
 
+# template for group members
+group_member_template = "MERGE (member{}:User{{name: ${}}})-[:PART_OF]-(group{})"
+
 
 action_extra_template = "CREATE (action)-[:CONTAINS]->({}:{}) SET {} = ${}"
 
 
 
 key_mapping = OrderedDict([
-    ("moodle", "name"),
+    ("moodle", "url"),
     ("course", "id"),
-    ("user", "id"),
+    ("user", "name"),
     ("task", "id"),
     ("group", "id"),
     ("object", "id"),

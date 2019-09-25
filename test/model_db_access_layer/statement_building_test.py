@@ -21,25 +21,26 @@ class BuildActionInsertStatementTestCase(unittest.TestCase):
                 "id": 6
             },
             "user": {
-                "id": "wargarbl"
+                "name": "wargarbl"
             }
         }
 
         group_tasks = [
-            ({"id": 3}, {"id": 5}),
-            ({"id": 4}, {"id": 5}),
+            ({"id": 3}, {"id": 5}, ["A", "B", "C"]),
+            ({"id": 4}, {"id": 5}, ["D", "E", "F"]),
         ]
 
         action_extras = {
             "content": {"text": "abcdefg"}
         }
 
-        s_list, param_dict = sb.build_action_insert_statement(properties,
+        s_list, statement_string, param_dict = sb.build_action_insert_statement(properties,
                                                   group_tasks, action_extras,
                                                   qu.key_mapping)
 
         s_flat = [item for l in s_list for item in l]
         print("\n".join(s_flat))
+        print(param_dict)
 
     def test_tummy(self):
         pass
