@@ -10,3 +10,4 @@ flask_apscheduler
 selenium
 nltk
 fuzzyset
+neo4j

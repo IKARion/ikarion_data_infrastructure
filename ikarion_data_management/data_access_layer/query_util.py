@@ -1,20 +1,20 @@
 from collections import OrderedDict
 
 base_statement_insert_query = """
-MERGE (moodle:Moodle{name: $moodle.url})
+MERGE (moodle:Moodle{url: $moodle_url})
 ON CREATE SET moodle = $moodle
 ON MATCH SET moodle = $moodle 
-MERGE (course:Course{id: $course.id})[:PART_OF]->(moodle)
+MERGE (course:Course{id: $course_id})-[:PART_OF]->(moodle)
 ON CREATE SET course = $course
 ON MATCH SET course = $course
-MERGE (user:User{id: $user.id})-[:HAS_ACCOUNT]->(moodle)
+MERGE (user:User{id: $user_id})-[:HAS_ACCOUNT]->(moodle)
 ON CREATE SET user = $user
 ON MATCH SET user = $user
 MERGE (user)-[:ENROLLED_IN]->(course)
-MERGE (object:Object{id: $object.id)-[:PART_OF]->(course)
+MERGE (object:Object{id: $object_id})-[:PART_OF]->(course)
 ON CREATE SET object = $object
 ON MATCH SET object = $object
-MERGE (action:ACTION{id: $action.id)-[:TAKEN_BY]->(user)
+MERGE (action:ACTION{id: $action_id})-[:TAKEN_BY]->(user)
 ON CREATE SET action = $action
 ON MATCH SET action = $action
 MERGE (action)-[:TAKEN_IN]->(course)
@@ -52,7 +52,7 @@ action_extra_template = "CREATE (action)-[:CONTAINS]->({}:{}) SET {} = ${}"
 key_mapping = OrderedDict([
     ("moodle", "url"),
     ("course", "id"),
-    ("user", "name"),
+    ("user", "id"),
     ("task", "id"),
     ("group", "id"),
     ("object", "id"),

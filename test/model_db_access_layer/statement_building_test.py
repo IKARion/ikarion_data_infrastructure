@@ -2,13 +2,15 @@ import unittest
 from ikarion_data_management.data_access_layer import statement_building as sb, query_util as qu
 from ikarion_data_management.log_aggregator import statement_processing as sp
 from test.model_db_access_layer import test_statements as ts
+import ikarion_data_management.data_access_layer as dal
 
 
 class BuildActionInsertStatementTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        pass
+        print("cls setup")
+        # dal.execute_query = lambda stat, params : print(stat + "\n" + str(params))
 
     def setUp(self):
         pass

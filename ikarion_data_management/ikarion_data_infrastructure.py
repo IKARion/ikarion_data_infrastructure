@@ -43,12 +43,6 @@ else:
     app.config.from_object(config.DevelopmentConfig)
     print("Running with Development Config")
 
-## init db
-modelDBConnection.init_app(app)
-## init background scheduler for sending models
-scheduler.init_app(app)
-scriptConf['RSCRIPT'] = app.config['RSCRIPT']
-scheduler.start()
 
 
 @app.route('/')

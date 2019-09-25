@@ -45,15 +45,15 @@ def build_relation_query(nodes, relation_model):
 def build_query(constraints, targets, relation_model):
     constraint_dict = {}
     for key, value in constraints.items():
-        c_type, c_property = key.split(".")
+        c_type, c_property = key.split("_")
         if c_type not in constraint_dict:
             constraint_dict[c_type] = {}
         constraint_dict[c_type][c_property] = value
 
     target_node_set = set()
     for t_val in targets:
-        if "." in t_val:
-            t_type, t_property = t_val.split(".")
+        if "_" in t_val:
+            t_type, t_property = t_val.split("_")
             target_node_set.add(t_type)
         else:
             target_node_set.add(t_val)
@@ -89,13 +89,13 @@ def build_query(constraints, targets, relation_model):
 def build_query_parameterized(constraints, targets, relation_model):
     constraint_set = set()
     for key, value in constraints.items():
-        c_type, c_property = key.split(".")
+        c_type, c_property = key.split("_")
         constraint_set.add(c_type)
 
     target_node_set = set()
     for t_val in targets:
-        if "." in t_val:
-            t_type, t_property = t_val.split(".")
+        if "_" in t_val:
+            t_type, t_property = t_val.split("_")
             target_node_set.add(t_type)
         else:
             target_node_set.add(t_val)
@@ -173,7 +173,7 @@ def build_action_insert_statement(properties,
         # Get the field that is the identifying key for the entity. Ex. id for course
         key = key_mapping[k]
         # parameter name for insertion into cypher statement. Ex. "course.id"
-        p_name = k + "." + key
+        p_name = k + "_" + key
         print(k)
         print(v)
         p_value = v[key]

@@ -1,1 +1,4 @@
-from .log_receiver_endpoints import log_receiver_blueprint
+from flask import Blueprint
+
+
+log_receiver_blueprint = Blueprint('log_receiver_blueprint', __name__)

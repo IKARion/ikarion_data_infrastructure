@@ -1,5 +1,4 @@
 import json
-from flask import Blueprint
 from ..data_access_layer.model_db_access_layer import user_model_dao
 #from ..data_access_layer.model_db_access_layer import group_model_dao
 import sys
@@ -12,7 +11,7 @@ from ikarion_data_management.log_aggregator import statement_processing as sp
 from ikarion_data_management.data_access_layer.model_db_access_layer.user_model_dao import course_query
 from ikarion_data_management.data_access_layer.management_access_layer import scheduler
 
-log_receiver_blueprint = Blueprint('log_receiver_blueprint', __name__)
+
 
 
 @log_receiver_blueprint.route('/about')

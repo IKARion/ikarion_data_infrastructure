@@ -5,7 +5,7 @@ from collections import abc, Counter
 import sys
 import pytz
 import bdateutil.parser as dp
-from ikarion_data_management.data_access_layer import execute_query
+from ikarion_data_management.data_access_layer import database
 from ikarion_data_management.data_access_layer import query_util as qu
 import ikarion_data_management.data_access_layer.model_db_access_layer.group_model_dao as gmd
 from ikarion_data_management.data_access_layer import statement_building as sb
@@ -78,10 +78,17 @@ def get_group_task_data(statement):
     keys = ["context", "extensions", group_extension]
     group_task_data = get_nested_value(statement, keys)
     res_list = []
+    # TODO Extract task fields like relevant objects from task and make connections
     for k, v in group_task_data.items():
         group_id = k
-        task = v["task"]
-        task["id"] = task["task_id"]
+        tf = v["task"]
+        task = {
+            "id": tf["task_id"],
+            "name": tf["task_name"],
+            "type": tf["task_type"],
+            "start": tf["task_start"],
+            "end": tf["task_end"],
+        }
         group_members = v["group_members"]
         group_members = [item["name"] for item in group_members]
         res = ({"id": group_id}, task, group_members)
@@ -93,7 +100,7 @@ def get_group_task_data(statement):
 def get_user_data(statement):
     keys = ["actor", "account", "name"]
     user_name = get_nested_value(statement, keys)
-    return {"name": user_name}
+    return {"id": user_name}
 
 
 def get_object_data(statement):
@@ -177,7 +184,9 @@ def extract_data(statement):
     # action id
     action_data = get_action_data(statement)
     content = get_content_data(statement)
-
+    action_extras = {}
+    if content is not None:
+        action_extras["content"] = content
     properties = {
         "moodle": moodle_data,
         "course": course_data,
@@ -189,7 +198,7 @@ def extract_data(statement):
     return {
         "properties": properties,
         "group_tasks": group_task_data,
-        "action_extras": {"content": content},
+        "action_extras": action_extras,
     }
 
 
@@ -470,7 +479,7 @@ def process_statement(statement):
     s_data = extract_data(statement)
     query_s_list, query_string, parameters = sb.build_action_insert_statement(**s_data,
                                                                               key_mapping=qu.key_mapping)
-    execute_query(query_string, parameters)
+    database.execute_query(query_string, parameters)
 
 
 def relevant_model_change(statement):
