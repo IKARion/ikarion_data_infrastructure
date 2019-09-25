@@ -56,5 +56,5 @@ key_mapping = OrderedDict([
     ("task", "id"),
     ("group", "id"),
     ("object", "id"),
-    ("action", "verbid"),
+    ("action", "id"),
 ])

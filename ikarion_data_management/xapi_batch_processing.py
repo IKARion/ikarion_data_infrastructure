@@ -29,7 +29,7 @@ def batch_processing(dbname):
         proc_statements = []
         for statement in statements:
             try:
-                sp.process_statement(statement)
+                sp.preprocess_statement(statement)
                 proc_statements.append(statement)
                 # client[dbname].xapi_statements.insert_one(statement)
             except Exception as e:

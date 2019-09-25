@@ -5,7 +5,10 @@ from collections import abc, Counter
 import sys
 import pytz
 import bdateutil.parser as dp
+from ikarion_data_management.data_access_layer import execute_query
+from ikarion_data_management.data_access_layer import query_util as qu
 import ikarion_data_management.data_access_layer.model_db_access_layer.group_model_dao as gmd
+from ikarion_data_management.data_access_layer import statement_building as sb
 
 RELVANT_MODEL_OBJECT_TYPES = [
     "wiki",
@@ -18,8 +21,7 @@ context_logstore_extensions = ["http://lrs.learninglocker.net/define/extensions/
 logstore_full_path = context + ["extensions"] + context_logstore_extensions
 # List of groupings first one being moodle data
 # gouping[0] get id (moodleurl) and name[countrycode](moodle name)
-context_grouping_data = ["contextActivities", "grouping"]
-
+context_grouping_data = ["context", "contextActivities", "grouping"]
 log_store_ext = "http://lrs.learninglocker.net/define/extensions/moodle_logstore_standard_log"
 log_store_keys = ["context", "extensions", log_store_ext]
 
@@ -79,6 +81,7 @@ def get_group_task_data(statement):
     for k, v in group_task_data.items():
         group_id = k
         task = v["task"]
+        task["id"] = task["task_id"]
         group_members = v["group_members"]
         group_members = [item["name"] for item in group_members]
         res = ({"id": group_id}, task, group_members)
@@ -393,19 +396,19 @@ def determine_relevant_task(statement):
     # is it a self assessment statement?
     self_assessment = is_self_assessment(statement)
 
-    groups = statement["context"]["groups"]
+    groups = statement["context"]["extensions"]["http://collide.info/extensions/group"]
     statement["relevant_group_task"] = {}
     groupings = statement["context"]["contextActivities"]["grouping"]
     statement_time = statement["timestamp"]
     if self_assessment:
-        for group in groups:
+        for group_id, group in groups.items():
             task = group["task"]
             task_start = int(task["task_start"])
             task_end = int(task["task_end"])
             if task_start < statement_time < task_end:
                 statement["relevant_group_task"] = group
     else:
-        for group in groups:
+        for group_id, group in groups.items():
             task = group["task"]
             task_modules = task["task_resources"]
             for grouping in groupings:
@@ -455,16 +458,19 @@ def add_wiki_concepts(statement):
     statement["wiki_concepts"] = wiki_concepts
 
 
-def process_statement(statement):
-    restructure_extensions(statement)
-    replace_dots(statement)
-    convert_timestamp(statement)
-    project_fields(statement)
-    process_groups(statement)
-    write_new_groups_and_tasks(statement)
-    determine_relevant_task(statement)
+def preprocess_statement(statement):
     if is_wiki_update(statement):
         add_wiki_concepts(statement)
+    convert_timestamp(statement)
+    determine_relevant_task(statement)
+
+
+def process_statement(statement):
+    preprocess_statement(statement)
+    s_data = extract_data(statement)
+    query_s_list, query_string, parameters = sb.build_action_insert_statement(**s_data,
+                                                                              key_mapping=qu.key_mapping)
+    execute_query(query_string, parameters)
 
 
 def relevant_model_change(statement):

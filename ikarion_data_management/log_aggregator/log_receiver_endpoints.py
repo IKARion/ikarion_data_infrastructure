@@ -6,8 +6,8 @@ import sys
 import datetime
 from flask import request
 from flask import Response
-from ikarion_data_management.data_access_layer import modelDBConnection as con
 from ikarion_data_management.log_aggregator import statement_processing as sp
+
 
 from ikarion_data_management.data_access_layer.model_db_access_layer.user_model_dao import course_query
 from ikarion_data_management.data_access_layer.management_access_layer import scheduler
@@ -30,13 +30,12 @@ def processLog():
     statement_string = json.dumps(statement)
     statement_string = statement_string.replace("&46;", ".")
     statement = json.loads(statement_string)
-    relevant = sp.statement_relevant(statement)
-    if relevant:
-        sp.process_statement(statement)
-        con.db.xapi_statements.insert_one(statement)
-    if sp.relevant_model_change(statement):
-        for job in scheduler.get_jobs():
-            job.modify(next_run_time=datetime.datetime.now())
+    process_statement(statement)
+
+    # TODO see if relevant change still works without more preprocessing
+    # if sp.relevant_model_change(statement):
+    #     for job in scheduler.get_jobs():
+    #         job.modify(next_run_time=datetime.datetime.now())
 
     return Response(status=200)
 
