@@ -89,9 +89,10 @@ def get_group_task_data(statement):
             "start": tf["task_start"],
             "end": tf["task_end"],
         }
+        task_resources = tf["task_resources"]
         group_members = v["group_members"]
         group_members = [item["name"] for item in group_members]
-        res = ({"id": group_id}, task, group_members)
+        res = ({"id": group_id}, task, task_resources, group_members)
         res_list.append(res)
 
     return res_list
@@ -174,6 +175,23 @@ def get_content_data(statement):
     return res
 
 
+def get_self_assessment_data(statement):
+    """
+    Exracts list of self assessment items as list of dicts with "id" and "value" keys.
+    If Statement is not self assessment return None
+    :param statement:
+    :type statement:
+    :return:
+    :rtype:
+    """
+    assessment_ext = "http://lrs.learninglocker.net/define/extensions/moodle_block"
+    if is_self_assessment(statement):
+        items = statement["object"]["definition"]["extensions"][assessment_ext]["items"]
+        return items
+    else:
+        return None
+
+
 def extract_data(statement):
     moodle_data = get_moodle_data(statement)
     course_data = get_course_data(statement)
@@ -184,9 +202,27 @@ def extract_data(statement):
     # action id
     action_data = get_action_data(statement)
     content = get_content_data(statement)
+    self_assessment = get_self_assessment_data(statement)
     action_extras = {}
+
+    # wiki_concepts = [{
+    #     "word": k[0],
+    #     "score": k[1],
+    #     "count": v
+    # } for k, v in counted_concepts.items()]
+    # statement["wiki_concepts"] = wiki_concepts
     if content is not None:
-        action_extras["content"] = content
+        content_dict = {"content_vals": content}
+        if "wiki_concepts" in statement:
+            concepts = statement["wiki_concepts"]
+        else:
+            concepts = []
+        content_dict["concepts"] = concepts
+        action_extras["content"] = content_dict
+
+    if self_assessment is not None:
+        action_extras["self_assessment"] = self_assessment
+
     properties = {
         "moodle": moodle_data,
         "course": course_data,
@@ -194,11 +230,15 @@ def extract_data(statement):
         "object": object_data,
         "action": action_data,
     }
+    relevant_task = statement["relevant_group_task"]
+    if not relevant_task:
+        relevant_task = None
 
     return {
         "properties": properties,
         "group_tasks": group_task_data,
         "action_extras": action_extras,
+        "relevant_task": relevant_task,
     }
 
 
@@ -213,41 +253,11 @@ def convert_timestamp(statement):
     timestamp = statement["timestamp"]
     if isinstance(timestamp, float):
         return timestamp
-    # year, month, rest = timestamp.split("-")
-    # day, rest = rest.split("T")
-    # hours = rest[0:2]
-    # minutes = rest[3:5]
-    # seconds = rest[6:8]
-    #
-    # date_time = datetime.datetime(int(year),
-    #                               int(month),
-    #                               int(day),
-    #                               int(minutes),
-    #                               int(hours),
-    #                               int(seconds),
-    #                               tzinfo=pytz.utc)
-    # epoch_timestamp = date_time.timestamp()
     epoch_timestamp = dp.parse(timestamp).timestamp()
     statement["timestamp"] = epoch_timestamp
     return epoch_timestamp
 
 
-def nested_json_extensions(nested):
-    """
-    yields any map that has a extentions key
-    :param nested:
-    :type nested:
-    :return:
-    :rtype:
-    """
-    if isinstance(nested, abc.Mapping):
-        if "extensions" in nested:
-            yield nested
-        for value in nested.values():
-            yield from nested_json_extensions(value)
-    if isinstance(nested, list):
-        for value in nested:
-            yield from nested_json_extensions(value)
 
 
 def nested_data(nested):
@@ -267,22 +277,6 @@ def nested_data(nested):
             yield from nested_data(value)
 
 
-def replace_dots(statement):
-    """
-    Replace Dots in xapi statement keys because it violates
-    MongoDB Key naming constraints.
-    :param statement:
-    :type statement:
-    :return:
-    :rtype:
-    """
-    for statement_map in nested_data(statement):
-        for key in statement_map.keys():
-            if "." in key:
-                value = statement_map[key]
-                replaced_key = key.replace(".", "__dot__")
-                statement_map[replaced_key] = value
-                statement_map.pop(key, None)
 
 
 def statement_relevant(statement):
@@ -290,17 +284,6 @@ def statement_relevant(statement):
     return True
 
 
-def restructure_extensions(statement):
-    extentions_list = nested_json_extensions(statement)
-    for extensions_map in extentions_list:
-        extensions = extensions_map["extensions"]
-        mongo_compliant_extensions = []
-        for k, v in extensions.items():
-            if isinstance(v, list):
-                v = {}
-            v["id"] = k
-            mongo_compliant_extensions.append(v)
-        extensions_map["extensions"] = mongo_compliant_extensions
 
 
 def process_groups(statement):
@@ -409,6 +392,7 @@ def determine_relevant_task(statement):
     statement["relevant_group_task"] = {}
     groupings = statement["context"]["contextActivities"]["grouping"]
     statement_time = statement["timestamp"]
+    # adds task object unchanged as relevant task
     if self_assessment:
         for group_id, group in groups.items():
             task = group["task"]

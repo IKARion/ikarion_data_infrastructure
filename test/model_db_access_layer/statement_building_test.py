@@ -24,7 +24,7 @@ class BuildActionInsertStatementTestCase(unittest.TestCase):
                 "id": 6
             },
             "user": {
-                "name": "wargarbl"
+                "id": "wargarbl"
             }
         }
 
@@ -39,6 +39,7 @@ class BuildActionInsertStatementTestCase(unittest.TestCase):
 
         s_list, statement_string, param_dict = sb.build_action_insert_statement(properties,
                                                                                 group_tasks, action_extras,
+                                                                                None,
                                                                                 qu.key_mapping)
 
         s_flat = [item for l in s_list for item in l]
@@ -46,7 +47,7 @@ class BuildActionInsertStatementTestCase(unittest.TestCase):
         print(param_dict)
 
     def test_statemnt_processing(self):
-        statement = ts.generate_xapi_statement(user="Bob",
+        statement = ts.generate_xapi_statement(user="nlrrOSj7CO4Pk21IIcDnog==",
                                                course="yolo_course",
                                                time=15435678,
                                                verb="running",

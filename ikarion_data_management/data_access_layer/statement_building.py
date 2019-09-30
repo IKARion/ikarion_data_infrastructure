@@ -142,6 +142,7 @@ def build_query_parameterized(constraints, targets, relation_model):
 def build_action_insert_statement(properties,
                                   group_tasks,
                                   action_extras,
+                                  relevant_task,
                                   key_mapping: OrderedDict):
     """
     Builds a cypher statement to insert all relevant information of a moodle action
@@ -164,12 +165,14 @@ def build_action_insert_statement(properties,
     :rtype: str
     """
     parameters = {}
-    # add the properties which containt all the key/value pairs
+    # add the properties which contain all the key/value pairs
     # for the base insert statement
     parameters.update(properties)
 
     # Add key parameters for base insert statement
     for k, v in properties.items():
+        print(k)
+        print(v)
         # Get the field that is the identifying key for the entity. Ex. id for course
         key = key_mapping[k]
         # parameter name for insertion into cypher statement. Ex. "course.id"
@@ -184,13 +187,14 @@ def build_action_insert_statement(properties,
     task_course_queries = []
     group_task_queries = []
     group_member_queries = []
+    task_resource_queries = []
 
     group_key = key_mapping["group"]
     task_key = key_mapping["task"]
 
     # tuple format = ({"id": group_id}, task, group_members)
 
-    for i, (group, task, group_members) in enumerate(group_tasks):
+    for i, (group, task, task_resources, group_members) in enumerate(group_tasks):
         # create unique identifiers for statement parameters for each group
         group_name = str(i)
         group_properties_name = "group_properties_" + str(i)
@@ -229,21 +233,52 @@ def build_action_insert_statement(properties,
 
         group_task_query = group_task_query_template.format(group_name, task_name)
         group_task_queries.append(group_task_query)
-        group_member_queries = []
-        for im, member in enumerate(group_members):
-            member_key_prop_name = "member_name_" + str(im) + "_group" + group_name
-            g_m_q = group_member_template.format(im, member_key_prop_name, group_name)
-            parameters[member_key_prop_name] = member
-            group_member_queries.append(g_m_q)
 
+        # add connection between task and artefacts
+
+        for io, object_id in enumerate(task_resources):
+            o_p_name = ("object{}_".format(io)) + task_name
+            task_resource_q = task_resource_template.format(task_name, o_p_name)
+            parameters[o_p_name] = object_id
+            task_resource_queries.append(task_resource_q)
+
+        # Need to check if group member is user
+        # then change variable name for member
+        # otherwise main user in statement gets duplicated
+        user_id = parameters["user"]["id"]
+        for im, member in enumerate(group_members):
+            if member == user_id:
+                member_name = "user"
+                g_m_q = group_member_mainuser_template.format(member_name, group_name)
+                member_course_q = group_member_course_template.format(member_name)
+                member_moodle_q = group_member_moodle_template.format(member_name)
+                group_member_queries.append(g_m_q)
+                group_member_queries.append(member_course_q)
+                group_member_queries.append(member_moodle_q)
+            else:
+                member_name = str(im) + "_" + str(group_name)
+                member_key_prop_name = "member_name_" + member_name
+                g_m_q = group_member_template.format(member_name, member_key_prop_name, group_name)
+                parameters[member_key_prop_name] = member
+                member_course_q = group_member_course_template.format(member_name)
+                member_moodle_q = group_member_moodle_template.format(member_name)
+                group_member_queries.append(g_m_q)
+                group_member_queries.append(member_course_q)
+                group_member_queries.append(member_moodle_q)
 
     # Add extra nodes connected to action
     # Used to model special things about an action like wiki content or selfassesment
     action_extra_statements = []
     for e_k, e_v in action_extras.items():
-        action_extra_statement = action_extra_template.format(e_k, e_k.upper(), e_k, e_k)
-        action_extra_statements.append(action_extra_statement)
-        parameters[e_k] = e_v
+        extra_statements, extra_parameters = create_action_extra_statements(e_k, e_v)
+        parameters.update(extra_parameters)
+        action_extra_statements.extend(extra_statements)
+
+    if relevant_task:
+        task_id = relevant_task["task_id"]
+        r_statement = [relevant_task_template.format(task_id)]
+    else:
+        r_statement = []
 
     query_statement_list = [
         [base_statement_insert_query],
@@ -252,9 +287,49 @@ def build_action_insert_statement(properties,
         group_task_queries,
         group_member_queries,
         action_extra_statements,
+        r_statement
     ]
 
     flat_list = [item for sub_l in query_statement_list for item in sub_l]
     query_string = "\n".join(flat_list)
 
     return query_statement_list, query_string, parameters
+
+
+def create_action_extra_statements(e_key, e_values):
+    statements = []
+    parameters = {}
+    if e_key == "content":
+        content_vals = e_values["content_vals"]
+        content_parameter_name = "content"
+        c_p_l = [content_parameter_name] * 6
+        content_statement = action_extra_template.format(content_parameter_name,
+                                                         "Content",
+                                                         *c_p_l)
+        statements.append(content_statement)
+        parameters[content_parameter_name] = content_vals
+
+        concept_list = e_values["concepts"]
+
+        for ic, concept in enumerate(concept_list):
+            concept_parameter_name = "co_" + str(ic)
+            concept_statement = content_concept_template.format(ic, concept_parameter_name)
+            statements.append(concept_statement)
+            parameters[concept_parameter_name] = concept
+    elif e_key == "self_assessment":
+        self_assessment_parameter_name = e_key
+        s_a_l = [self_assessment_parameter_name] * 6
+        self_assessment_statement = action_extra_template.format(self_assessment_parameter_name,
+                                                                 "Self_Assessment",
+                                                                 *s_a_l)
+        parameters[self_assessment_parameter_name] = {}
+        statements.append(self_assessment_statement)
+        items = e_values
+        for ii, item in enumerate(items):
+            item_parameter_name = "item_" + str(ii)
+            item_statement = self_assessment_items_template.format(str(ii),
+                                                                   str(ii),
+                                                                   item_parameter_name)
+            parameters[item_parameter_name] = item
+
+    return statements, parameters

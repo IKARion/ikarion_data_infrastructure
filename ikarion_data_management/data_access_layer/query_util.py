@@ -14,7 +14,7 @@ MERGE (user)-[:ENROLLED_IN]->(course)
 MERGE (object:Object{id: $object_id})-[:PART_OF]->(course)
 ON CREATE SET object = $object
 ON MATCH SET object = $object
-MERGE (action:ACTION{id: $action_id})-[:TAKEN_BY]->(user)
+MERGE (action:Action{id: $action_id})-[:TAKEN_BY]->(user)
 ON CREATE SET action = $action
 ON MATCH SET action = $action
 MERGE (action)-[:TAKEN_IN]->(course)
@@ -32,7 +32,7 @@ ON CREATE SET group{} = ${}
 ON MATCH SET group{} = ${}
 """
 
-task_course_query_template = """MERGE (course)-[:IN]-(task{}:TASK{{id: ${}}})
+task_course_query_template = """MERGE (course)-[:IN]-(task{}:Task{{id: ${}}})
 ON CREATE SET task{} = ${}
 ON MATCH SET task{} = ${}
 """
@@ -40,13 +40,40 @@ ON MATCH SET task{} = ${}
 # group_task_query_template = "MERGE (group:Group{{id: ${}}})-[:HAS_TASK]-(task)"
 group_task_query_template = "MERGE (group{})-[:HAS_TASK]-(task{})"
 
-
 # template for group members
-group_member_template = "MERGE (member{}:User{{name: ${}}})-[:PART_OF]-(group{})"
+group_member_template = "MERGE (member{}:User{{id: ${}}})-[:PART_OF]-(group{})"
+group_member_mainuser_template = "MERGE ({})-[:PART_OF]-(group{})"
+
+group_member_moodle_template = "MERGE (member{})-[:HAS_ACCOUNT]->(moodle)"
+group_member_course_template = "MERGE (member{})-[:ENROLLED_IN]->(course)"
+
+task_resource_template = "MERGE (task{})<-[:RESOURCE]-(object:Object{{id: ${}}})"
 
 
-action_extra_template = "CREATE (action)-[:CONTAINS]->({}:{}) SET {} = ${}"
 
+relevant_task_template = "MERGE (action)<-[:RELEVANT_TO]-(task{{id: ${}}})"
+
+# action extra queries
+
+action_extra_template = """
+MERGE (action)-[:CONTAINS]->({}:{})
+ON CREATE SET {} = ${}
+ON MATCH SET {} = ${}
+"""
+
+#   content keywords
+
+content_concept_template = """
+MERGE (content:Content)-[:HAS_CONCEPT]->(co{}:Concept)
+SET co{} = ${}
+"""
+
+#   Self Assessment
+
+self_assessment_items_template = """
+MERGE (self_assessment:Self_Assessment)-[:HAS_ITEM]->(item{}:Item)
+set item{} = ${}
+"""
 
 
 key_mapping = OrderedDict([
@@ -58,3 +85,15 @@ key_mapping = OrderedDict([
     ("object", "id"),
     ("action", "id"),
 ])
+
+entitiy_relations = {("moodle", "course"),
+                     ("course", "group"),
+                     ("course", "user"),
+                     ("course", "object"),
+                     ("course", "action"),
+                     ("group", "user"),
+                     ("group", "task"),
+                     ("user", "action"),
+                     ("object", "action"),
+                     ("object", "task"),
+                     ("action", "task")}
