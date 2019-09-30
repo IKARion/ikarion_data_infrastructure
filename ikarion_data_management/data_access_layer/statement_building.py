@@ -330,6 +330,7 @@ def create_action_extra_statements(e_key, e_values):
             item_statement = self_assessment_items_template.format(str(ii),
                                                                    str(ii),
                                                                    item_parameter_name)
+            statements.append(item_statement)
             parameters[item_parameter_name] = item
 
     return statements, parameters
