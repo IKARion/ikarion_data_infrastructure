@@ -6,7 +6,7 @@
 
 This software was created as part of the
 [IKARion Project](https://www.ikarion-projekt.de/)
-which coducts research about supporting small groups
+which conducts research about supporting small groups
 in online learning environments.
 The full architecture of the system can be seen in
 the following picture. After that instructions
@@ -19,12 +19,12 @@ generated in moodle and logged via the
 XAPI standard. It processes the data
 and provides endpoints for easy querying
 of user and group data.
-Note that to make use of the capabilites
+Note that to make use of the capabilities
 you should install and setup our customized 
 [moodle](https://github.com/IKARion/ikarion_moodle)
 which is ready made to log user activity and
 extends moodle to include the concept of tasks
-that groups can be assigend to.
+that groups can be assigned to.
 
 Once you have moodle setup you should install a
 [learning locker](https://docs.learninglocker.net/welcome/)
@@ -36,7 +36,7 @@ to the learning locker.
 To setup this backend it is necessary to
 have a working instance of [MongoDB](https://www.mongodb.com/)
 
-In the folder /ikarion_datamanagement/ is a
+In the folder */ikarion_datamanagement/* is a
 file named example_config.py
 From this you can make a configuration file
 for the backend. Just copy it as config.py. It needs the address for your
