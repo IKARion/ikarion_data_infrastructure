@@ -4,7 +4,7 @@
 # IKARion Data Infrastructure
 
 
-This is software was created as part of the
+This software was created as part of the
 [IKARion Project](https://www.ikarion-projekt.de/)
 which coducts research about supporting small groups
 in online learning environments.
