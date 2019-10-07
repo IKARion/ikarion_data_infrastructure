@@ -466,6 +466,49 @@ def get_group_self_assesment(course, group_id, task_id, timestamp):
     return user_assessments
 
 
+def get_group_ikarion_element_actions(course, group_id, task_id):
+    """
+    Returns json array of objects with fields [group_id, user_id, verb_id, object_id, timestamp]
+    :param group:
+    :type group:
+    :return:
+    :rtype:
+    """
+
+    # forum posts
+    ikarion_element_query = {
+        "object.definition.extensions.id": "http://lrs.learninglocker.net/define/extensions/moodle_local"
+    }
+
+    projection = {
+        "_id": 0,
+        "group_id": group_id,
+        "user_id": "$" + user_schema,
+        "verb_id": "$verb.id",
+        "object_id": "$object.id",
+        "timestamp": "$timestamp",
+        "object_type": "$object.definition.type",
+        "object_name": "$object.definition.name",
+        "object_extensions": "object.definition.extensions"
+    }
+    ikarion_element_query = merge_query(ikarion_element_query, group_query(group_id), group_task_query(task_id))
+    activities = list(
+
+        con.db.xapi_statements.aggregate([
+            {"$match": ikarion_element_query},
+            {"$unwind": "$object.definition.extensions"},
+            {"$project": projection}
+        ])
+    )
+
+    for item in activities:
+        o_n = item["object_name"]
+        item["object_name"] = list(o_n.values())[0]
+
+    activities.sort(key=lambda x: x["timestamp"], reverse=True)
+
+    return activities
+
 def calc_wiki_concepts(wiki_text, task_name):
     split_name = task_name.split("_")
     task_prefix = "_".join(split_name[:2])

@@ -112,6 +112,15 @@ def get_group_activities_task(course, group, task):
 
     return jsonify(data=group_activities)
 
+#def get_group_ikarion_element_actions(course, group_id, task_id, timestamp):
+
+@group_model_blueprint.route("/ikarion_element_activities/<course>/<group>/<task>")
+def get_ikarion_element_activities_for_task(course, group, task):
+    # TODO: Use urls as ids for groups and tasks and only work with task ids instead of course ids.
+    course = fix_url_chars(course)
+    group_activities = group_model_dao.get_group_ikarion_element_actions(course, group, task)
+
+    return jsonify(data=group_activities)
 
 # @group_model_blueprint.route("/avg_group_latency/<course>/<group>/<startpoint>")
 # def get_average_latency_for_group(course, group, startpoint):

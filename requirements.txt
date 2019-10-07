@@ -1,8 +1,8 @@
-Flask==1.0.2
-Flask-Cors==3.0.6
-Flask-PyMongo==2.0.1
-mongomock==3.9.0
-pymongo==3.6.0
+Flask
+Flask-Cors
+Flask-PyMongo
+mongomock
+pymongo
 pytz
 bdateutil
 APScheduler
