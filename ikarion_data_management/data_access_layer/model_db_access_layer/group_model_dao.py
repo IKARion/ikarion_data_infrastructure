@@ -412,7 +412,9 @@ def get_group_weighted_wiki_word_count(course, group_id, timestamp, *constraints
 def get_group_self_assesment(course, group_id, task_id, timestamp):
     group = con.db.groups.find_one({"id": group_id})
     user_assessments = []
+
     for g_member in group["group_members"]:
+        # old assessment statements
         user_name = g_member["name"]
         query = merge_query(
             group_task_query(task_id),
@@ -448,21 +450,82 @@ def get_group_self_assesment(course, group_id, task_id, timestamp):
         # pipeline = [projection, sorting, limit]
 
         user_assesment_statements = list(con.db.xapi_statements.aggregate(pipeline))
-        if len(user_assesment_statements) == 0:
-            continue
-        user_assesment_statement = user_assesment_statements[0]
+        old_assessment = None
+        if len(user_assesment_statements) != 0:
+            user_assesment_statement = user_assesment_statements[0]
 
-        extensions = user_assesment_statement["object"]["definition"]["extensions"]
-        for ext in extensions:
-            if ext["id"] == "http://lrs.learninglocker.net/define/extensions/moodle_block":
-                data = {
-                    "group_id": group_id,
-                    "user_id": g_member["name"],
-                    "timestamp": user_assesment_statement["timestamp"]
-                }
-                for i, item in enumerate(ext["items"]):
-                    data["item{}".format(i + 1)] = item["value"]
-                user_assessments.append(data)
+            extensions = user_assesment_statement["object"]["definition"]["extensions"]
+            for ext in extensions:
+                if ext["id"] == "http://lrs.learninglocker.net/define/extensions/moodle_block":
+                    data = {
+                        "group_id": group_id,
+                        "user_id": g_member["name"],
+                        "timestamp": user_assesment_statement["timestamp"]
+                    }
+                    for i, item in enumerate(ext["items"]):
+                        data["item{}".format(i + 1)] = item["value"]
+                    old_assessment = data
+        # New Assessment Statements
+        new_assessment_description = "IKARionelement participation selfassessment completed"
+        query = merge_query(
+            group_task_query(task_id),
+            {"relevant_group_task.courseid": course},
+            group_query(group_id),
+            {"object.definition.description.en": new_assessment_description},
+            {user_schema: user_name},
+            {"timestamp": {"$lt": timestamp}},
+        )
+
+        projection = {
+            "$project": {
+                "_id": 0,
+                "group_id": "relevant_group_task.id",
+                "user_id": "$" + user_schema,
+                "verb_id": "$verb.id",
+                "object_id": "$object.id",
+                "timestamp": "$timestamp",
+                "object_type": "$object.definition.type",
+                "object_name": "$object.definition.name",
+                "object": "$object",
+            }
+        }
+        sorting = {
+            "$sort": {"timestamp": -1}
+        }
+        limit = {
+            "$limit": 10
+        }
+        pipeline = [query, projection, sorting, limit]
+        new_user_assesment_statements = list(con.db.xapi_statements.aggregate(pipeline))
+        new_assessment = None
+        if len(new_user_assesment_statements) != 0:
+            user_assesment_statement = user_assesment_statements[0]
+
+            extensions = user_assesment_statement["object"]["definition"]["extensions"]
+            for ext in extensions:
+                if ext["id"] == "http://lrs.learninglocker.net/define/extensions/moodle_local":
+                    data = {
+                        "group_id": group_id,
+                        "user_id": g_member["name"],
+                        "timestamp": user_assesment_statement["timestamp"]
+                    }
+                    item_dict = ext["items"]
+                    items_sorted = sorted(list(item_dict.items()), lambda x: x[0])
+                    item_vals = [item[1] for item in items_sorted]
+                    for i, item in enumerate(item_vals):
+                        data["item{}".format(i + 1)] = item["value"]
+                    new_assessment = data
+
+            if new_assessment and old_assessment:
+                if new_assessment["timestamp"] > old_assessment["timestamp"]:
+                    user_assessments.append(new_assessment)
+                else:
+                    user_assessments.append(old_assessment)
+            elif new_assessment:
+                user_assessments.append(new_assessment)
+            elif old_assessment:
+                user_assessments.append(old_assessment)
+
     return user_assessments
 
 
@@ -508,6 +571,7 @@ def get_group_ikarion_element_actions(course, group_id, task_id):
     activities.sort(key=lambda x: x["timestamp"], reverse=True)
 
     return activities
+
 
 def calc_wiki_concepts(wiki_text, task_name):
     split_name = task_name.split("_")
