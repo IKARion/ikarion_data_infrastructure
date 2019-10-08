@@ -476,6 +476,8 @@ def get_group_self_assesment(course, group_id, task_id, timestamp):
             {"timestamp": {"$lt": timestamp}},
         )
 
+        query = {"$match": query}
+
         projection = {
             "$project": {
                 "_id": 0,
@@ -516,15 +518,15 @@ def get_group_self_assesment(course, group_id, task_id, timestamp):
                         data["item{}".format(i + 1)] = item["value"]
                     new_assessment = data
 
-            if new_assessment and old_assessment:
-                if new_assessment["timestamp"] > old_assessment["timestamp"]:
-                    user_assessments.append(new_assessment)
-                else:
-                    user_assessments.append(old_assessment)
-            elif new_assessment:
+        if new_assessment and old_assessment:
+            if new_assessment["timestamp"] > old_assessment["timestamp"]:
                 user_assessments.append(new_assessment)
-            elif old_assessment:
+            else:
                 user_assessments.append(old_assessment)
+        elif new_assessment:
+            user_assessments.append(new_assessment)
+        elif old_assessment:
+            user_assessments.append(old_assessment)
 
     return user_assessments
 

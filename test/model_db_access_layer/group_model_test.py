@@ -130,8 +130,8 @@ class GroupModelSelfAssessmentTest(unittest.TestCase):
         # mock_con = mongomock.MongoClient()
         # um.con = mock_con
         # gm.con = mock_con
-        with idi.app.app_context():
-            pdt.populate_xapi_model_self_assessment(gm.con)
+        # with idi.app.app_context():
+        #     pdt.populate_xapi_model_self_assessment(gm.con)
 
     def test_get_self_assessment(self):
         course = encode_url_chars("https://moodle.ikarion-projekt.de/course/view.php?id={}".format(0))
