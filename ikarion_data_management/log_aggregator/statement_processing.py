@@ -219,25 +219,28 @@ def determine_relevant_task(statement):
     statement["relevant_group_task"] = {}
     groupings = statement["context"]["contextActivities"]["grouping"]
     statement_time = statement["timestamp"]
-    if self_assessment:
+    task_found = False
+    for group in groups:
+        task = group["task"]
+        task_modules = task["task_resources"]
+        for grouping in groupings:
+            if grouping["id"] in task_modules:
+
+                task_start = int(task["task_start"])
+                task_end = int(task["task_end"])
+                if task_start < statement_time < task_end:
+                    statement["relevant_group_task"] = group
+                    task_found = True
+                    break
+    if not task_found:
         for group in groups:
             task = group["task"]
             task_start = int(task["task_start"])
             task_end = int(task["task_end"])
             if task_start < statement_time < task_end:
                 statement["relevant_group_task"] = group
-    else:
-        for group in groups:
-            task = group["task"]
-            task_modules = task["task_resources"]
-            for grouping in groupings:
-                if grouping["id"] in task_modules:
+                break
 
-                    task_start = int(task["task_start"])
-                    task_end = int(task["task_end"])
-                    if task_start < statement_time < task_end:
-                        statement["relevant_group_task"] = group
-                        break
 
 
 def is_wiki_update(statement):

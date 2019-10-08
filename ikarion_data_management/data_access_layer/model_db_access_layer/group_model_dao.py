@@ -501,7 +501,7 @@ def get_group_self_assesment(course, group_id, task_id, timestamp):
         new_user_assesment_statements = list(con.db.xapi_statements.aggregate(pipeline))
         new_assessment = None
         if len(new_user_assesment_statements) != 0:
-            user_assesment_statement = user_assesment_statements[0]
+            user_assesment_statement = new_user_assesment_statements[0]
 
             extensions = user_assesment_statement["object"]["definition"]["extensions"]
             for ext in extensions:
@@ -512,10 +512,10 @@ def get_group_self_assesment(course, group_id, task_id, timestamp):
                         "timestamp": user_assesment_statement["timestamp"]
                     }
                     item_dict = ext["items"]
-                    items_sorted = sorted(list(item_dict.items()), lambda x: x[0])
+                    items_sorted = sorted(list(item_dict.items()), key=lambda x: x[0])
                     item_vals = [item[1] for item in items_sorted]
                     for i, item in enumerate(item_vals):
-                        data["item{}".format(i + 1)] = item["value"]
+                        data["item{}".format(i + 1)] = int(item)
                     new_assessment = data
 
         if new_assessment and old_assessment:
@@ -554,7 +554,7 @@ def get_group_ikarion_element_actions(course, group_id, task_id):
         "timestamp": "$timestamp",
         "object_type": "$object.definition.type",
         "object_name": "$object.definition.name",
-        "object_extensions": "object.definition.extensions"
+        "object_extensions": "$object.definition.extensions"
     }
     ikarion_element_query = merge_query(ikarion_element_query, group_query(group_id), group_task_query(task_id))
     activities = list(

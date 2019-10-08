@@ -133,9 +133,48 @@ class GroupModelSelfAssessmentTest(unittest.TestCase):
         # with idi.app.app_context():
         #     pdt.populate_xapi_model_self_assessment(gm.con)
 
+        # new self assessment statements
+        # with idi.app.app_context():
+        #     pdt.populate_xapi_model_new_self_assessment(gm.con)
+
     def test_get_self_assessment(self):
         course = encode_url_chars("https://moodle.ikarion-projekt.de/course/view.php?id={}".format(0))
         url_temp = GM_PRE + "/group_self_assessment/{}/{}/{}/"
+        url = url_temp.format(course, 0, "66")
+        response = self.app.get(url)
+        print(COURSEID)
+        print(response)
+        print(response.data)
+        response_str = response.data.decode("utf-8")
+        print(response_str)
+        r_json = json.loads(response_str)
+        print(r_json)
+
+    def tearDown(self):
+        pass
+
+class GroupModelIkarionToolTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        idi.app.testing = True
+
+    def setUp(self):
+        self.app = idi.app.test_client()
+        # mock_con = mongomock.MongoClient()
+        # um.con = mock_con
+        # gm.con = mock_con
+        # with idi.app.app_context():
+        #     pdt.populate_xapi_model_self_assessment(gm.con)
+
+        # new self assessment statements
+        # with idi.app.app_context():
+        #     pdt.populate_xapi_model_new_self_assessment(gm.con)
+
+    def test_get_ikarion_actions(self):
+        course = encode_url_chars("https://moodle.ikarion-projekt.de/course/view.php?id={}".format(0))
+        # url_temp = GM_PRE + "/group_self_assessment/{}/{}/{}/"
+        url_temp = GM_PRE + "/ikarion_element_activities/{}/{}/{}/"
         url = url_temp.format(course, 0, "66")
         response = self.app.get(url)
         print(COURSEID)
