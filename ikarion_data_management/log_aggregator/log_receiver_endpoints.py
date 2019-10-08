@@ -33,7 +33,9 @@ def processLog():
     relevant = sp.statement_relevant(statement)
     if relevant:
         sp.process_statement(statement)
-        con.db.xapi_statements.insert_one(statement)
+        same_ids = list(con.db.xapi_statements.find({"id": statement["id"]}))
+        if len(same_ids) == 0:
+            con.db.xapi_statements.insert_one(statement)
     if sp.relevant_model_change(statement):
         for job in scheduler.get_jobs():
             job.modify(next_run_time=datetime.datetime.now())
