@@ -142,6 +142,8 @@ def get_group_activities(course, group, *constraints):
         ])
     )
 
+    print("length forum posts" + len(forumPosts))
+
     forum_thread_query = merge_query(course_query(course), group_query(group), forumThreadQuery, *constraints)
     forumThreadPosts = list(
 
@@ -152,6 +154,8 @@ def get_group_activities(course, group, *constraints):
         ])
     )
 
+    print("length forum thread posts" + len(forumThreadPosts))
+
     wiki_query = merge_query(course_query(course), group_query(group), wikiQuery, *constraints)
     wikiEdits = list(
         con.db.xapi_statements.aggregate([
@@ -160,6 +164,9 @@ def get_group_activities(course, group, *constraints):
             {"$project": merge_query(projection, wikiContentProjection)}
         ])
     )
+
+    print("length wiki posts" + len(wikiEdits))
+
     combList = (wikiEdits + forumPosts)
     combList = (combList + forumThreadPosts)
     combList.sort(key=lambda x: x["timestamp"], reverse=True)
