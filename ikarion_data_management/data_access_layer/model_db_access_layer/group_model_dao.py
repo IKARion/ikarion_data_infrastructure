@@ -142,7 +142,7 @@ def get_group_activities(course, group, *constraints):
         ])
     )
 
-    print("length forum posts" + len(forumPosts))
+    print("length forum posts" + str(len(forumPosts)))
 
     forum_thread_query = merge_query(course_query(course), group_query(group), forumThreadQuery, *constraints)
     forumThreadPosts = list(
@@ -154,7 +154,7 @@ def get_group_activities(course, group, *constraints):
         ])
     )
 
-    print("length forum thread posts" + len(forumThreadPosts))
+    print("length forum thread posts" + str(len(forumThreadPosts)))
 
     wiki_query = merge_query(course_query(course), group_query(group), wikiQuery, *constraints)
     wikiEdits = list(
@@ -165,7 +165,7 @@ def get_group_activities(course, group, *constraints):
         ])
     )
 
-    print("length wiki posts" + len(wikiEdits))
+    print("length wiki posts" + str(len(wikiEdits)))
 
     combList = (wikiEdits + forumPosts)
     combList = (combList + forumThreadPosts)
