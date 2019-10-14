@@ -37,7 +37,7 @@ def processLog():
         if len(same_ids) == 0:
             con.db.xapi_statements.insert_one(statement)
         else:
-            print("DUPLICATE XAPI STATEMENT DETECTED")
+            print("DUPLICATE XAPI STATEMENT DETECTED", file=sys.stderr)
     if sp.relevant_model_change(statement):
         for job in scheduler.get_jobs():
             job.modify(next_run_time=datetime.datetime.now())
