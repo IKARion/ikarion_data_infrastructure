@@ -103,6 +103,13 @@ def get_group_activities(course, group, *constraints):
     }
     forumContentProjection = {"content": "$object.definition.extensions.message"}
 
+    # forum thread creation with first post
+    forumThreadQuery = {
+        "verb.id": "http://adlnet.gov/expapi/verbs/created",
+        "object.definition.type": "http://lrs.learninglocker.net/define/type/moodle/forum_discussions"
+    }
+    forumThreadContentProjection = {"content": "$object.definition.extensions.message"}
+
     # wiki edits
     wikiQuery = {
         "verb.id": "http://id.tincanapi.com/verb/updated",
@@ -135,6 +142,16 @@ def get_group_activities(course, group, *constraints):
         ])
     )
 
+    forum_thread_query = merge_query(course_query(course), group_query(group), forumThreadQuery, *constraints)
+    forumThreadPosts = list(
+
+        con.db.xapi_statements.aggregate([
+            {"$match": forum_thread_query},
+            {"$unwind": "$object.definition.extensions"},
+            {"$project": merge_query(projection, forumThreadContentProjection)}
+        ])
+    )
+
     wiki_query = merge_query(course_query(course), group_query(group), wikiQuery, *constraints)
     wikiEdits = list(
         con.db.xapi_statements.aggregate([
@@ -144,6 +161,7 @@ def get_group_activities(course, group, *constraints):
         ])
     )
     combList = (wikiEdits + forumPosts)
+    combList = (combList + forumThreadPosts)
     combList.sort(key=lambda x: x["timestamp"], reverse=True)
     for item in combList:
         o_n = item["object_name"]
